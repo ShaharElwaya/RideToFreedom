@@ -1,1 +1,1 @@
-const test = 22
+const test = 2
