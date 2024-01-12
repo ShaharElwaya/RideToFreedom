@@ -1,11 +1,28 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import { Inter } from 'next/font/google'
-import styles from '@/styles/Home.module.css'
+import Head from "next/head";
+import Image from "next/image";
+import { Inter } from "next/font/google";
+import styles from "@/styles/Home.module.css";
+import axios from "axios";
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
+  const body = {
+    name: "Google I/O 2015",
+    date: "2024-01-11T17:00:00-07:00",
+    location: "800 Howard St., San Francisco, CA 94103",
+    description: "A chance to hear more about Google\'s developer products.",
+    users: [
+      'mayavivi1412@gmail.com',
+      'shahar.al22@gmail.com',
+      'orreuven1243@gmail.com',
+    ]
+  };
+  const handleClick = async () => {
+    const res = await axios.post("api/google", body);
+    console.log("🚀 ~ handleClick ~ res:", res)
+  };
+
   return (
     <>
       <Head>
@@ -26,7 +43,7 @@ export default function Home() {
               target="_blank"
               rel="noopener noreferrer"
             >
-              By{' '}
+              By{" "}
               <Image
                 src="/vercel.svg"
                 alt="Vercel Logo"
@@ -108,7 +125,8 @@ export default function Home() {
             </p>
           </a>
         </div>
+        <button onClick={handleClick}>Click to add meeting</button>
       </main>
     </>
-  )
+  );
 }
