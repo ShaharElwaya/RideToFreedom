@@ -1,6 +1,5 @@
 import { sql } from '@vercel/postgres';
 
-
 // Handler
 export default async function handler(req, res) {
     const { email, password } = req.body;
