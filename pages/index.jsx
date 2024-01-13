@@ -23,6 +23,18 @@ export default function Home() {
     console.log("🚀 ~ handleClick ~ res:", res)
   };
 
+  const handleClickLogin = async (e) => {
+    e.preventDefault()
+    try {
+      const email = e.target[0].value
+      const password = e.target[1].value
+      const res = await axios.post("api/login", {email, password});
+      alert('Login successful!')
+    }catch(err) {
+      alert('Incorrect credenetials!')
+    }
+  };
+
   return (
     <>
       <Head>
@@ -126,6 +138,11 @@ export default function Home() {
           </a>
         </div>
         <button onClick={handleClick}>Click to add meeting</button>
+        <form onSubmit={handleClickLogin}>
+          <input type="email" />
+          <input type="password" />
+          <button>Submit</button>
+        </form>
       </main>
     </>
   );
