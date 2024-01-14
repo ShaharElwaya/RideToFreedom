@@ -21,7 +21,6 @@ export const theme = createTheme({
 
     },
     TextField: {
-      fontFamily: 'Heebo, sans-serif'
-
+      fontFamily: 'Heebo, sans-serif',
     },
 })

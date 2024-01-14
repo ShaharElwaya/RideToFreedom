@@ -1,36 +1,46 @@
-import * as React from 'react';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import React, { useState } from 'react';
 import TextField from '@mui/material/TextField';
-import rtlPlugin from 'stylis-plugin-rtl';
-import { prefixer } from 'stylis';
-import { CacheProvider } from '@emotion/react';
-import createCache from '@emotion/cache';
+import InputAdornment from '@mui/material/InputAdornment';
+import IconButton from '@mui/material/IconButton';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
-// Consuming the outer theme is only required with coexisting themes, like in this documentation.
-// If your app/website doesn't deal with this, you can have just:
-// const theme = createTheme({ direction: 'rtl' })
-const theme = (outerTheme) =>
-  createTheme({
-    direction: 'rtl',
-    palette: {
-      mode: outerTheme.palette.mode,
-    },
-  });
+export default function TextFieldComponent({ outlinedText, type }) {
+  const [showPassword, setShowPassword] = useState(false);
 
-const cacheRtl = createCache({
-  key: 'muirtl',
-  stylisPlugins: [prefixer, rtlPlugin],
-});
+  const handleTogglePassword = () => {
+    setShowPassword(!showPassword);
+  };
 
-export default function TextFieldComponent({ outlinedText }) {
+  const textFieldStyle = {
+    width: '250px', // Set a fixed width for both text fields
+  };
+
+  const iconStyle = {
+    fontSize: '20px',
+    marginLeft: '7px'
+  };
+
   return (
-    <CacheProvider value={cacheRtl}>
-        <div dir="rtl">
-          <TextField 
-            label={ outlinedText }
-            variant="outlined"
-          />
-        </div>
-    </CacheProvider>
+    <TextField
+      label={outlinedText}
+      variant="outlined"
+      type={showPassword ? 'text' : type}
+      style={textFieldStyle}
+      InputProps={{
+        endAdornment:
+          type === 'password' ? (
+            <InputAdornment position="end" style={{ marginLeft: '-20px' }}>
+              <IconButton onClick={handleTogglePassword} edge="end" style={iconStyle}>
+                {showPassword ? (
+                  <VisibilityOff style={iconStyle} />
+                ) : (
+                  <Visibility style={iconStyle} />
+                )}
+              </IconButton>
+            </InputAdornment>
+          ) : null,
+      }}
+    />
   );
 }
