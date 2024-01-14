@@ -1,4 +1,5 @@
 import React from 'react';
+import axios from 'axios';
 import { Typography, TextField, Button } from '@mui/material';
 import style from "../styles/loginPage.module.css";
 import TextFieldComponent from '@/components/UI/TextFiled';
@@ -8,7 +9,7 @@ export default function login() {
     e.preventDefault()
     try {
       const email = e.target[0].value
-      const password = e.target[1].value
+      const password = e.target[2].value
       const res = await axios.post("api/login", {email, password});
       alert('Login successful!')
     }catch(err) {
