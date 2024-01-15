@@ -1,6 +1,10 @@
 .login_general {
     text-align: center;
-  }
+}
+
+.select_style {
+    text-align: right;
+}
 
 .logo_pic{
     height: 15%;

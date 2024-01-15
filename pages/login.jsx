@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import { Typography, TextField, Button } from '@mui/material';
-import style from "../styles/loginPage.module.css";
+import style from "../styles/loginRegisterPage.module.css";
 import TextFieldComponent from '@/components/UI/TextFiled';
 
 export default function login() {
@@ -32,10 +32,10 @@ export default function login() {
         <form onSubmit={handleClickLogin}>
           <div className={style.space}>
             <div>
-              <TextFieldComponent type="email" outlinedText="שם משתמש"/>
+              <TextFieldComponent type="email" outlinedText="שם משתמש" required/>
             </div>
             <div>
-              <TextFieldComponent type="password" outlinedText="סיסמה"/>
+              <TextFieldComponent type="password" outlinedText="סיסמה" required/>
             </div>
           </div>
           <Button type="submit" variant="contained">התחבר</Button>
