@@ -87,6 +87,7 @@ export default function register() {
                                 outlinedText="שם"
                                 value={formValues.name}
                                 onChange={(e) => handleInputChange('name', e.target.value)}
+                                required
                             />
                         </div>
                         <div>
@@ -95,6 +96,7 @@ export default function register() {
                                 outlinedText="אימייל"
                                 value={formValues.email}
                                 onChange={(e) => handleInputChange('email', e.target.value)}
+                                required
                             />
                         </div>
                         <div>
@@ -102,16 +104,18 @@ export default function register() {
                                 outlinedText="טלפון"
                                 value={formValues.phone}
                                 onChange={(e) => handleInputChange('phone', e.target.value)}
+                                required
                             />
                         </div>
                         <FormControl className={style.select_style}>
-                            <InputLabel id="selectUsersTypes">סוג משתמש</InputLabel>
+                            <InputLabel id="selectUsersTypes">סוג משתמש *</InputLabel>
                             <Select
                                 labelId="selectUsersTypes"
                                 id="selectUsersTypesId"
                                 label="סוג משתמש"
                                 value={formValues.userType}
                                 onChange={handleSelectChange}
+                                required
                                 style={selectStyle}
                             >
                                 {options.map(option => (
@@ -126,7 +130,9 @@ export default function register() {
                                 type="password" 
                                 outlinedText="סיסמה" 
                                 value={formValues.password}
-                                onChange={(e) => handleInputChange('password', e.target.value)}/>
+                                onChange={(e) => handleInputChange('password', e.target.value)}
+                                required
+                            />
                         </div>
                     </div>
                     <Button type="submit" variant="contained">הוספת משתמש</Button>

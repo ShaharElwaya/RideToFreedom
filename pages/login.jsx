@@ -32,10 +32,10 @@ export default function login() {
         <form onSubmit={handleClickLogin}>
           <div className={style.space}>
             <div>
-              <TextFieldComponent type="email" outlinedText="שם משתמש"/>
+              <TextFieldComponent type="email" outlinedText="שם משתמש" required/>
             </div>
             <div>
-              <TextFieldComponent type="password" outlinedText="סיסמה"/>
+              <TextFieldComponent type="password" outlinedText="סיסמה" required/>
             </div>
           </div>
           <Button type="submit" variant="contained">התחבר</Button>
