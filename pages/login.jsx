@@ -20,7 +20,7 @@ export default function login() {
 
   return (
     <>
-      <div className={style.login_general}>
+      <div className={style.general}>
         <PicAndHeadlines
           pictureName="logo"
           picturePath="../logo.jpeg"
