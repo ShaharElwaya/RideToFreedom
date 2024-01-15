@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import style from "../../styles/loginPage.module.css"
+import style from "../../styles/loginRegisterPage.module.css"
 import { Typography } from '@mui/material';
 
 export default function PicAndHeadlines({ pictureName, picturePath, primaryHeadline, secondaryHeadline }) {
