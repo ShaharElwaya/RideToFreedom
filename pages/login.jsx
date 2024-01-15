@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import { Typography, TextField, Button } from '@mui/material';
-import style from "../styles/loginPage.module.css";
+import style from "../styles/loginRegisterPage.module.css";
 import TextFieldComponent from '@/components/UI/TextFiled';
 
 export default function login() {

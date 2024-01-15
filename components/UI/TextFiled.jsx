@@ -5,7 +5,7 @@ import IconButton from '@mui/material/IconButton';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
-export default function TextFieldComponent({ outlinedText, type }) {
+export default function TextFieldComponent({ outlinedText, type, value, onChange }) {
   const [showPassword, setShowPassword] = useState(false);
 
   const handleTogglePassword = () => {
@@ -26,6 +26,8 @@ export default function TextFieldComponent({ outlinedText, type }) {
       label={outlinedText}
       variant="outlined"
       type={showPassword ? 'text' : type}
+      value={value}
+      onChange={onChange}
       style={textFieldStyle}
       InputProps={{
         endAdornment:
