@@ -5,10 +5,14 @@ import TextFieldComponent from '@/components/UI/TextFiled';
 import { useState, useEffect } from 'react';
 import { Typography, Button, Select, MenuItem, InputLabel, FormControl } from '@mui/material';
 import PicAndHeadlines from '@/components/UI/picAndheadline';
+import CustomizedDialogs from '@/components/dialog';
 
 export default function register() {
     const [options, setOptions] = useState([]);
     const [selectedOption, setSelectedOption] = useState('');
+    const [dialogError, setDialogError] = useState(""); // Add a state variable for error message
+    const [dialogOpen, setDialogOpen] = React.useState(false); // Initialize state
+
     const [formValues, setFormValues] = useState({
         name: '',
         email: '',
@@ -45,28 +49,24 @@ export default function register() {
     };
 
     const handleClickRegister = async (e) => {
-        e.preventDefault()
+        e.preventDefault();
         try {
             const { name, email, phone, userType, password } = formValues;
             const res = await axios.post("api/register", { name, email, phone, userType, password });
-            alert('Register successful!')
-            console.log("reset start")
-            // Reset the form
-            setFormValues({
-                name: '',
-                email: '',
-                phone: '',
-                userType: '',
-                password: ''
-            })
-            console.log('Form values after reset:', formValues);
-        }
-        catch (err) {
+
+            // Open the success dialog on successful registration
+            setDialogOpen(true);
+        } catch (err) {
+            let errorMessage = "We have a problem, try again"; // Default error message
+
             if (err.response && err.response.data && err.response.data.error) {
-                alert(`Registration failed: ${err.response.data.error}`);
-            } else {
-                alert('We have a problem, try again');
+                // If there is a specific error message from the server, use that
+                errorMessage = `Registration failed: ${err.response.data.error}`;
             }
+
+            // Open the error dialog with the specific error message
+            setDialogOpen(true);
+            setDialogError(errorMessage); // Set the error message in the state
         }
     };
 
@@ -135,6 +135,14 @@ export default function register() {
                     <Button type="submit" variant="contained">הוספת משתמש</Button>
                 </form>
             </div>
+
+            <CustomizedDialogs
+                title={dialogError ? "ההרשמה נכשלה" : "ההרשמה הושלמה"}
+                text={dialogError ? dialogError : "משתמש " + formValues.email + " התווסף בהצלחה למערכת!"}
+                closeText="הבנתי"
+                open={dialogOpen}
+                onClose={() => { setDialogOpen(false); setDialogError(""); }} // Close the dialog and reset error state
+            />
         </>
     );
 }

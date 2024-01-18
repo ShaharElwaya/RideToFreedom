@@ -1,0 +1,20 @@
+/* patientRowCss.module.css */
+
+.container {
+    display: flex;
+    align-items: center; /* Align items vertically in the center */
+    border-top: 1px solid #ccc; /* Add top border with a light gray color */
+    border-bottom: 1px solid #ccc; /* Add bottom border with a light gray color */
+    
+  }
+  
+  .pic {
+    height: 40px;
+    width: 40px;
+    margin-left: 15px; /* Adjust margin as needed */
+  }
+  
+  .txt {
+    font-size: 12px; /* Specify the unit (e.g., px) for font-size */
+  }
+  

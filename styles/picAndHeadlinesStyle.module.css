@@ -1,6 +1,12 @@
-.logo_pic{
-    height: 15%;
-    width: 15%;
+.main_pic{
+    height: 150px;
+    width: 190px;
+    margin: 15px;
+}
+
+.pic{
+    height: 70px;
+    width: 90px;
     margin: 15px;
 }
 
