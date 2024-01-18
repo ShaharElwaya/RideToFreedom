@@ -4,6 +4,7 @@ import style from "../styles/loginRegisterPage.module.css";
 import TextFieldComponent from '@/components/UI/TextFiled';
 import { useState, useEffect } from 'react';
 import { Typography, Button, Select, MenuItem, InputLabel, FormControl } from '@mui/material';
+import PicAndHeadlines from '@/components/UI/picAndheadline';
 
 export default function register() {
     const [options, setOptions] = useState([]);
@@ -41,7 +42,7 @@ export default function register() {
 
     const handleInputChange = (name, value) => {
         setFormValues({ ...formValues, [name]: value });
-    };  
+    };
 
     const handleClickRegister = async (e) => {
         e.preventDefault()
@@ -63,23 +64,19 @@ export default function register() {
         catch (err) {
             if (err.response && err.response.data && err.response.data.error) {
                 alert(`Registration failed: ${err.response.data.error}`);
-              } else {
+            } else {
                 alert('We have a problem, try again');
-              }
+            }
         }
     };
 
     return (
         <>
-            <div className={style.login_general}>
-                <div className={style.space}>
-                    <Typography variant='h4' className={style.bold}>
-                        הוספת משתמש
-                    </Typography>
-                    <Typography>
-                        נא למלא את הפרטים עבור המשתמש
-                    </Typography>
-                </div>
+            <div className={style.general}>
+                <PicAndHeadlines
+                    primaryHeadline="הוספת משתמש"
+                    secondaryHeadline="נא למלא את הפרטים עבור המשתמש"
+                />
                 <form onSubmit={handleClickRegister}>
                     <div className={style.space}>
                         <div>
@@ -126,9 +123,9 @@ export default function register() {
                             </Select>
                         </FormControl>
                         <div>
-                            <TextFieldComponent 
-                                type="password" 
-                                outlinedText="סיסמה" 
+                            <TextFieldComponent
+                                type="password"
+                                outlinedText="סיסמה"
                                 value={formValues.password}
                                 onChange={(e) => handleInputChange('password', e.target.value)}
                                 required
