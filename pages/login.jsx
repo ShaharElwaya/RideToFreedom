@@ -24,6 +24,7 @@ export default function login() {
         <PicAndHeadlines
           pictureName="logo"
           picturePath="../logo.jpeg"
+          isMain
           primaryHeadline="לרכב אל החופש"
           secondaryHeadline="אימון והדרכת משפחות בשילוב סוסים"
         />
