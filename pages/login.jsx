@@ -20,26 +20,24 @@ export default function login() {
 
   return (
     <>
-      <div className={style.general}>
-        <PicAndHeadlines
-          pictureName="logo"
-          picturePath="../logo.jpeg"
-          isMain
-          primaryHeadline="לרכב אל החופש"
-          secondaryHeadline="אימון והדרכת משפחות בשילוב סוסים"
-        />
-        <form onSubmit={handleClickLogin}>
-          <div className={style.space}>
-            <div>
-              <TextFieldComponent type="email" outlinedText="שם משתמש" required/>
-            </div>
-            <div>
-              <TextFieldComponent type="password" outlinedText="סיסמה" required/>
-            </div>
+      <PicAndHeadlines
+        pictureName="logo"
+        picturePath="../logo.jpeg"
+        isMain
+        primaryHeadline="לרכב אל החופש"
+        secondaryHeadline="אימון והדרכת משפחות בשילוב סוסים"
+      />
+      <form onSubmit={handleClickLogin}>
+        <div className={style.space}>
+          <div>
+            <TextFieldComponent type="email" outlinedText="שם משתמש" required />
           </div>
-          <Button type="submit" variant="contained">התחבר</Button>
-        </form>
-      </div>
+          <div>
+            <TextFieldComponent type="password" outlinedText="סיסמה" required />
+          </div>
+        </div>
+        <Button type="submit" variant="contained">התחבר</Button>
+      </form>
     </>
   );
 }
