@@ -87,7 +87,7 @@ export default function SummariesPatientLessons() {
                 text={dialogError ? dialogError: ""}
                 closeText="הבנתי"
                 open={dialogOpen}
-                onClose={() => { setDialogOpen(false); setDialogError(""); }} // Close the dialog and reset error state
+                onClose={handleCloseDialog} // Close the dialog and reset error state
             />
     </>
   );
