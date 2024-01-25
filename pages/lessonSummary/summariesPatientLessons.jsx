@@ -1,44 +1,56 @@
-import React from 'react';
+// pages/lessonSummary/summariesPatientLessons.js
+
+import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Typography, TextField, Button } from '@mui/material';
-import TextFieldComponent from '@/components/UI/TextFiled';
+import { Button } from '@mui/material';
 import PicAndHeadlines from '@/components/UI/picAndheadline';
 import PatientRow from '@/components/UI/patientRow';
 import style from '../../styles/summariesPatientLessons.module.css';
-import { useRouter } from 'next/router'; // Import useRouter from next/router
+import { useRouter } from 'next/router';
 
-export default function summariesPatientLessons() {
-    const router = useRouter(); // Get the router object from next/router
+export default function SummariesPatientLessons() {
+  const router = useRouter();
+  const [lessons, setLessons] = useState([]);
 
-    const handleAdd = () => {
-        router.push('/lessonSummary/specificSummary');
+  const handleAdd = () => {
+    router.push('/lessonSummary/specificSummary');
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const { data } = await axios.get('/api/lessonsSummaries/summariesPatientLessons', {
+          params: { patient_id: 12 }, // Adjust the patient_id as needed
+        });
+        setLessons(data);
+      } catch (error) {
+        console.error('Error fetching data:', error.message);
+      }
     };
 
-    return (
-        <>
-            <PicAndHeadlines
-                pictureName="lessonSummary"
-                picturePath="../lessonSummary.png"
-                primaryHeadline="סיכומי שיעורים"
-                secondaryHeadline="להשלים שם מטופל"
-            />
-            <div className={style.addButtonStyle}>
-                <Button onClick={handleAdd}>+ הוספת סיכום</Button>
-            </div>
-            <PatientRow
-                pictureName="boyPic"
-                picturePath="../boyPic.png"
-                date="12.3.12"
-                time="23:34"
-                name="שם מטופל">
-            </PatientRow>
-            <PatientRow
-                pictureName="boyPic"
-                picturePath="../boyPic.png"
-                date="12.3.12"
-                time="23:34"
-                name="שם מטופל">
-            </PatientRow>
-        </>
-    );
+    fetchData();
+  }, []); // Empty dependency array to run the effect only once on mount
+
+  return (
+    <>
+      <PicAndHeadlines
+        pictureName="lessonSummary"
+        picturePath="../lessonSummary.png"
+        primaryHeadline="סיכומי שיעורים"
+        secondaryHeadline="להשלים שם מטופל"
+      />
+      <div className={style.addButtonStyle}>
+        <Button onClick={handleAdd}>+ הוספת סיכום</Button>
+      </div>
+      {lessons.map((lesson) => (
+        <PatientRow
+          pictureName={lesson.type}
+          picturePath={`../${lesson.patient_gender === 'F' ? 'girlPic' : 'boyPic'}.png`}
+          date={lesson.formatted_date}
+          time={lesson.formatted_time}
+          name={lesson.patient_name}  // Adjust with the actual column name
+        />
+      ))}
+    </>
+  );
 }

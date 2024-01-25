@@ -25,11 +25,11 @@ export default function SummariesPatientLessons() {
     e.preventDefault();
 
     try {
-      const date = '01-23-2023';
+      const date = '01-23-2023 16:07';
       const patientId = '12';  // Adjust with the actual patient ID
       const guideId = '12';    // Adjust with the actual guide ID
 
-      const res = await axios.post("../api/lessonsSummaries", {
+      const res = await axios.post("../api/lessonsSummaries/specificSummary", {
         date,
         summary,
         patientId,
