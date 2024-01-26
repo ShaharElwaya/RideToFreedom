@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import style from "../styles/loginRegisterPage.module.css";
-import TextFieldComponent from '@/components/UI/TextFiled';
+import TextFieldComponent from '@/components/UI/TextField';
 import { useState, useEffect } from 'react';
 import { Typography, Button, Select, MenuItem, InputLabel, FormControl } from '@mui/material';
 import PicAndHeadlines from '@/components/UI/picAndheadline';
