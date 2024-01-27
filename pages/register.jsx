@@ -72,69 +72,67 @@ export default function register() {
 
     return (
         <>
-            <div className={style.general}>
-                <PicAndHeadlines
-                    primaryHeadline="הוספת משתמש"
-                    secondaryHeadline="נא למלא את הפרטים עבור המשתמש"
-                />
-                <form onSubmit={handleClickRegister}>
-                    <div className={style.space}>
-                        <div>
-                            <TextFieldComponent
-                                outlinedText="שם"
-                                value={formValues.name}
-                                onChange={(e) => handleInputChange('name', e.target.value)}
-                                required
-                            />
-                        </div>
-                        <div>
-                            <TextFieldComponent
-                                type="email"
-                                outlinedText="אימייל"
-                                value={formValues.email}
-                                onChange={(e) => handleInputChange('email', e.target.value)}
-                                required
-                            />
-                        </div>
-                        <div>
-                            <TextFieldComponent
-                                outlinedText="טלפון"
-                                value={formValues.phone}
-                                onChange={(e) => handleInputChange('phone', e.target.value)}
-                                required
-                            />
-                        </div>
-                        <FormControl className={style.select_style}>
-                            <InputLabel id="selectUsersTypes">סוג משתמש *</InputLabel>
-                            <Select
-                                labelId="selectUsersTypes"
-                                id="selectUsersTypesId"
-                                label="סוג משתמש"
-                                value={formValues.userType}
-                                onChange={handleSelectChange}
-                                required
-                                style={selectStyle}
-                            >
-                                {options.map(option => (
-                                    <MenuItem key={option.id} value={option.id}>
-                                        {option.type}
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-                        <div>
-                            <TextFieldComponent
-                                type="password"
-                                outlinedText="סיסמה"
-                                value={formValues.password}
-                                onChange={(e) => handleInputChange('password', e.target.value)}
-                                required
-                            />
-                        </div>
+            <PicAndHeadlines
+                primaryHeadline="הוספת משתמש"
+                secondaryHeadline="נא למלא את הפרטים עבור המשתמש"
+            />
+            <form onSubmit={handleClickRegister}>
+                <div className={style.space}>
+                    <div>
+                        <TextFieldComponent
+                            outlinedText="שם"
+                            value={formValues.name}
+                            onChange={(e) => handleInputChange('name', e.target.value)}
+                            required
+                        />
                     </div>
-                    <Button type="submit" variant="contained">הוספת משתמש</Button>
-                </form>
-            </div>
+                    <div>
+                        <TextFieldComponent
+                            type="email"
+                            outlinedText="אימייל"
+                            value={formValues.email}
+                            onChange={(e) => handleInputChange('email', e.target.value)}
+                            required
+                        />
+                    </div>
+                    <div>
+                        <TextFieldComponent
+                            outlinedText="טלפון"
+                            value={formValues.phone}
+                            onChange={(e) => handleInputChange('phone', e.target.value)}
+                            required
+                        />
+                    </div>
+                    <FormControl className={style.select_style}>
+                        <InputLabel id="selectUsersTypes">סוג משתמש *</InputLabel>
+                        <Select
+                            labelId="selectUsersTypes"
+                            id="selectUsersTypesId"
+                            label="סוג משתמש"
+                            value={formValues.userType}
+                            onChange={handleSelectChange}
+                            required
+                            style={selectStyle}
+                        >
+                            {options.map(option => (
+                                <MenuItem key={option.id} value={option.id}>
+                                    {option.type}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                    <div>
+                        <TextFieldComponent
+                            type="password"
+                            outlinedText="סיסמה"
+                            value={formValues.password}
+                            onChange={(e) => handleInputChange('password', e.target.value)}
+                            required
+                        />
+                    </div>
+                </div>
+                <Button type="submit" variant="contained">הוספת משתמש</Button>
+            </form>
 
             <CustomizedDialogs
                 title={dialogError ? "ההרשמה נכשלה" : "ההרשמה הושלמה"}

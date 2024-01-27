@@ -3,10 +3,14 @@ import Image from "next/image";
 import { Inter } from "next/font/google";
 import styles from "@/styles/Home.module.css";
 import axios from "axios";
+import { useRouter } from 'next/router'; // Import useRouter from next/router
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
+  
+  const router = useRouter();
+
   const body = {
     name: "Google I/O 2015",
     date: "2024-01-11T17:00:00-07:00",
@@ -21,6 +25,10 @@ export default function Home() {
   const handleClick = async () => {
     const res = await axios.post("api/google", body);
     console.log("🚀 ~ handleClick ~ res:", res)
+  };
+
+  const handleClickPatient = () => {
+    router.push(`/lessonSummary/summariesPatientLessons?patientId=${encodeURIComponent(12)}`);
   };
 
   const handleClickLogin = async (e) => {
@@ -138,6 +146,7 @@ export default function Home() {
           </a>
         </div>
         <button onClick={handleClick}>Click to add meeting</button>
+        <button onClick={handleClickPatient}>patients example</button>
         <form onSubmit={handleClickLogin}>
           <input type="email" />
           <input type="password" />
