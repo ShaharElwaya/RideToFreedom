@@ -12,6 +12,8 @@ export default function SummariesPatientLessons() {
   const router = useRouter();
   const [lessons, setLessons] = useState([]);
   const [addTime, setAddTime] = useState('');
+  const [name, setName] = useState();
+  const { patientId } = router.query;
 
   // Handle function to navigate to the specificSummary page
   const handleAdd = () => {
@@ -33,7 +35,7 @@ export default function SummariesPatientLessons() {
     const formattedDateTime = `${currentDate} ${currentTime}`;
     setAddTime(formattedDateTime);
 
-    router.push(`/lessonSummary/specificSummary?time=${encodeURIComponent(formattedDateTime)}`);
+    router.push(`/lessonSummary/specificSummary?time=${encodeURIComponent(formattedDateTime)}&patientId=${encodeURIComponent(patientId)}`);
   };  
 
   useEffect(() => {
@@ -48,7 +50,21 @@ export default function SummariesPatientLessons() {
       }
     };
 
+    async function getPatientName() {
+      try {
+        if (router.query.patientId) {
+          const response = await fetch(`../api/lessonsSummaries/patientIdToName?patient_id=${encodeURIComponent(router.query.patientId)}`);
+          const data = await response.json();
+          console.log('Patient Name Data:', data);
+          setName(data);
+        }
+      } catch (error) {
+        console.error('Error fetching patient name:', error);
+      }
+    }  
+
     fetchData();
+    getPatientName();
   }, []); // Empty dependency array to run the effect only once on mount
 
   return (
@@ -57,7 +73,7 @@ export default function SummariesPatientLessons() {
         pictureName="lessonSummary"
         picturePath="../lessonSummary.png"
         primaryHeadline="סיכומי שיעורים"
-        secondaryHeadline="להשלים שם מטופל"
+        secondaryHeadline={name ? name.name : 'No Name Data'}
       />
       <div className={style.addButtonStyle}>
         <Button onClick={handleAdd}>+ הוספת סיכום</Button>

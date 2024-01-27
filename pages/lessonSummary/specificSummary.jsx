@@ -17,9 +17,11 @@ export default function SummariesPatientLessons() {
 
   const [lessonType, setUserType] = useState('');
   const [options, setOptions] = useState([]);
+  const [name, setName] = useState();
   const [selectedOption, setSelectedOption] = useState('');
   const router = useRouter(); // Get the router object from next/router
   const { time } = router.query;
+  const { patientId } = router.query;
 
   // Format the received time with Israel timezone
   const formattedDateTime = time ? new Date(time).toLocaleString("en-US", {
@@ -47,7 +49,7 @@ export default function SummariesPatientLessons() {
     setDialogOpen(false);
 
     if (saveSuccess) {
-      router.push('/lessonSummary/summariesPatientLessons');
+      router.push(`/lessonSummary/summariesPatientLessons?patientId=${encodeURIComponent(patientId)}`);
     }
   };
 
@@ -67,7 +69,6 @@ export default function SummariesPatientLessons() {
       }
 
       const date = formattedDateTime; // Use the formatted date and time
-      const patientId = '12';  // Adjust with the actual patient ID
       const guideId = '14';    // Adjust with the actual guide ID
 
       const res = await axios.post("../api/lessonsSummaries/specificSummary", {
@@ -112,7 +113,21 @@ export default function SummariesPatientLessons() {
       }
     }
 
+    async function getPatientName() {
+      try {
+        if (router.query.patientId) {
+          const response = await fetch(`../api/lessonsSummaries/patientIdToName?patient_id=${encodeURIComponent(router.query.patientId)}`);
+          const data = await response.json();
+          console.log('Patient Name Data:', data);
+          setName(data);
+        }
+      } catch (error) {
+        console.error('Error fetching patient name:', error);
+      }
+    }    
+
     fetchOptions();
+    getPatientName();
   }, []);
 
   const handleSelectChange = (event) => {
@@ -130,8 +145,8 @@ export default function SummariesPatientLessons() {
         pictureName="lessonSummary"
         picturePath="../lessonSummary.png"
         primaryHeadline="סיכומי שיעורים"
-        secondaryHeadline="להשלים שם מטופל"
-      />
+        secondaryHeadline={name ? name.name : 'No Name Data'}
+        />
       <PatientRow
         pictureName="boyPic"
         picturePath="../boyPic.png"
