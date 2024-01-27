@@ -12,7 +12,7 @@ export default async function handler(req, res) {
             const result = await sql`
       SELECT 
       l.id AS lesson_id,
-      l.type,
+      lt.type AS lesson_type, 
       l.summary,
       TO_CHAR(l.date, 'DD-MM-YYYY') AS formatted_date,
       TO_CHAR(l.date, 'HH24:MI') AS formatted_time,
@@ -20,9 +20,12 @@ export default async function handler(req, res) {
       l.parent_permission,
       p.id AS patient_id,
       p.name AS patient_name,
-      p.gender AS patient_gender
+      p.gender AS patient_gender,
+      g.name AS guide_name
     FROM public.lessons AS l
     JOIN public.patient AS p ON l.patient_id = p.id
+    JOIN public.guide AS g ON l.guide_id = g.id
+    JOIN enums.lessons_types AS lt ON l.type = lt.id
     WHERE l.patient_id = ${patient_id};
       `;
 

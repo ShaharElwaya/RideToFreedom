@@ -8,6 +8,14 @@
     text-align: center;
 }
 
+.rightStyle{
+    text-align: right;
+}
+
+.leftStyle{
+    text-align: left;
+}
+
 .container{
     margin: auto;
     width: 525px;

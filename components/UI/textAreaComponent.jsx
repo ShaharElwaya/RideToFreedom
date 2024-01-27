@@ -2,7 +2,7 @@ import React from 'react';
 import { TextareaAutosize } from '@mui/material';
 import { Margin } from '@mui/icons-material';
 
-export default function TextAreaComponent({ placeholderText, value, onChange }) {
+export default function TextAreaComponent({ placeholderText, value, onChange, required }) {
     const iconStyle = {
         height: '200px',
         width: '500px',
@@ -18,6 +18,7 @@ export default function TextAreaComponent({ placeholderText, value, onChange }) 
                 placeholder={placeholderText}
                 value={value}
                 onChange={onChange}
+                required={required}
             />
         </div>
     );

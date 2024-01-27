@@ -2,13 +2,13 @@ import { sql } from '@vercel/postgres';
 
 // Handler
 export default async function handler(req, res) {
-  const { summary, date, patientId, guideId, parentPermission } = req.body;
-console.log(patientId);
+  const { summary, date, patientId, guideId, parentPermission, lessonType } = req.body;
+
   if (req.method === 'POST') {
     try {
       const result = await sql`
-        INSERT INTO public.lessons(summary, date, patient_id, guide_id, parent_permission)
-        VALUES (${summary}, ${date}, ${patientId}, ${guideId}, ${parentPermission})
+        INSERT INTO public.lessons(summary, date, type, patient_id, guide_id, parent_permission)
+        VALUES (${summary}, ${date}, ${lessonType}, ${patientId}, ${guideId}, ${parentPermission})
         RETURNING *;`;
 
       const newUser = result.rows[0];

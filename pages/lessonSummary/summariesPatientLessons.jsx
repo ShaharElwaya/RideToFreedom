@@ -11,10 +11,30 @@ import { useRouter } from 'next/router';
 export default function SummariesPatientLessons() {
   const router = useRouter();
   const [lessons, setLessons] = useState([]);
+  const [addTime, setAddTime] = useState('');
 
+  // Handle function to navigate to the specificSummary page
   const handleAdd = () => {
-    router.push('/lessonSummary/specificSummary');
-  };
+    const currentDate = new Date().toLocaleDateString("en-US", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      timeZone: "Asia/Jerusalem", // Set the timezone to Israel
+    });
+
+    const currentTime = new Date().toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "numeric",
+      hour12: false,
+      timeZone: "UTC",
+      timeZone: "Asia/Jerusalem", // Set the timezone to Israel
+    });
+
+    const formattedDateTime = `${currentDate} ${currentTime}`;
+    setAddTime(formattedDateTime);
+
+    router.push(`/lessonSummary/specificSummary?time=${encodeURIComponent(formattedDateTime)}`);
+  };  
 
   useEffect(() => {
     const fetchData = async () => {
@@ -48,7 +68,8 @@ export default function SummariesPatientLessons() {
           picturePath={`../${lesson.patient_gender === 'F' ? 'girlPic' : 'boyPic'}.png`}
           date={lesson.formatted_date}
           time={lesson.formatted_time}
-          name={lesson.patient_name}  // Adjust with the actual column name
+          name={lesson.guide_name}  
+          lesson={lesson.lesson_type}
         />
       ))}
     </>
