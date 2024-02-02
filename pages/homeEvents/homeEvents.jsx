@@ -1,5 +1,3 @@
-// pages/lessonSummary/summariesPatientLessons.js
-
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Button } from '@mui/material';
@@ -8,9 +6,9 @@ import PatientRow from '@/components/UI/patientRow';
 import style from '../../styles/summariesPatientLessons.module.css';
 import { useRouter } from 'next/router';
 
-export default function SummariesPatientLessons() {
+export default function HomeEvents() {
   const router = useRouter();
-  const [lessons, setLessons] = useState([]);
+  const [events, setEvents] = useState([]);
   const [addTime, setAddTime] = useState('');
   const [name, setName] = useState();
   const { patientId } = router.query;
@@ -35,16 +33,16 @@ export default function SummariesPatientLessons() {
     const formattedDateTime = `${currentDate} ${currentTime}`;
     setAddTime(formattedDateTime);
 
-    router.push(`/lessonSummary/specificSummary?time=${encodeURIComponent(formattedDateTime)}&patientId=${encodeURIComponent(patientId)}`);
+    router.push(`/homeEvents/specificHomeEvent?time=${encodeURIComponent(formattedDateTime)}&patientId=${encodeURIComponent(patientId)}`);
   };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data } = await axios.get('/api/lessonsSummaries/summariesPatientLessons', {
+        const { data } = await axios.get('/api/homeEvents/homeEvents', {
           params: { patient_id: patientId }, // Send patient_id as a query parameter
         });
-        setLessons(data);
+        setEvents(data);
       } catch (error) {
         console.error('Error fetching data:', error.message);
       }
@@ -66,31 +64,30 @@ export default function SummariesPatientLessons() {
     getPatientName();
   }, []); // Empty dependency array to run the effect only once on mount
 
-  // Handle function to navigate to the specificSummaryWatch page with lesson.id
-  const handleRowClick = (lessonId) => {
-    router.push(`/lessonSummary/specificSummaryWatch?lessonId=${encodeURIComponent(lessonId)}`);
+  // Handle function to navigate to the specificSummaryWatch page with event.id
+  const handleRowClick = (eventId) => {
+    router.push(`/homeEvents/specificHomeEventWatch?eventId=${encodeURIComponent(eventId)}`);
   };
 
   return (
     <>
       <PicAndHeadlines
-        pictureName="lessonSummary"
-        picturePath="../lessonSummary.png"
-        primaryHeadline="סיכומי שיעורים"
+        pictureName="homeEvents"
+        picturePath="../homeEvents.png"
+        primaryHeadline="דיווח אירועים מהבית"
         secondaryHeadline={name ? name : 'No Name Data'}
       />
       <div className={style.addButtonStyle}>
-        <Button onClick={handleAdd}>+ הוספת סיכום</Button>
+        <Button onClick={handleAdd}>+ הוספת אירוע</Button>
       </div>
-      {lessons.map((lesson) => (
-        <div key={lesson.lesson_id} className={style.rowWrapper} onClick={() => handleRowClick(lesson.lesson_id)}>
+      {events.map((event) => (
+        <div key={event.event_id} className={style.rowWrapper} onClick={() => handleRowClick(event.event_id)}>
           <PatientRow
-            pictureName={lesson.type}
-            picturePath={`../${lesson.patient_gender === 'F' ? 'girlPic' : 'boyPic'}.png`}
-            date={lesson.formatted_date}
-            time={lesson.formatted_time}
-            name={lesson.guide_name}
-            lesson={lesson.lesson_type}
+            pictureName={event.type}
+            picturePath={`../${event.patient_gender === 'F' ? 'girlPic' : 'boyPic'}.png`}
+            date={event.formatted_date}
+            time={event.formatted_time}
+            name={event.parent_name}
           />
         </div>
       ))}
