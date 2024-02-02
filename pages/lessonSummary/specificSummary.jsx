@@ -18,6 +18,7 @@ export default function SummariesPatientLessons() {
   const [lessonType, setUserType] = useState('');
   const [options, setOptions] = useState([]);
   const [name, setName] = useState();
+  const [gender, setGender] = useState();
   const [selectedOption, setSelectedOption] = useState('');
   const router = useRouter(); // Get the router object from next/router
   const { time } = router.query;
@@ -119,12 +120,13 @@ export default function SummariesPatientLessons() {
           const response = await fetch(`../api/lessonsSummaries/patientIdToName?patient_id=${encodeURIComponent(router.query.patientId)}`);
           const data = await response.json();
           console.log('Patient Name Data:', data);
-          setName(data);
+          setName(data.name);
+          setGender(data.gender);
         }
       } catch (error) {
         console.error('Error fetching patient name:', error);
       }
-    }    
+    }
 
     fetchOptions();
     getPatientName();
@@ -145,16 +147,16 @@ export default function SummariesPatientLessons() {
         pictureName="lessonSummary"
         picturePath="../lessonSummary.png"
         primaryHeadline="סיכומי שיעורים"
-        secondaryHeadline={name ? name.name : 'No Name Data'}
-        />
-      <PatientRow
-        pictureName="boyPic"
-        picturePath="../boyPic.png"
-        date={date} // Use the formatted date
-        time={timeOfDay} // Use the formatted time
-        name="שם מטופל"
-        isCenter
+        secondaryHeadline={name ? name : 'No Name Data'}
       />
+          <PatientRow
+            pictureName="GenderPic"
+            picturePath={`../${gender === 'F' ? 'girlPic' : 'boyPic'}.png`}
+            date={date} // Use the formatted date
+            time={timeOfDay} // Use the formatted time
+            name="שם מטופל"
+            isCenter
+          />
       <form>
         <div className={style.container}>
           <FormControl className={style.rightStyle}>
@@ -176,7 +178,7 @@ export default function SummariesPatientLessons() {
             </Select>
           </FormControl>
           <TextAreaComponent
-            placeholderText=" ספר איך היה השיעור"
+            placeholderText=" ספר איך היה השיעור *"
             value={summary}
             required
             onChange={(e) => setSummary(e.target.value)}

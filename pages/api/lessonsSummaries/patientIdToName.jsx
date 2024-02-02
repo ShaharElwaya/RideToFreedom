@@ -6,7 +6,7 @@ export default async function handler(req, res) {
             // Get the patient_id from the query parameters
             const { patient_id } = req.query;
 
-            const name = await sql`SELECT name FROM public.patient where id=${patient_id};`;
+            const name = await sql`SELECT name, gender FROM public.patient where id=${patient_id};`;
 
             res.status(200).json(name.rows[0]);
         } catch (error) {

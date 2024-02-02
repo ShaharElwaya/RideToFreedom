@@ -10,8 +10,8 @@ import { CacheProvider } from "@emotion/react";
 import createCache from "@emotion/cache";
 import rtlPlugin from "stylis-plugin-rtl";
 import { prefixer } from "stylis";
-import { LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+//import { LocalizationProvider } from "@mui/x-date-pickers";
+//import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 
 const cacheRtl = createCache({
   key: "muirtl",
@@ -22,7 +22,7 @@ export default function MyApp(props) {
   const { Component, pageProps } = props;
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
+    //<LocalizationProvider dateAdapter={AdapterDayjs}>
       <AppCacheProvider {...props}>
         <Head>
           <meta name="viewport" content="initial-scale=1, width=device-width" />
@@ -35,7 +35,7 @@ export default function MyApp(props) {
           </CacheProvider>
         </ThemeProvider>
       </AppCacheProvider>
-    </LocalizationProvider>
+   // </LocalizationProvider>
   );
 }
 

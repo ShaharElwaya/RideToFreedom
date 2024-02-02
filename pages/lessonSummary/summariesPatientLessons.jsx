@@ -36,13 +36,13 @@ export default function SummariesPatientLessons() {
     setAddTime(formattedDateTime);
 
     router.push(`/lessonSummary/specificSummary?time=${encodeURIComponent(formattedDateTime)}&patientId=${encodeURIComponent(patientId)}`);
-  };  
+  };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const { data } = await axios.get('/api/lessonsSummaries/summariesPatientLessons', {
-          params: { patient_id: 12 }, // Adjust the patient_id as needed
+          params: { patient_id: patientId }, // Send patient_id as a query parameter
         });
         setLessons(data);
       } catch (error) {
@@ -55,17 +55,21 @@ export default function SummariesPatientLessons() {
         if (router.query.patientId) {
           const response = await fetch(`../api/lessonsSummaries/patientIdToName?patient_id=${encodeURIComponent(router.query.patientId)}`);
           const data = await response.json();
-          console.log('Patient Name Data:', data);
-          setName(data);
+          setName(data.name);
         }
       } catch (error) {
         console.error('Error fetching patient name:', error);
       }
-    }  
+    }
 
     fetchData();
     getPatientName();
   }, []); // Empty dependency array to run the effect only once on mount
+
+  // Handle function to navigate to the specificSummaryWatch page with lesson.id
+  const handleRowClick = (lessonId) => {
+    router.push(`/lessonSummary/specificSummaryWatch?lessonId=${encodeURIComponent(lessonId)}`);
+  };
 
   return (
     <>
@@ -73,20 +77,22 @@ export default function SummariesPatientLessons() {
         pictureName="lessonSummary"
         picturePath="../lessonSummary.png"
         primaryHeadline="סיכומי שיעורים"
-        secondaryHeadline={name ? name.name : 'No Name Data'}
+        secondaryHeadline={name ? name : 'No Name Data'}
       />
       <div className={style.addButtonStyle}>
         <Button onClick={handleAdd}>+ הוספת סיכום</Button>
       </div>
       {lessons.map((lesson) => (
-        <PatientRow
-          pictureName={lesson.type}
-          picturePath={`../${lesson.patient_gender === 'F' ? 'girlPic' : 'boyPic'}.png`}
-          date={lesson.formatted_date}
-          time={lesson.formatted_time}
-          name={lesson.guide_name}  
-          lesson={lesson.lesson_type}
-        />
+        <div key={lesson.lesson_id} className={style.rowWrapper} onClick={() => handleRowClick(lesson.lesson_id)}>
+          <PatientRow
+            pictureName={lesson.type}
+            picturePath={`../${lesson.patient_gender === 'F' ? 'girlPic' : 'boyPic'}.png`}
+            date={lesson.formatted_date}
+            time={lesson.formatted_time}
+            name={lesson.guide_name}
+            lesson={lesson.lesson_type}
+          />
+        </div>
       ))}
     </>
   );
