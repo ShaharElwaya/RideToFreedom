@@ -8,24 +8,20 @@ import TextAreaComponent from '@/components/UI/textAreaComponent';
 import CustomizedDialogs from '@/components/dialog';
 import { useRouter } from 'next/router'; // Import useRouter from next/router
 
-export default function SummariesPatientLessons() {
+export default function SpecificHomeEvent() {
   const [summary, setSummary] = useState('');
-  const [parentPermission, setParentPermission] = useState(false);
   const [dialogError, setDialogError] = useState(""); // Add a state variable for error message
   const [dialogOpen, setDialogOpen] = React.useState(false); // Initialize state
   const [saveSuccess, setSaveSuccess] = useState(false);
 
-  const [lessonType, setUserType] = useState('');
-  const [options, setOptions] = useState([]);
   const [name, setName] = useState();
   const [gender, setGender] = useState();
-  const [guidetName, setGuideName] = useState('');
-  const [selectedOption, setSelectedOption] = useState('');
+  const [parentName, setParentName] = useState('');
   const router = useRouter(); // Get the router object from next/router
   const { time } = router.query;
   const { patientId } = router.query;
   
-  const guideId = '14';    // Adjust with the actual guide ID
+  const parentId = '16';    // Adjust with the actual guide ID
 
   // Format the received time with Israel timezone
   const formattedDateTime = time ? new Date(time).toLocaleString("en-US", {
@@ -53,7 +49,7 @@ export default function SummariesPatientLessons() {
     setDialogOpen(false);
 
     if (saveSuccess) {
-      router.push(`/lessonSummary/summariesPatientLessons?patientId=${encodeURIComponent(patientId)}`);
+      router.push(`/lessonSummary/homeEvents?patientId=${encodeURIComponent(patientId)}`);
     }
   };
 
@@ -67,20 +63,18 @@ export default function SummariesPatientLessons() {
     try {
       if (!summary.trim()) {
         // Display an error if the summary is empty or contains only whitespace
-        setDialogError("סיכום השיעור אינו יכול להיות ריק, אל תחסוך עלינו סיפורים..");
+        setDialogError("הדיווח אינו יכול להיות ריק, אל תחסוך עלינו סיפורים..");
         setDialogOpen(true);
         return;
       }
 
       const date = formattedDateTime; // Use the formatted date and time
 
-      const res = await axios.post("../api/lessonsSummaries/specificSummary", {
+      const res = await axios.post("../api/lessonsSummaries/specificHomeEvent", {
         date,
         summary,
         patientId,
-        guideId,
-        parentPermission,
-        lessonType
+        parentId
       });
       setDialogError('');
       setSaveSuccess(true); // Set save success to true 
@@ -100,22 +94,7 @@ export default function SummariesPatientLessons() {
     }
   };
 
-  const selectStyle = {
-    width: '240px',
-
-  };
-
   useEffect(() => {
-    async function fetchOptions() {
-      try {
-        const response = await fetch('../api/lessonsSummaries/lesson_types_options');
-        const data = await response.json();
-        setOptions(data);
-      } catch (error) {
-        console.error('Error fetching options:', error);
-      }
-    }
-
     async function getPatientName() {
       try {
         if (router.query.patientId) {
@@ -130,26 +109,20 @@ export default function SummariesPatientLessons() {
       }
     }
 
-    async function getGuideName() {
-      try {
-        const response = await axios.get('/api/lessonsSummaries/guideIdToName', {
-          params: { id: guideId },
-        });
-        setGuideName(response.data.name);
-      } catch (error) {
-        console.error('Error fetching parent name:', error);
+    async function getParentName() {
+        try {
+          const response = await axios.get('/api/lessonsSummaries/ParentIdToName', {
+            params: { id: parentId },
+          });
+          setParentName(response.data.name);
+        } catch (error) {
+          console.error('Error fetching parent name:', error);
+        }
       }
-    }
-
-    fetchOptions();
+  
     getPatientName();
-    getGuideName();
+    getParentName();
   }, []);
-
-  const handleSelectChange = (event) => {
-    setSelectedOption(event.target.value);
-    setUserType(event.target.value); // Use setUserType to update lessonType
-  };
 
   return (
     <>
@@ -158,9 +131,9 @@ export default function SummariesPatientLessons() {
       </div>
 
       <PicAndHeadlines
-        pictureName="lessonSummary"
-        picturePath="../lessonSummary.png"
-        primaryHeadline="סיכומי שיעורים"
+        pictureName="homeEvents"
+        picturePath="../homeEvents.png"
+        primaryHeadline="דיווח אירוע"
         secondaryHeadline={name ? name : 'No Name Data'}
       />
           <PatientRow
@@ -168,47 +141,25 @@ export default function SummariesPatientLessons() {
             picturePath={`../${gender === 'F' ? 'girlPic' : 'boyPic'}.png`}
             date={date} // Use the formatted date
             time={timeOfDay} // Use the formatted time
-            name={guidetName}
+            name={parentName}
             isCenter
           />
       <form>
         <div className={style.container}>
-          <FormControl className={style.rightStyle}>
-            <InputLabel id="selectUsersTypes">סוג שיעור *</InputLabel>
-            <Select
-              labelId="selectUsersTypes"
-              id="selectUsersTypesId"
-              label="סוג שיעור"
-              value={lessonType}
-              onChange={handleSelectChange}
-              required
-              style={selectStyle}
-            >
-              {options.map(option => (
-                <MenuItem key={option.id} value={option.id}>
-                  {option.type}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
           <TextAreaComponent
-            placeholderText=" ספר איך היה השיעור *"
+            placeholderText=" ספר על האירוע שקרה *"
             value={summary}
             required
             onChange={(e) => setSummary(e.target.value)}
           />
-          <Checkbox
-            checked={parentPermission}
-            onChange={(e) => setParentPermission(e.target.checked)}
-          /> האם לאפשר להורה לצפות בשיעור?
         </div>
         <div className={style.submitButtonStyle}>
-          <Button type='submit' onClick={handleClickSubmit}>הגש סיכום</Button>
+          <Button type='submit' onClick={handleClickSubmit}>הגש דיווח</Button>
         </div>
       </form>
 
       <CustomizedDialogs
-        title={dialogError ? "הוספת הסיכום נכשל" : "הוספת הסיכום הושלם"}
+        title={dialogError ? "הוספת הדיווח נכשל" : "הוספת הדיווח הושלם"}
         text={dialogError ? dialogError : ""}
         closeText="הבנתי"
         open={dialogOpen}
