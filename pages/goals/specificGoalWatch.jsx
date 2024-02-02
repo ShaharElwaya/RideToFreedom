@@ -13,6 +13,7 @@ import { useRouter } from 'next/router';
 
 export default function SpecificGoalWatch() {
     const [goalsDetails, setGoalsDetails] = useState({
+        patient_id: '',
         patient_name: '',
         summary: '',
         field_id: '',
@@ -49,6 +50,10 @@ export default function SpecificGoalWatch() {
 
         fetchGoalsDetails();
     }, [goalId]);
+
+    const handleClick = (goalId, index) => {
+        router.push(`/goals/specificGoalEdit?goalId=${encodeURIComponent(goalId)}&index=${encodeURIComponent(index)}`);
+    };
 
     return (
         <>
@@ -117,6 +122,9 @@ export default function SpecificGoalWatch() {
                             </MenuItem>
                         </Select>
                     </FormControl>
+                </div>
+                <div className={style.centerStyle}>
+                    <Button onClick={() => handleClick(goalId, index)}>עריכת מטרה</Button>
                 </div>
             </form>
         </>

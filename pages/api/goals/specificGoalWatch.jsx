@@ -6,6 +6,7 @@ export default async function handler(req, res) {
             // Get the patient_id from the query parameters
             const { goal_id } = req.query;
             const result = await sql`SELECT 
+            p.id AS patient_id,
             g.setting_date AS setting_date,
             g.goal AS summary,
             g.destination_date AS destination_date, 
@@ -14,11 +15,12 @@ export default async function handler(req, res) {
             p.name AS patient_name,
             s.status AS status_name,
             gf.field AS field_name
-            FROM public.goals g
-            JOIN public.patient AS p ON g.patient_id = p.id
-            JOIN enums.statuses AS s ON g.status_id = s.id
-            JOIN enums.goals_fields AS gf ON g.field_id = gf.id
-            WHERE g.id = ${goal_id};`;
+        FROM public.goals AS g
+        JOIN public.patient AS p ON g.patient_id = p.id
+        JOIN enums.statuses AS s ON g.status_id = s.id
+        JOIN enums.goals_fields AS gf ON g.field_id = gf.id
+        WHERE g.id = ${goal_id};
+        `;
 
             res.status(200).json(result.rows[0]);
         } catch (error) {
