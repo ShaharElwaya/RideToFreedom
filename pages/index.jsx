@@ -35,6 +35,10 @@ export default function Home() {
     router.push(`/homeEvents/homeEvents?patientId=${encodeURIComponent(12)}`);
   };
 
+  const handleClickGoal = () => {
+    router.push(`/goals/goals?patientId=${encodeURIComponent(12)}`);
+  };
+
   const handleClickLogin = async (e) => {
     e.preventDefault()
     try {
@@ -152,6 +156,7 @@ export default function Home() {
         <button onClick={handleClick}>Click to add meeting</button>
         <button onClick={handleClickPatient}>patient example</button>
         <button onClick={handleClickEvent}>event example</button>
+        <button onClick={handleClickGoal}>goal example</button>
         <form onSubmit={handleClickLogin}>
           <input type="email" />
           <input type="password" />

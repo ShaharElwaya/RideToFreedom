@@ -47,7 +47,7 @@ export default function SpecificSummaryWatch() {
   return (
     <>
       <div className={style.leftStyle}>
-        <Button onClick={handleGoBack}>Back &gt;</Button>
+        <Button onClick={handleGoBack}> חזור &gt;</Button>
       </div>
 
       <PicAndHeadlines
