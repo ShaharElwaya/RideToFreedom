@@ -6,7 +6,7 @@ import PatientRow from '@/components/UI/patientRow';
 import style from '../../styles/summariesPatientLessons.module.css';
 import { useRouter } from 'next/router';
 
-export default function SummariesPatientLessons() {
+export default function HomeEvents() {
   const router = useRouter();
   const [events, setEvents] = useState([]);
   const [addTime, setAddTime] = useState('');
@@ -33,13 +33,13 @@ export default function SummariesPatientLessons() {
     const formattedDateTime = `${currentDate} ${currentTime}`;
     setAddTime(formattedDateTime);
 
-    router.push(`/lessonSummary/specificHomeEvent?time=${encodeURIComponent(formattedDateTime)}&patientId=${encodeURIComponent(patientId)}`);
+    router.push(`/homeEvents/specificHomeEvent?time=${encodeURIComponent(formattedDateTime)}&patientId=${encodeURIComponent(patientId)}`);
   };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data } = await axios.get('/api/lessonsSummaries/homeEvents', {
+        const { data } = await axios.get('/api/homeEvents/homeEvents', {
           params: { patient_id: patientId }, // Send patient_id as a query parameter
         });
         setEvents(data);
@@ -66,7 +66,7 @@ export default function SummariesPatientLessons() {
 
   // Handle function to navigate to the specificSummaryWatch page with event.id
   const handleRowClick = (eventId) => {
-    router.push(`/lessonSummary/specificHomeEventWatch?eventId=${encodeURIComponent(eventId)}`);
+    router.push(`/homeEvents/specificHomeEventWatch?eventId=${encodeURIComponent(eventId)}`);
   };
 
   return (

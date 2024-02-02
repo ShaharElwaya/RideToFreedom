@@ -49,7 +49,7 @@ export default function SpecificHomeEvent() {
     setDialogOpen(false);
 
     if (saveSuccess) {
-      router.push(`/lessonSummary/homeEvents?patientId=${encodeURIComponent(patientId)}`);
+      router.push(`/homeEvents/homeEvents?patientId=${encodeURIComponent(patientId)}`);
     }
   };
 
@@ -70,7 +70,7 @@ export default function SpecificHomeEvent() {
 
       const date = formattedDateTime; // Use the formatted date and time
 
-      const res = await axios.post("../api/lessonsSummaries/specificHomeEvent", {
+      const res = await axios.post("../api/homeEvents/specificHomeEvent", {
         date,
         summary,
         patientId,
@@ -111,7 +111,7 @@ export default function SpecificHomeEvent() {
 
     async function getParentName() {
         try {
-          const response = await axios.get('/api/lessonsSummaries/ParentIdToName', {
+          const response = await axios.get('/api/homeEvents/ParentIdToName', {
             params: { id: parentId },
           });
           setParentName(response.data.name);

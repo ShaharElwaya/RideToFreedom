@@ -9,7 +9,7 @@ import style from '../../styles/summariesPatientLessons.module.css';
 import TextAreaComponent from '@/components/UI/textAreaComponent';
 import { useRouter } from 'next/router';
 
-export default function SpecificSummaryWatch() {
+export default function SpecificHomeEventWatch() {
   const [eventDetails, setEventDetails] = useState({});
   const router = useRouter();
   const { eventId } = router.query;
@@ -23,7 +23,7 @@ export default function SpecificSummaryWatch() {
     // Fetch lesson details based on lessonId from the URL
     const fetchLessonDetails = async () => {;
       try {
-        const response = await axios.get("/api/lessonsSummaries/specificHomeEventWatch", {
+        const response = await axios.get("/api/homeEvents/specificHomeEventWatch", {
             params: { event_id: eventId }, 
         });        
         setEventDetails(response.data);

@@ -32,7 +32,7 @@ export default function Home() {
   };
 
   const handleClickEvent = () => {
-    router.push(`/lessonSummary/homeEvents?patientId=${encodeURIComponent(12)}`);
+    router.push(`/homeEvents/homeEvents?patientId=${encodeURIComponent(12)}`);
   };
 
   const handleClickLogin = async (e) => {
