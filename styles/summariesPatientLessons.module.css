@@ -25,3 +25,12 @@
 .submitButtonStyle{
     margin-top: 30px;
 }
+  
+.rowWrapper {
+    margin: 0;
+}
+
+.rowWrapper:hover {
+    cursor: pointer;
+    background-color: rgb(237, 235, 235);
+}

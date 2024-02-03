@@ -26,7 +26,8 @@ export default async function handler(req, res) {
     JOIN public.patient AS p ON l.patient_id = p.id
     JOIN public.guide AS g ON l.guide_id = g.id
     JOIN enums.lessons_types AS lt ON l.type = lt.id
-    WHERE l.patient_id = ${patient_id};
+    WHERE l.patient_id = ${patient_id}
+    ORDER BY l.date DESC;
       `;
 
             const lessons = result.rows;
