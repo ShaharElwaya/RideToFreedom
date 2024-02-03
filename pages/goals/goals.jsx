@@ -5,7 +5,7 @@ import PicAndHeadlines from '@/components/UI/picAndheadline';
 import GoalRow from '@/components/UI/goalRow';
 import style from '../../styles/summariesPatientLessons.module.css';
 import { useRouter } from 'next/router';
-import LoadingSpinner from '@/components/LoadingSpinner'; 
+import LoadingSpinner from '@/components/loadingSpinner';
 
 export default function Goals() {
   const router = useRouter();

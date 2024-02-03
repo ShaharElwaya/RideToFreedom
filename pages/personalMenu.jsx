@@ -6,7 +6,7 @@ import Paper from '@mui/material/Paper';
 import { PicAndText } from '@/components/UI/PicAndName';
 import style from '../styles/summariesPatientLessons.module.css';
 import Link from 'next/link';
-import LoadingSpinner from '@/components/LoadingSpinner';
+import LoadingSpinner from '@/components/loadingSpinner';
 
 const CustomButton = styled(Button)({
   '&:hover': {
@@ -70,7 +70,7 @@ const PersonalMenu = () => {
   const handleGoBack = () => {
     router.back();
   };
-  
+
   return (
     <>
       {isLoading && <LoadingSpinner />}

@@ -4,7 +4,7 @@ import { Button } from '@mui/material';
 import PicAndHeadlines from '@/components/UI/picAndheadline';
 import PatientRow from '@/components/UI/patientRow';
 import style from '../../styles/summariesPatientLessons.module.css';
-import LoadingSpinner from '@/components/LoadingSpinner';
+import LoadingSpinner from '@/components/loadingSpinner';
 import { useRouter } from 'next/router';
 
 export default function SummariesPatientLessons() {

@@ -8,7 +8,7 @@ import PatientRow from '@/components/UI/patientRow';
 import style from '../../styles/summariesPatientLessons.module.css';
 import TextAreaComponent from '@/components/UI/textAreaComponent';
 import { useRouter } from 'next/router';
-import LoadingSpinner from '@/components/LoadingSpinner'; 
+import LoadingSpinner from '@/components/loadingSpinner';
 
 export default function SpecificHomeEventWatch() {
   const [eventDetails, setEventDetails] = useState({});

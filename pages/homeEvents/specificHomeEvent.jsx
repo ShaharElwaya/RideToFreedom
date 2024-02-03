@@ -7,7 +7,7 @@ import style from '../../styles/summariesPatientLessons.module.css';
 import TextAreaComponent from '@/components/UI/textAreaComponent';
 import CustomizedDialogs from '@/components/dialog';
 import { useRouter } from 'next/router'; // Import useRouter from next/router
-import LoadingSpinner from '@/components/LoadingSpinner'; // Import the LoadingSpinner component
+import LoadingSpinner from '@/components/loadingSpinner';
 
 export default function SpecificHomeEvent() {
   const [summary, setSummary] = useState('');

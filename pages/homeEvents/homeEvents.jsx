@@ -5,7 +5,7 @@ import PicAndHeadlines from '@/components/UI/picAndheadline';
 import PatientRow from '@/components/UI/patientRow';
 import style from '../../styles/summariesPatientLessons.module.css';
 import { useRouter } from 'next/router';
-import LoadingSpinner from '@/components/LoadingSpinner'; // Import the LoadingSpinner component
+import LoadingSpinner from '@/components/loadingSpinner';
 
 export default function HomeEvents() {
   const router = useRouter();
