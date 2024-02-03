@@ -15,7 +15,7 @@ const SpinnerWrapper = styled('div')({
   background: 'rgba(255, 255, 255, 0.8)',
   zIndex: 9999,
 });
-
+ 
 const LoadingSpinner = () => {
   return (
     <SpinnerWrapper>

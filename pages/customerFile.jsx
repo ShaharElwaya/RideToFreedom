@@ -7,7 +7,7 @@ import Box from '@mui/material/Box';
 import PicAndHeadlines from '@/components/UI/picAndheadline';
 import { Diversity1TwoTone } from '@mui/icons-material';
 import { PicAndText } from '@/components/UI/PicAndName';
-import LoadingSpinner from '@/components/LoadingSpinner';
+import LoadingSpinner from '@/components/loadingSpinner';
 
 const Item = styled(Paper)(() => ({
   padding: '20px',
