@@ -10,6 +10,7 @@ import style from '../../styles/summariesPatientLessons.module.css';
 import TextAreaComponent from '@/components/UI/textAreaComponent';
 import CustomizedDialogs from '@/components/dialog';
 import { useRouter } from 'next/router';
+import LoadingSpinner from '@/components/LoadingSpinner'; 
 
 export default function SpecificGoalWatch() {
     const [goalsDetails, setGoalsDetails] = useState({
@@ -25,6 +26,7 @@ export default function SpecificGoalWatch() {
     });
     const router = useRouter();
     const { goalId, index } = router.query;
+    const [isLoading, setIsLoading] = useState(true); 
 
     const handleGoBack = () => {
         router.back();
@@ -42,9 +44,10 @@ export default function SpecificGoalWatch() {
                     params: { goal_id: goalId },
                 });
                 setGoalsDetails(response.data);
+                setIsLoading(false); 
             } catch (error) {
                 console.error('Error fetching lesson details:', error);
-                // Handle error as needed
+                setIsLoading(false); 
             }
         };
 
@@ -57,6 +60,8 @@ export default function SpecificGoalWatch() {
 
     return (
         <>
+            {isLoading && <LoadingSpinner />} {/* Use LoadingSpinner component */}
+
             <div className={style.leftStyle}>
                 <Button onClick={handleGoBack}> חזור &gt;</Button>
             </div>
@@ -124,7 +129,7 @@ export default function SpecificGoalWatch() {
                     </FormControl>
                 </div>
                 <div className={style.centerStyle}>
-                    <Button onClick={() => handleClick(goalId, index)}>עריכת מטרה</Button>
+                    <Button variant="contained" onClick={() => handleClick(goalId, index)}>עריכת מטרה</Button>
                 </div>
             </form>
         </>

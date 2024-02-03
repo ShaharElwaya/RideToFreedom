@@ -8,9 +8,11 @@ import PatientRow from '@/components/UI/patientRow';
 import style from '../../styles/summariesPatientLessons.module.css';
 import TextAreaComponent from '@/components/UI/textAreaComponent';
 import { useRouter } from 'next/router';
+import LoadingSpinner from '@/components/LoadingSpinner'; 
 
 export default function SpecificHomeEventWatch() {
   const [eventDetails, setEventDetails] = useState({});
+  const [isLoading, setIsLoading] = useState(true); 
   const router = useRouter();
   const { eventId } = router.query;
 
@@ -27,10 +29,11 @@ export default function SpecificHomeEventWatch() {
             params: { event_id: eventId }, 
         });        
         setEventDetails(response.data);
+        setIsLoading(false); // Set loading to false when patient data is fetched
       } catch (error) {
         alert("error");
         console.error('Error fetching lesson details:', error);
-        // Handle error as needed
+        setIsLoading(false); // Set loading to false when patient data is fetched
       }
     };
 
@@ -39,6 +42,8 @@ export default function SpecificHomeEventWatch() {
 
   return (
     <>
+      {isLoading && <LoadingSpinner />} {/* Use LoadingSpinner component */}
+
       <div className={style.leftStyle}>
         <Button onClick={handleGoBack}> חזור &gt;</Button>
       </div>

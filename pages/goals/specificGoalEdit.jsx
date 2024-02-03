@@ -10,6 +10,7 @@ import style from '../../styles/summariesPatientLessons.module.css';
 import TextAreaComponent from '@/components/UI/textAreaComponent';
 import CustomizedDialogs from '@/components/dialog';
 import { useRouter } from 'next/router';
+import LoadingSpinner from '@/components/LoadingSpinner';
 
 export default function SpecificGoalWatch() {
     const [goalsDetails, setGoalsDetails] = useState({
@@ -38,6 +39,7 @@ export default function SpecificGoalWatch() {
     const [dialogError, setDialogError] = useState('');
     const [dialogOpen, setDialogOpen] = React.useState(false);
     const [saveSuccess, setSaveSuccess] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
 
     const handleCloseDialog = () => {
         setDialogOpen(false);
@@ -119,7 +121,7 @@ export default function SpecificGoalWatch() {
                     params: { goal_id: goalId },
                 });
                 const goalDetailsData = response.data;
-
+    
                 setGoalsDetails(goalDetailsData);
                 setSummary(goalDetailsData.summary);
                 setFieldType(goalDetailsData.field_id);
@@ -129,10 +131,9 @@ export default function SpecificGoalWatch() {
                 setDate(goalDetailsData.setting_date);
             } catch (error) {
                 console.error('Error fetching lesson details:', error);
-                // Handle error as needed
             }
         };
-
+    
         async function fetchStatusesOptions() {
             try {
                 const response = await fetch('../api/goals/statusesOptions');
@@ -142,7 +143,7 @@ export default function SpecificGoalWatch() {
                 console.error('Error fetching options:', error);
             }
         }
-
+    
         async function fetchFieldsOptions() {
             try {
                 const response = await fetch('../api/goals/fieldsOptions');
@@ -152,11 +153,19 @@ export default function SpecificGoalWatch() {
                 console.error('Error fetching options:', error);
             }
         }
-
-        fetchStatusesOptions();
-        fetchFieldsOptions();
-        fetchGoalsDetails();
-    }, [goalId]);
+    
+        // Use Promise.all to wait for all asynchronous operations to complete
+        Promise.all([fetchStatusesOptions(), fetchFieldsOptions(), fetchGoalsDetails()])
+            .then(() => {
+                // Set isLoading to false when all data is fetched
+                setIsLoading(false);
+            })
+            .catch((error) => {
+                console.error('Error during data fetching:', error);
+                setIsLoading(false);
+            });
+    
+    }, [goalId]);    
 
     const handleSelectChangeField = (event) => {
         setFieldType(event.target.value);
@@ -168,6 +177,8 @@ export default function SpecificGoalWatch() {
 
     return (
         <>
+            {isLoading && <LoadingSpinner />} {/* Use LoadingSpinner component */}
+
             <div className={style.leftStyle}>
                 <Button onClick={handleGoBack}> חזור &gt;</Button>
             </div>
@@ -242,10 +253,10 @@ export default function SpecificGoalWatch() {
                     </FormControl>
                 </div>
                 <div className={style.submitButtonStyle}>
-                    <Button type='submit' onClick={handleClickSubmit}>עדכן מטרה</Button>
+                    <Button type='submit' variant="contained" onClick={handleClickSubmit}>עדכן מטרה</Button>
                 </div>
             </form>
-            
+
             <CustomizedDialogs
                 title={dialogError ? "הוספת המטרה נכשלה" : "הוספת המטרה הושלמה"}
                 text={dialogError ? dialogError : ""}

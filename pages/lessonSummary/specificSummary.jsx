@@ -6,28 +6,28 @@ import PatientRow from '@/components/UI/patientRow';
 import style from '../../styles/summariesPatientLessons.module.css';
 import TextAreaComponent from '@/components/UI/textAreaComponent';
 import CustomizedDialogs from '@/components/dialog';
-import { useRouter } from 'next/router'; // Import useRouter from next/router
+import LoadingSpinner from '@/components/LoadingSpinner';
+import { useRouter } from 'next/router';
 
 export default function SummariesPatientLessons() {
   const [summary, setSummary] = useState('');
   const [parentPermission, setParentPermission] = useState(false);
-  const [dialogError, setDialogError] = useState(""); // Add a state variable for error message
-  const [dialogOpen, setDialogOpen] = React.useState(false); // Initialize state
+  const [dialogError, setDialogError] = useState("");
+  const [dialogOpen, setDialogOpen] = React.useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
-
   const [lessonType, setUserType] = useState('');
   const [options, setOptions] = useState([]);
   const [name, setName] = useState();
   const [gender, setGender] = useState();
   const [guidetName, setGuideName] = useState('');
   const [selectedOption, setSelectedOption] = useState('');
-  const router = useRouter(); // Get the router object from next/router
+  const [isLoading, setIsLoading] = useState(true);
+  const router = useRouter();
   const { time } = router.query;
   const { patientId } = router.query;
-  
-  const guideId = '14';    // Adjust with the actual guide ID
 
-  // Format the received time with Israel timezone
+  const guideId = '14';
+
   const formattedDateTime = time ? new Date(time).toLocaleString("en-US", {
     day: "2-digit",
     month: "2-digit",
@@ -66,13 +66,12 @@ export default function SummariesPatientLessons() {
 
     try {
       if (!summary.trim()) {
-        // Display an error if the summary is empty or contains only whitespace
         setDialogError("סיכום השיעור אינו יכול להיות ריק, אל תחסוך עלינו סיפורים..");
         setDialogOpen(true);
         return;
       }
 
-      const date = formattedDateTime; // Use the formatted date and time
+      const date = formattedDateTime;
 
       const res = await axios.post("../api/lessonsSummaries/specificSummary", {
         date,
@@ -83,36 +82,53 @@ export default function SummariesPatientLessons() {
         lessonType
       });
       setDialogError('');
-      setSaveSuccess(true); // Set save success to true 
+      setSaveSuccess(true);
       setDialogOpen(true);
     } catch (err) {
-      let errorMessage = "We have a problem, try again"; // Default error message
+      let errorMessage = "We have a problem, try again";
 
       if (err.response && err.response.data && err.response.data.error) {
-        // If there is a specific error message from the server, use that
         errorMessage = `Add lesson failed: ${err.response.data.error}`;
       }
 
-      // Open the error dialog with the specific error message
-      setSaveSuccess(false); // Set save success to false
+      setSaveSuccess(false);
       setDialogOpen(true);
-      setDialogError(errorMessage); // Set the error message in the state
+      setDialogError(errorMessage);
     }
   };
 
   const selectStyle = {
     width: '240px',
-
   };
 
   useEffect(() => {
+    async function fetchData() {
+      try {
+        const [optionsData, patientData, guideData] = await Promise.all([
+          fetchOptions(),
+          getPatientName(),
+          getGuideName(),
+        ]);
+
+        setOptions(optionsData);
+        setName(patientData.name);
+        setGender(patientData.gender);
+        setGuideName(guideData.name);
+      } catch (error) {
+        console.error('Error fetching data:', error.message);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
     async function fetchOptions() {
       try {
         const response = await fetch('../api/lessonsSummaries/lesson_types_options');
         const data = await response.json();
-        setOptions(data);
+        return data;
       } catch (error) {
         console.error('Error fetching options:', error);
+        throw error;
       }
     }
 
@@ -122,11 +138,11 @@ export default function SummariesPatientLessons() {
           const response = await fetch(`../api/lessonsSummaries/patientIdToName?patient_id=${encodeURIComponent(router.query.patientId)}`);
           const data = await response.json();
           console.log('Patient Name Data:', data);
-          setName(data.name);
-          setGender(data.gender);
+          return data;
         }
       } catch (error) {
         console.error('Error fetching patient name:', error);
+        throw error;
       }
     }
 
@@ -135,24 +151,25 @@ export default function SummariesPatientLessons() {
         const response = await axios.get('/api/lessonsSummaries/guideIdToName', {
           params: { id: guideId },
         });
-        setGuideName(response.data.name);
+        return response.data;
       } catch (error) {
         console.error('Error fetching parent name:', error);
+        throw error;
       }
     }
 
-    fetchOptions();
-    getPatientName();
-    getGuideName();
+    fetchData();
   }, []);
 
   const handleSelectChange = (event) => {
     setSelectedOption(event.target.value);
-    setUserType(event.target.value); // Use setUserType to update lessonType
+    setUserType(event.target.value);
   };
 
   return (
     <>
+      {isLoading && <LoadingSpinner />}
+
       <div className={style.leftStyle}>
         <Button onClick={handleGoBack}> חזור &gt;</Button>
       </div>
@@ -163,14 +180,14 @@ export default function SummariesPatientLessons() {
         primaryHeadline="סיכומי שיעורים"
         secondaryHeadline={name ? name : 'No Name Data'}
       />
-          <PatientRow
-            pictureName="GenderPic"
-            picturePath={`../${gender === 'F' ? 'girlPic' : 'boyPic'}.png`}
-            date={date} // Use the formatted date
-            time={timeOfDay} // Use the formatted time
-            name={guidetName}
-            isCenter
-          />
+      <PatientRow
+        pictureName="GenderPic"
+        picturePath={`../${gender === 'F' ? 'girlPic' : 'boyPic'}.png`}
+        date={date}
+        time={timeOfDay}
+        name={guidetName}
+        isCenter
+      />
       <form>
         <div className={style.container}>
           <FormControl className={style.rightStyle}>
@@ -203,7 +220,7 @@ export default function SummariesPatientLessons() {
           /> האם לאפשר להורה לצפות בשיעור?
         </div>
         <div className={style.submitButtonStyle}>
-          <Button type='submit' onClick={handleClickSubmit}>הגש סיכום</Button>
+          <Button type='submit' variant="contained" onClick={handleClickSubmit}>הגש סיכום</Button>
         </div>
       </form>
 
@@ -212,7 +229,7 @@ export default function SummariesPatientLessons() {
         text={dialogError ? dialogError : ""}
         closeText="הבנתי"
         open={dialogOpen}
-        onClose={handleCloseDialog} // Close the dialog and reset error state
+        onClose={handleCloseDialog}
       />
     </>
   );

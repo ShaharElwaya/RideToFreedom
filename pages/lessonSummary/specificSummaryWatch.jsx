@@ -8,6 +8,7 @@ import PatientRow from '@/components/UI/patientRow';
 import style from '../../styles/summariesPatientLessons.module.css';
 import TextAreaComponent from '@/components/UI/textAreaComponent';
 import CustomizedDialogs from '@/components/dialog';
+import LoadingSpinner from '@/components/LoadingSpinner';
 import { useRouter } from 'next/router';
 
 export default function SpecificSummaryWatch() {
@@ -15,7 +16,7 @@ export default function SpecificSummaryWatch() {
   const router = useRouter();
   const { lessonId } = router.query;
   const [parentPermission, setParentPermission] = useState(false);
-
+  const [isLoading, setIsLoading] = useState(true);
 
   const handleGoBack = () => {
     router.back();
@@ -34,10 +35,11 @@ export default function SpecificSummaryWatch() {
         });        
         setLessonDetails(response.data);
         setParentPermission(response.data.parent_permission);
+        setIsLoading(false);
       } catch (error) {
         alert("error");
         console.error('Error fetching lesson details:', error);
-        // Handle error as needed
+        setIsLoading(false);
       }
     };
 
@@ -46,6 +48,8 @@ export default function SpecificSummaryWatch() {
 
   return (
     <>
+      {isLoading && <LoadingSpinner />}
+
       <div className={style.leftStyle}>
         <Button onClick={handleGoBack}> חזור &gt;</Button>
       </div>

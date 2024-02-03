@@ -4,15 +4,18 @@ import { Typography, TextField, Button } from '@mui/material';
 import style from "../styles/loginRegisterPage.module.css";
 import TextFieldComponent from '@/components/UI/TextFiled';
 import PicAndHeadlines from '@/components/UI/picAndheadline';
+import { useRouter } from 'next/router';
 
 export default function login() {
+  const router = useRouter(); 
+
   const handleClickLogin = async (e) => {
     e.preventDefault()
     try {
       const email = e.target[0].value
       const password = e.target[2].value
       const res = await axios.post("api/login", { email, password });
-      alert('Login successful!')
+      router.push(`/customerFile`);
     } catch (err) {
       alert('Incorrect credenetials!')
     }

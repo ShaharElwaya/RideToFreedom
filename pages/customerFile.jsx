@@ -5,14 +5,14 @@ import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import PicAndHeadlines from '@/components/UI/picAndheadline';
+import { Diversity1TwoTone } from '@mui/icons-material';
+import { PicAndText } from '@/components/UI/PicAndName';
+import LoadingSpinner from '@/components/LoadingSpinner';
 
-const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
+const Item = styled(Paper)(() => ({
+  padding: '20px',
   textAlign: 'center',
-  color: theme.palette.text.secondary,
-  cursor: 'pointer', // Add cursor pointer for indicating clickability
+  cursor: 'pointer', 
 }));
 
 const CenteredContainer = styled(Box)({
@@ -20,23 +20,35 @@ const CenteredContainer = styled(Box)({
   flexDirection: 'column',
   justifyContent: 'center',
   alignItems: 'center',
-  height: '100vh', // Set height to 100% of the viewport height
 });
 
 const ContentContainer = styled(Box)({
-  marginTop: '20px', // Adjust the spacing between the picture and the boxes
+  marginTop: '20px',
+  width: '90%',
 });
 
 const RowAndColumnSpacing = () => {
   const [names, setNames] = useState([]);
   const router = useRouter(); // Initialize useRouter hook
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Fetch names from the backend API
-    fetchNamesFromDatabase()
-      .then((data) => setNames(data))
-      .catch((error) => console.error('Error fetching names:', error));
+    const fetchData = async () => {
+      try {
+        // Fetch names from the backend API
+        const data = await fetchNamesFromDatabase();
+        setNames(data);
+      } catch (error) {
+        console.error('Error fetching names:', error);
+      } finally {
+        setIsLoading(false); // Set loading to false after the data is fetched or on error
+      }
+    };
+  
+    // Call the fetchData function
+    fetchData();
   }, []);
+  
 
   // Function to fetch names from the backend API
   const fetchNamesFromDatabase = async () => {
@@ -66,14 +78,15 @@ const RowAndColumnSpacing = () => {
 
   return (
     <CenteredContainer>
+      {isLoading && <LoadingSpinner />}
+
       <PicAndHeadlines
         pictureName="customerFile"
         picturePath="../customerFile.png"
-        isMain
         primaryHeadline="תיקי לקוחות"
       />
       <ContentContainer>
-        <Grid container spacing={2} justifyContent="center">
+        <Grid container spacing={2}>
           {names.map((nameData) => (
             <Grid item xs={6} key={nameData.id}>
               <Item onClick={() => handleClick(nameData.id, nameData.name, nameData.gender)}>
@@ -86,13 +99,5 @@ const RowAndColumnSpacing = () => {
     </CenteredContainer>
   );
 };
-
-// Component for displaying picture and text in a box
-const PicAndText = ({ pictureName, name }) => (
-  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-    <img src={`../${pictureName}.png`} alt={pictureName} style={{ width: '80px', height: '80px' }} />
-    <div>{name}</div>
-  </div>
-);
 
 export default RowAndColumnSpacing;
