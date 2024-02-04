@@ -1,11 +1,10 @@
-// pages/lessonSummary/summariesPatientLessons.js
-
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Button } from '@mui/material';
 import PicAndHeadlines from '@/components/UI/picAndheadline';
 import PatientRow from '@/components/UI/patientRow';
 import style from '../../styles/summariesPatientLessons.module.css';
+import LoadingSpinner from '@/components/loadingSpinner';
 import { useRouter } from 'next/router';
 
 export default function SummariesPatientLessons() {
@@ -13,23 +12,22 @@ export default function SummariesPatientLessons() {
   const [lessons, setLessons] = useState([]);
   const [addTime, setAddTime] = useState('');
   const [name, setName] = useState();
+  const [isLoading, setIsLoading] = useState(true);
   const { patientId } = router.query;
 
-  // Handle function to navigate to the specificSummary page
   const handleAdd = () => {
     const currentDate = new Date().toLocaleDateString("en-US", {
       day: "2-digit",
       month: "2-digit",
       year: "numeric",
-      timeZone: "Asia/Jerusalem", // Set the timezone to Israel
+      timeZone: "Asia/Jerusalem",
     });
 
     const currentTime = new Date().toLocaleTimeString("en-US", {
       hour: "numeric",
       minute: "numeric",
       hour12: false,
-      timeZone: "UTC",
-      timeZone: "Asia/Jerusalem", // Set the timezone to Israel
+      timeZone: "Asia/Jerusalem",
     });
 
     const formattedDateTime = `${currentDate} ${currentTime}`;
@@ -38,24 +36,35 @@ export default function SummariesPatientLessons() {
     router.push(`/lessonSummary/specificSummary?time=${encodeURIComponent(formattedDateTime)}&patientId=${encodeURIComponent(patientId)}`);
   };
 
+  const handleGoBack = () => {
+    router.push(`/personalMenu?id=${encodeURIComponent(patientId)}&name=${encodeURIComponent(name)}`);
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
+    async function fetchData() {
       try {
-        const { data } = await axios.get('/api/lessonsSummaries/summariesPatientLessons', {
-          params: { patient_id: patientId }, // Send patient_id as a query parameter
-        });
-        setLessons(data);
+        const [lessonsData, patientNameData] = await Promise.all([
+          axios.get('/api/lessonsSummaries/summariesPatientLessons', {
+            params: { patient_id: patientId },
+          }),
+          getPatientName(),
+        ]);
+
+        setLessons(lessonsData.data);
+        setName(patientNameData.name);
       } catch (error) {
         console.error('Error fetching data:', error.message);
+      } finally {
+        setIsLoading(false);
       }
-    };
+    }
 
     async function getPatientName() {
       try {
         if (router.query.patientId) {
           const response = await fetch(`../api/lessonsSummaries/patientIdToName?patient_id=${encodeURIComponent(router.query.patientId)}`);
           const data = await response.json();
-          setName(data.name);
+          return data;
         }
       } catch (error) {
         console.error('Error fetching patient name:', error);
@@ -63,16 +72,20 @@ export default function SummariesPatientLessons() {
     }
 
     fetchData();
-    getPatientName();
   }, []); // Empty dependency array to run the effect only once on mount
 
-  // Handle function to navigate to the specificSummaryWatch page with lesson.id
   const handleRowClick = (lessonId) => {
     router.push(`/lessonSummary/specificSummaryWatch?lessonId=${encodeURIComponent(lessonId)}`);
   };
 
   return (
     <>
+      {isLoading && <LoadingSpinner />}
+
+      <div className={style.leftStyle}>
+        <Button onClick={handleGoBack}> חזור &gt;</Button>
+      </div>
+
       <PicAndHeadlines
         pictureName="lessonSummary"
         picturePath="../lessonSummary.png"

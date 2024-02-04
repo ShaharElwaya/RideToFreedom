@@ -1,78 +1,122 @@
-// pages/PersonalMenu.js
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { styled } from '@mui/system';
-import PicAndHeadlines from '@/components/UI/picAndheadline';
+import { Button } from '@mui/material';
+import Paper from '@mui/material/Paper';
+import { PicAndText } from '@/components/UI/PicAndName';
+import style from '../styles/summariesPatientLessons.module.css';
 import Link from 'next/link';
+import LoadingSpinner from '@/components/loadingSpinner';
+
+const CustomButton = styled(Button)({
+  '&:hover': {
+    backgroundColor: 'transparent',
+  },
+});
 
 const CenteredContainer = styled('div')({
   display: 'flex',
   flexDirection: 'column',
-  justifyContent: 'center',
   alignItems: 'center',
+  justifyContent: 'center',
+  position: 'relative',
   minHeight: '100vh',
 });
 
-const ContentContainer = styled('div')({
-  marginTop: '20px',
-});
-
 const MenuItem = styled('div')({
-  marginBottom: '20px',
   padding: '20px',
-  backgroundColor: '#f0f0f0',
+  width: '200px',
+  backgroundColor: '#fffafa',
   borderRadius: '10px',
   boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+  margin: '0px',
   transition: 'background-color 0.3s ease',
   '&:hover': {
-    backgroundColor: '#e0e0e0',
+    backgroundColor: '#edebeb',
   },
 });
 
-const Button = styled('button')({
-  padding: '10px',
-  fontSize: '16px',
-  backgroundColor: '#3f51b5',
-  color: '#fff',
-  border: 'none',
-  borderRadius: '5px',
-  cursor: 'pointer',
-  transition: 'background-color 0.3s ease',
-  '&:hover': {
-    backgroundColor: '#303f9f',
-  },
-});
+const Item = styled(Paper)(() => ({
+  padding: '20px',
+  textAlign: 'center',
+  width: '200px',
+}));
 
 const PersonalMenu = () => {
   const router = useRouter();
   const { query } = router;
-  const { name, gender } = query; // Extracting name and gender from the URL parameters
+  const { id, name } = query;
+  const [gender, setGender] = useState();
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    async function getPatientGender() {
+      try {
+        if (id) {
+          const response = await fetch(`/api/lessonsSummaries/patientIdToName?patient_id=${encodeURIComponent(id)}`);
+          const data = await response.json();
+          setGender(data.gender);
+          setIsLoading(false); // Set loading to false when data is fetched (success or error)
+        }
+      } catch (error) {
+        console.error('Error fetching patient name:', error);
+        setIsLoading(false); // Set loading to false on error
+      }
+    }
+
+    getPatientGender();
+  }, [id]);
+
+  const handleGoBack = () => {
+    router.back();
+  };
 
   return (
-    <CenteredContainer>
-      <PicAndHeadlines
-        pictureName={gender === 'F' ? 'girlPic' : 'boyPic'} // Determine picture based on gender
-        picturePath={`../${gender === 'F' ? 'girlPic' : 'boyPic'}.png`} // Adjust picture path accordingly
-        secondaryHeadline={`${name}`} // Display the user's name
-      />
-      <ContentContainer>
-        <Link href="/somePath1">
-          <MenuItem>
-            <Button>צפייה בתכניות טיפול</Button>
-          </MenuItem>
-        </Link>
-        <Link href={`/lessonSummary/summariesPatientLessons?patientId=${query.id}`}>
-          <MenuItem>
-            <Button>צפייה בסיכומי שיעור</Button>
-          </MenuItem>
-        </Link>
-        <Link href="/somePath3">
-          <MenuItem>
-            <Button>צפייה בפרטים אישיים</Button>
-          </MenuItem>
-        </Link>
-      </ContentContainer>
-    </CenteredContainer>
+    <>
+      {isLoading && <LoadingSpinner />}
+      {!isLoading && (
+        <>
+          <div className={style.leftStyle}>
+            <Button onClick={handleGoBack}> חזור &gt;</Button>
+          </div>
+          <CenteredContainer>
+            <Item>
+              <PicAndText
+                pictureName={gender === 'F' ? 'girlPic' : 'boyPic'}
+                name={`${name}`}
+              />
+            </Item>
+            <div>
+              <Link href="/somePath3">
+                <MenuItem>
+                  <CustomButton>צפייה בפרטים אישיים</CustomButton>
+                </MenuItem>
+              </Link>
+              <Link href={`/lessonSummary/summariesPatientLessons?patientId=${query.id}`}>
+                <MenuItem>
+                  <CustomButton>צפייה בסיכומי שיעור</CustomButton>
+                </MenuItem>
+              </Link>
+              <Link href={`/homeEvents/homeEvents?patientId=${query.id}`}>
+                <MenuItem>
+                  <CustomButton>צפייה בדיווחים מהבית</CustomButton>
+                </MenuItem>
+              </Link>
+              <Link href={`/goals/goals?patientId=${query.id}`}>
+                <MenuItem>
+                  <CustomButton>צפייה במטרות</CustomButton>
+                </MenuItem>
+              </Link>
+              <Link href="/somePath1">
+                <MenuItem>
+                  <CustomButton>צפייה בתכניות טיפול</CustomButton>
+                </MenuItem>
+              </Link>
+            </div>
+          </CenteredContainer>
+        </>
+      )}
+    </>
   );
 };
 

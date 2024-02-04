@@ -11,6 +11,7 @@ import style from '../../styles/summariesPatientLessons.module.css';
 import TextAreaComponent from '@/components/UI/textAreaComponent';
 import CustomizedDialogs from '@/components/dialog';
 import { useRouter } from 'next/router';
+import LoadingSpinner from '@/components/loadingSpinner';
 
 export default function SpecificGoal() {
     const [summary, setSummary] = useState('');
@@ -19,6 +20,7 @@ export default function SpecificGoal() {
     const [fieldType, setFieldType] = useState('');
     const [statusType, setStatusType] = useState(1);
     const [dialogError, setDialogError] = useState('');
+    const [isLoading, setIsLoading] = useState(true); 
     const [destinationDate, setDestinationDate] = useState(null);
     const [dialogOpen, setDialogOpen] = React.useState(false);
     const [saveSuccess, setSaveSuccess] = useState(false);
@@ -101,6 +103,11 @@ export default function SpecificGoal() {
     };
 
     useEffect(() => {
+        // Keep track of completion status for each fetch operation
+        let isStatusesLoaded = false;
+        let isFieldsLoaded = false;
+        let isPatientNameLoaded = false;
+    
         async function getPatientName() {
             try {
                 if (router.query.patientId) {
@@ -108,37 +115,48 @@ export default function SpecificGoal() {
                     const data = await response.json();
                     console.log('Patient Name Data:', data);
                     setName(data.name);
+                    isPatientNameLoaded = true;
                 }
             } catch (error) {
                 console.error('Error fetching patient name:', error);
             }
         }
-
+    
         async function fetchStatusesOptions() {
             try {
                 const response = await fetch('../api/goals/statusesOptions');
                 const data = await response.json();
                 setStatusesOptions(data);
+                isStatusesLoaded = true;
             } catch (error) {
                 console.error('Error fetching options:', error);
             }
         }
-
+    
         async function fetchFieldsOptions() {
             try {
                 const response = await fetch('../api/goals/fieldsOptions');
                 const data = await response.json();
-                setFieldsOptions(data); // Fix the state variable name
+                setFieldsOptions(data);
+                isFieldsLoaded = true;
             } catch (error) {
                 console.error('Error fetching options:', error);
             }
         }
-
-        getPatientName();
-        fetchStatusesOptions();
-        fetchFieldsOptions();
+    
+        // Use Promise.all to wait for all asynchronous operations to complete
+        Promise.all([getPatientName(), fetchStatusesOptions(), fetchFieldsOptions()])
+            .then(() => {
+                // Set isLoading to false when all data is fetched
+                setIsLoading(false);
+            })
+            .catch((error) => {
+                console.error('Error during data fetching:', error);
+                setIsLoading(false);
+            });
+    
     }, []);
-
+    
     const selectStyle = {
         width: '244px',
     };
@@ -153,6 +171,8 @@ export default function SpecificGoal() {
 
     return (
         <>
+            {isLoading && <LoadingSpinner />} {/* Use LoadingSpinner component */}
+
             <div className={style.leftStyle}>
                 <Button onClick={handleGoBack}> חזור &gt;</Button>
             </div>
@@ -227,7 +247,7 @@ export default function SpecificGoal() {
                     </FormControl>
                 </div>
                 <div className={style.submitButtonStyle}>
-                    <Button type='submit' onClick={handleClickSubmit}>קבע מטרה</Button>
+                    <Button type='submit' variant="contained" onClick={handleClickSubmit}>קבע מטרה</Button>
                 </div>
             </form>
 
