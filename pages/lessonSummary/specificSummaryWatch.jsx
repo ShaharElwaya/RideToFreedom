@@ -39,7 +39,6 @@ export default function SpecificSummaryWatch() {
       } catch (error) {
         alert("error");
         console.error('Error fetching lesson details:', error);
-        setIsLoading(false);
       }
     };
 
@@ -58,7 +57,7 @@ export default function SpecificSummaryWatch() {
         pictureName="lessonSummary"
         picturePath="../lessonSummary.png"
         primaryHeadline="סיכומי שיעורים"
-        secondaryHeadline={lessonDetails.patient_name ? lessonDetails.patient_name : 'No Name Data'}
+        secondaryHeadline={lessonDetails.patient_name ? lessonDetails.patient_name : ''}
       />
       <PatientRow
         pictureName="GenderPic"

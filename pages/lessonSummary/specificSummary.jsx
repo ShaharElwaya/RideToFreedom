@@ -8,6 +8,7 @@ import TextAreaComponent from '@/components/UI/textAreaComponent';
 import CustomizedDialogs from '@/components/dialog';
 import LoadingSpinner from '@/components/loadingSpinner';
 import { useRouter } from 'next/router';
+import { userStore } from '../stores/userStore';
 
 export default function SummariesPatientLessons() {
   const [summary, setSummary] = useState('');
@@ -25,6 +26,7 @@ export default function SummariesPatientLessons() {
   const router = useRouter();
   const { time } = router.query;
   const { patientId } = router.query;
+  const { type } = userStore.getState(); 
 
   const guideId = '14';
 
@@ -102,6 +104,10 @@ export default function SummariesPatientLessons() {
   };
 
   useEffect(() => {
+    if (type == 1) {
+      router.back();
+    }
+
     async function fetchData() {
       try {
         const [optionsData, patientData, guideData] = await Promise.all([

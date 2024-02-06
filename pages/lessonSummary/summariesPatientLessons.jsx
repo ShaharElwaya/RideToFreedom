@@ -6,6 +6,7 @@ import PatientRow from '@/components/UI/patientRow';
 import style from '../../styles/summariesPatientLessons.module.css';
 import LoadingSpinner from '@/components/loadingSpinner';
 import { useRouter } from 'next/router';
+import { userStore } from '../stores/userStore';
 
 export default function SummariesPatientLessons() {
   const router = useRouter();
@@ -14,6 +15,7 @@ export default function SummariesPatientLessons() {
   const [name, setName] = useState();
   const [isLoading, setIsLoading] = useState(true);
   const { patientId } = router.query;
+  const { type } = userStore.getState();
 
   const handleAdd = () => {
     const currentDate = new Date().toLocaleDateString("en-US", {
@@ -92,9 +94,11 @@ export default function SummariesPatientLessons() {
         primaryHeadline="סיכומי שיעורים"
         secondaryHeadline={name ? name : 'No Name Data'}
       />
-      <div className={style.addButtonStyle}>
-        <Button onClick={handleAdd}>+ הוספת סיכום</Button>
-      </div>
+      {type !== 1 && (
+        <div className={style.addButtonStyle}> 
+          <Button onClick={handleAdd}>+ הוספת סיכום</Button>
+        </div>
+      )}
       {lessons.map((lesson) => (
         <div key={lesson.lesson_id} className={style.rowWrapper} onClick={() => handleRowClick(lesson.lesson_id)}>
           <PatientRow

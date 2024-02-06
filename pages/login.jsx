@@ -5,6 +5,7 @@ import style from "../styles/loginRegisterPage.module.css";
 import TextFieldComponent from '@/components/UI/TextFiled';
 import PicAndHeadlines from '@/components/UI/picAndheadline';
 import { useRouter } from 'next/router';
+import { setUserData, userStore } from './stores/userStore';
 
 export default function login() {
   const router = useRouter(); 
@@ -15,7 +16,15 @@ export default function login() {
       const email = e.target[0].value
       const password = e.target[2].value
       const res = await axios.post("api/login", { email, password });
-      router.push(`/customerFile`);
+
+      await setUserData({
+        name: res.data.name,
+        type: res.data.type,
+        email: res.data.email,
+        is_logged_in: true
+      });
+
+      await router.push(`/customerFile`);
     } catch (err) {
       alert('Incorrect credenetials!')
     }
