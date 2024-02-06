@@ -8,7 +8,7 @@ import TextAreaComponent from '@/components/UI/textAreaComponent';
 import CustomizedDialogs from '@/components/dialog';
 import LoadingSpinner from '@/components/loadingSpinner';
 import { useRouter } from 'next/router';
-import { userStore } from '../stores/userStore';
+import { userStore } from '@/stores/userStore';
 
 export default function SummariesPatientLessons() {
   const [summary, setSummary] = useState('');

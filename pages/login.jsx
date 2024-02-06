@@ -5,7 +5,7 @@ import style from "../styles/loginRegisterPage.module.css";
 import TextFieldComponent from '@/components/UI/TextFiled';
 import PicAndHeadlines from '@/components/UI/picAndheadline';
 import { useRouter } from 'next/router';
-import { setUserData, userStore } from './stores/userStore';
+import { setUserData, userStore } from '../stores/userStore';
 
 export default function login() {
   const router = useRouter(); 

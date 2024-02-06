@@ -6,7 +6,7 @@ import PatientRow from '@/components/UI/patientRow';
 import style from '../../styles/summariesPatientLessons.module.css';
 import LoadingSpinner from '@/components/loadingSpinner';
 import { useRouter } from 'next/router';
-import { userStore } from '../stores/userStore';
+import { userStore } from '@/stores/userStore';
 
 export default function SummariesPatientLessons() {
   const router = useRouter();

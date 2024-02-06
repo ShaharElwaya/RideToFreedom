@@ -13,8 +13,8 @@ import { prefixer } from "stylis";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { useRouter } from 'next/router';
-import { userStore } from "./stores/userStore";
-import { UserListener } from "./stores/userListener";
+import { userStore } from "@/stores/userStore";
+import { UserListener } from "@/stores/userListener";
 
 const cacheRtl = createCache({
   key: "muirtl",

@@ -9,7 +9,7 @@ import PicAndHeadlines from "@/components/UI/picAndheadline";
 import { Diversity1TwoTone } from "@mui/icons-material";
 import { PicAndText } from "@/components/UI/PicAndName";
 import LoadingSpinner from "@/components/loadingSpinner";
-import { setUserData, userStore } from "./stores/userStore";
+import { setUserData, userStore } from "@/stores/userStore";
 import style from "../styles/summariesPatientLessons.module.css";
 
 const Item = styled(Paper)(() => ({

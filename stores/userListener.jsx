@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import { userStore, setUserData } from './userStore';
 import { useRouter } from 'next/router';
 
-const UserListener = () => {
+export const UserListener = () => {
   const router = useRouter();
   const { is_logged_in } = userStore.getState();
 
@@ -26,5 +26,3 @@ const UserListener = () => {
 
   return null;
 };
-
-export default UserListener;

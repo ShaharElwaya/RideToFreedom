@@ -7,7 +7,7 @@ import { PicAndText } from '@/components/UI/PicAndName';
 import style from '../styles/summariesPatientLessons.module.css';
 import Link from 'next/link';
 import LoadingSpinner from '@/components/loadingSpinner';
-import { userStore } from './stores/userStore';
+import { userStore } from '@/stores/userStore';
 
 const CustomButton = styled(Button)({
   '&:hover': {
