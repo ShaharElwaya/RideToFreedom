@@ -87,7 +87,6 @@ export default function SummariesPatientLessons() {
       <div className={style.leftStyle}>
         <Button onClick={handleGoBack}> חזור &gt;</Button>
       </div>
-
       <PicAndHeadlines
         pictureName="lessonSummary"
         picturePath="../lessonSummary.png"
@@ -100,6 +99,7 @@ export default function SummariesPatientLessons() {
         </div>
       )}
       {lessons.map((lesson) => (
+        (type === 3 || type === 2 || (type === 1 && lesson.parent_permission)) && (
         <div key={lesson.lesson_id} className={style.rowWrapper} onClick={() => handleRowClick(lesson.lesson_id)}>
           <PatientRow
             pictureName={lesson.type}
@@ -110,6 +110,7 @@ export default function SummariesPatientLessons() {
             lesson={lesson.lesson_type}
           />
         </div>
+        )
       ))}
     </>
   );

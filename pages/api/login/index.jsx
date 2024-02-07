@@ -15,8 +15,8 @@ export default async function handler(req, res) {
       const user = data.rows[0];
       res.status(200).json({
         email: user.email,
-        name: user.name,
         type: user.type,
+        id: user.id,
       });
     } catch (error) {
       res.status(500).json({ error: error.message });

@@ -4,6 +4,7 @@ import style from "../styles/loginRegisterPage.module.css";
 import TextFieldComponent from '@/components/UI/TextFiled';
 import { useState, useEffect } from 'react';
 import { Typography, Button, Select, MenuItem, InputLabel, FormControl } from '@mui/material';
+import { DatePicker } from "@mui/x-date-pickers";
 import PicAndHeadlines from '@/components/UI/picAndheadline';
 import CustomizedDialogs from '@/components/dialog';
 
@@ -16,13 +17,15 @@ export default function register() {
     const [formValues, setFormValues] = useState({
         name: '',
         email: '',
+        id: '',
         phone: '',
         userType: '',
-        password: ''
+        password: '',
+        employment_date: '',
     });
 
     const selectStyle = {
-        width: '240px'
+        width: '255px'
     };
 
     useEffect(() => {
@@ -51,11 +54,22 @@ export default function register() {
     const handleClickRegister = async (e) => {
         e.preventDefault();
         try {
-            const { name, email, phone, userType, password } = formValues;
-            const res = await axios.post("api/register", { name, email, phone, userType, password });
+            const { name, email, id, phone, userType, password, employment_date } = formValues;
+            const res = await axios.post("api/register", { name, email, id, phone, userType, password, employment_date });
 
             // Open the success dialog on successful registration
             setDialogOpen(true);
+            
+            setFormValues({
+                name: '',
+                email: '',
+                id: '',
+                phone: '',
+                userType: '',
+                password: '',
+                employment_date: '',
+            });
+
         } catch (err) {
             let errorMessage = "We have a problem, try again"; // Default error message
 
@@ -97,9 +111,27 @@ export default function register() {
                     </div>
                     <div>
                         <TextFieldComponent
+                            type="number"
+                            outlinedText="תעודת זהות"
+                            value={formValues.id}
+                            onChange={(e) => handleInputChange('id', e.target.value)}
+                            required
+                        />
+                    </div>
+                    <div>
+                        <TextFieldComponent
                             outlinedText="טלפון"
                             value={formValues.phone}
                             onChange={(e) => handleInputChange('phone', e.target.value)}
+                            required
+                        />
+                    </div>
+                    <div>
+                        <TextFieldComponent
+                            type="password"
+                            outlinedText="סיסמה"
+                            value={formValues.password}
+                            onChange={(e) => handleInputChange('password', e.target.value)}
                             required
                         />
                     </div>
@@ -122,14 +154,17 @@ export default function register() {
                         </Select>
                     </FormControl>
                     <div>
-                        <TextFieldComponent
-                            type="password"
-                            outlinedText="סיסמה"
-                            value={formValues.password}
-                            onChange={(e) => handleInputChange('password', e.target.value)}
-                            required
+                    {formValues.userType === 2 || formValues.userType === 3 ? (
+                        <DatePicker
+                            label="תאריך תחילת עבודה"
+                            value={formValues.employment_date}
+                            onChange={(newDate) => handleInputChange('employment_date', newDate)}
+                            required={formValues.userType === 2 || formValues.userType === 3}
+                            width="238px"
+
                         />
-                    </div>
+                    ) : null}
+                </div>
                 </div>
                 <Button type="submit" variant="contained">הוספת משתמש</Button>
             </form>

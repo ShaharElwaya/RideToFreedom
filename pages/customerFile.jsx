@@ -79,7 +79,6 @@ const RowAndColumnSpacing = () => {
 
   const handleLogOut = () => {
     setUserData({
-      name: "",
       id: 0,
       type: 0,
       email: "",

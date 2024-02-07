@@ -26,9 +26,7 @@ export default function SummariesPatientLessons() {
   const router = useRouter();
   const { time } = router.query;
   const { patientId } = router.query;
-  const { type } = userStore.getState(); 
-
-  const guideId = '14';
+  const { type, id } = userStore.getState(); 
 
   const formattedDateTime = time ? new Date(time).toLocaleString("en-US", {
     day: "2-digit",
@@ -79,7 +77,7 @@ export default function SummariesPatientLessons() {
         date,
         summary,
         patientId,
-        guideId,
+        id,
         parentPermission,
         lessonType
       });
@@ -155,7 +153,7 @@ export default function SummariesPatientLessons() {
     async function getGuideName() {
       try {
         const response = await axios.get('/api/lessonsSummaries/guideIdToName', {
-          params: { id: guideId },
+          params: { id: id },
         });
         return response.data;
       } catch (error) {

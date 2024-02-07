@@ -18,9 +18,9 @@ export default function login() {
       const res = await axios.post("api/login", { email, password });
 
       await setUserData({
-        name: res.data.name,
         type: res.data.type,
         email: res.data.email,
+        id: res.data.id,
         is_logged_in: true
       });
 

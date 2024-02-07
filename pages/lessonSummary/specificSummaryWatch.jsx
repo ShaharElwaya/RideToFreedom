@@ -10,6 +10,7 @@ import TextAreaComponent from '@/components/UI/textAreaComponent';
 import CustomizedDialogs from '@/components/dialog';
 import LoadingSpinner from '@/components/loadingSpinner';
 import { useRouter } from 'next/router';
+import { userStore } from '@/stores/userStore';
 
 export default function SpecificSummaryWatch() {
   const [lessonDetails, setLessonDetails] = useState({});
@@ -17,6 +18,7 @@ export default function SpecificSummaryWatch() {
   const { lessonId } = router.query;
   const [parentPermission, setParentPermission] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const { type } = userStore.getState(); 
 
   const handleGoBack = () => {
     router.back();
@@ -35,6 +37,12 @@ export default function SpecificSummaryWatch() {
         });        
         setLessonDetails(response.data);
         setParentPermission(response.data.parent_permission);
+
+        if (type == 1 && !response.data.parent_permission) {
+          // Redirect to the desired route for unauthorized users
+          router.push(`/lessonSummary/summariesPatientLessons?patientId=${response.data.patient_id}`);
+        }
+
         setIsLoading(false);
       } catch (error) {
         alert("error");
@@ -76,10 +84,14 @@ export default function SpecificSummaryWatch() {
             required
             disabled
           />
+          { type !== 1 && (
+          <div>
           <Checkbox
             checked={parentPermission}
             disabled
           /> האם לאפשר להורה לצפות בשיעור?
+          </div>
+          )}
         </div>
       </form>
     </>

@@ -5,7 +5,6 @@ import { devtools, persist } from 'zustand/middleware';
 const userStore = create(
   persist(
     (set) => ({
-      name: '',
       id: 0,
       type: 0,
       email: '',
