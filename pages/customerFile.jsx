@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/router"; // Import useRouter hook for navigation
+import { useRouter } from "next/router";
 import { styled } from "@mui/material/styles";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import { Button } from "@mui/material";
 import PicAndHeadlines from "@/components/UI/picAndheadline";
-import { Diversity1TwoTone } from "@mui/icons-material";
 import { PicAndText } from "@/components/UI/PicAndName";
 import LoadingSpinner from "@/components/loadingSpinner";
 import { setUserData, userStore } from "@/stores/userStore";
@@ -32,30 +31,28 @@ const ContentContainer = styled(Box)({
 
 const RowAndColumnSpacing = () => {
   const [names, setNames] = useState([]);
-  const router = useRouter(); // Initialize useRouter hook
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
+  const { type, id } = userStore.getState();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Fetch names from the backend API
-        const data = await fetchNamesFromDatabase();
+        const data = await fetchNamesFromDatabase(type, id);
         setNames(data);
       } catch (error) {
         console.error("Error fetching names:", error);
       } finally {
-        setIsLoading(false); // Set loading to false after the data is fetched or on error
+        setIsLoading(false);
       }
     };
 
-    // Call the fetchData function
     fetchData();
-  }, []);
+  }, [type, id]);
 
-  // Function to fetch names from the backend API
-  const fetchNamesFromDatabase = async () => {
-    // Make an API call to fetch names
-    const response = await fetch("/api/customers"); // Replace '/api/names' with your actual API endpoint
+  const fetchNamesFromDatabase = async (type, id) => {
+    const response = await fetch(`/api/customers?type=${type}&id=${id}`);
+
     if (!response.ok) {
       throw new Error("Failed to fetch names");
     }
@@ -63,17 +60,14 @@ const RowAndColumnSpacing = () => {
     return data;
   };
 
-  // Function to determine the picture name based on gender
   const getPictureName = (gender) => {
     return gender === "F" ? "girlPic" : "boyPic";
   };
 
-  // Function to handle click on a box
-  const handleClick = (id, name, gender) => {
-    // Redirect to personalMenu page and pass the ID, name, and gender as query parameters
+  const handleClick = (patientId, name, gender) => {
     router.push({
       pathname: "/personalMenu",
-      query: { id, name, gender },
+      query: { patientId, name, gender },
     });
   };
 
@@ -99,7 +93,7 @@ const RowAndColumnSpacing = () => {
         <PicAndHeadlines
           pictureName="customerFile"
           picturePath="../customerFile.png"
-          primaryHeadline="תיקי לקוחות"
+          primaryHeadline={type === 1 ? 'תיקי ילדים' : 'תיקי לקוחות'}
         />
         <ContentContainer>
           <Grid container spacing={2}>

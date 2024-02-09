@@ -6,8 +6,9 @@ import PatientRow from '@/components/UI/patientRow';
 import style from '../../styles/summariesPatientLessons.module.css';
 import TextAreaComponent from '@/components/UI/textAreaComponent';
 import CustomizedDialogs from '@/components/dialog';
-import { useRouter } from 'next/router'; // Import useRouter from next/router
+import { useRouter } from 'next/router'; 
 import LoadingSpinner from '@/components/loadingSpinner';
+import { userStore } from '@/stores/userStore';
 
 export default function SpecificHomeEvent() {
   const [summary, setSummary] = useState('');
@@ -21,7 +22,7 @@ export default function SpecificHomeEvent() {
   const router = useRouter();
   const { time } = router.query;
   const { patientId } = router.query;
-  const parentId = '16'; // Adjust with the actual guide ID
+  const { type, id } = userStore.getState(); 
 
   const formattedDateTime = time
     ? new Date(time).toLocaleString('en-US', {
@@ -78,7 +79,7 @@ export default function SpecificHomeEvent() {
         date,
         summary,
         patientId,
-        parentId,
+        id,
       });
       setDialogError('');
       setSaveSuccess(true);
@@ -97,6 +98,10 @@ export default function SpecificHomeEvent() {
   };
 
   useEffect(() => {
+    if (type != 1) {
+      router.back();
+    }
+
     // Keep track of completion status for each fetch operation
     let isPatientNameLoaded = false;
     let isParentNameLoaded = false;
@@ -119,7 +124,7 @@ export default function SpecificHomeEvent() {
     async function getParentName() {
         try {
             const response = await axios.get('/api/homeEvents/ParentIdToName', {
-                params: { id: parentId },
+                params: { id: id },
             });
             setParentName(response.data.name);
             isParentNameLoaded = true;

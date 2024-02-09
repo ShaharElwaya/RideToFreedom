@@ -75,7 +75,7 @@ export default function Goals() {
   };
 
   const handleGoBack = () => {
-    router.push(`/personalMenu?id=${encodeURIComponent(patientId)}&name=${encodeURIComponent(name)}`);
+    router.push(`/personalMenu?patientId=${encodeURIComponent(patientId)}&name=${encodeURIComponent(name)}`);
   };
 
   return (

@@ -24,11 +24,25 @@ export default function login() {
         is_logged_in: true
       });
 
-      await router.push(`/customerFile`);
+      if (res.data.type === 1 ) {
+        const response = await fetch(`/api/login/parent?id=${res.data.id}`);
+        const isOneChild = await response.json();
+
+        if(isOneChild.hasOneChild) {
+          const { patientId, name, gender } = isOneChild.childDetails;
+          router.push({
+            pathname: "/personalMenu",
+            query: { patientId, name, gender },
+          });
+        }
+      } else {
+        await router.push(`/customerFile`);
+      }
     } catch (err) {
       alert('Incorrect credenetials!')
     }
   };
+  
 
   return (
     <>

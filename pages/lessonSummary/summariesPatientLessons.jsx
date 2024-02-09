@@ -39,7 +39,7 @@ export default function SummariesPatientLessons() {
   };
 
   const handleGoBack = () => {
-    router.push(`/personalMenu?id=${encodeURIComponent(patientId)}&name=${encodeURIComponent(name)}`);
+    router.push(`/personalMenu?patientId=${encodeURIComponent(patientId)}&name=${encodeURIComponent(name)}`);
   };
 
   useEffect(() => {
