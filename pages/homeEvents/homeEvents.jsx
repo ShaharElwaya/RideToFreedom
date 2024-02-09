@@ -106,7 +106,7 @@ export default function HomeEvents() {
         primaryHeadline="דיווח אירועים מהבית"
         secondaryHeadline={name ? name : 'No Name Data'}
       />
-      {type !== 1 && (
+      {type == 1 && (
         <div className={style.addButtonStyle}>
           <Button onClick={handleAdd}>+ הוספת אירוע</Button>
         </div>

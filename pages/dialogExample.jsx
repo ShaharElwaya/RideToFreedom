@@ -22,9 +22,13 @@ export default function dialogExample() {
       <CustomizedDialogs
         title="הוספת משתמש"
         text="המשתמש נוסף בהצלחה"
-        closeText="יאיי"
         open={dialogOpen}
         onClose={handleCloseDialog}
+        actions={[
+          <Button key="confirmButton" autoFocus onClick={handleCloseDialog}>
+            יאיי
+          </Button>,
+        ]}
       />
     </>
   );

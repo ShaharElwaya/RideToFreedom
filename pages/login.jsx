@@ -29,7 +29,7 @@ export default function login() {
         const isOneChild = await response.json();
 
         if(isOneChild.hasOneChild) {
-          const { patientId, name, gender } = isOneChild.childDetails;
+          const { id: patientId, name, gender } = isOneChild.childDetails;
           router.push({
             pathname: "/personalMenu",
             query: { patientId, name, gender },

@@ -172,9 +172,13 @@ export default function register() {
             <CustomizedDialogs
                 title={dialogError ? "ההרשמה נכשלה" : "ההרשמה הושלמה"}
                 text={dialogError ? dialogError : "משתמש " + formValues.email + " התווסף בהצלחה למערכת!"}
-                closeText="הבנתי"
                 open={dialogOpen}
-                onClose={() => { setDialogOpen(false); setDialogError(""); }} // Close the dialog and reset error state
+                onClose={() => { setDialogOpen(false); setDialogError(""); }} 
+                actions={[
+                    <Button key="confirmButton" autoFocus onClick={handleCloseDialog}>
+                      הבנתי
+                    </Button>,
+                  ]}
             />
         </>
     );

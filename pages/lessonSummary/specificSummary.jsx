@@ -231,9 +231,13 @@ export default function SummariesPatientLessons() {
       <CustomizedDialogs
         title={dialogError ? "הוספת הסיכום נכשל" : "הוספת הסיכום הושלם"}
         text={dialogError ? dialogError : ""}
-        closeText="הבנתי"
         open={dialogOpen}
         onClose={handleCloseDialog}
+        actions={[
+          <Button key="confirmButton" autoFocus onClick={handleCloseDialog}>
+            הבנתי
+          </Button>,
+        ]}
       />
     </>
   );

@@ -254,9 +254,13 @@ export default function SpecificGoal() {
             <CustomizedDialogs
                 title={dialogError ? "הוספת המטרה נכשלה" : "הוספת המטרה הושלמה"}
                 text={dialogError ? dialogError : ""}
-                closeText="הבנתי"
                 open={dialogOpen}
                 onClose={handleCloseDialog}
+                actions={[
+                    <Button key="confirmButton" autoFocus onClick={handleCloseDialog}>
+                      הבנתי
+                    </Button>,
+                  ]}
             />
         </>
     );
