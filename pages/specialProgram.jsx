@@ -11,15 +11,17 @@ import {
 import { DatePicker } from "@mui/x-date-pickers";
 import { useEffect, useState } from "react";
 import style from "../styles/loginRegisterPage.module.css";
+import { useRouter } from "next/router";
+import axios from "axios";
 
 export default function SpecialProgram() {
   const [options, setOptions] = useState([]);
   const [classes, setClasses] = useState([
     { type: "", number: "", frequency: "" },
   ]);
-  const [childId, setChildId] = useState("");
   const [startDate, setStartDate] = useState(null);
   const [impression, setImpression] = useState("");
+  const router = useRouter();
 
   const handleChange = (index, field, value) => {
     const newClasses = [...classes];
@@ -35,10 +37,38 @@ export default function SpecialProgram() {
 
   const handleClickSpecialProgram = async (e) => {
     e.preventDefault();
-    console.log("Child ID:", childId);
-    console.log("Classes:", classes);
-    console.log("Start Date", startDate);
-    console.log("Impression", impression);
+
+    try{
+      const promises = []
+
+      classes.forEach((cls) => {
+        const { type, number, frequency } = cls;
+        promises.push(
+          axios.post("/api/specialProgram/create-booked-lesson", {
+            patientId:router.query.patientId,
+            type,
+            number,
+            frequency,
+          })
+        );
+      });
+  
+      const resolvedPromises = await Promise.all(promises) 
+      const classIds = resolvedPromises.map((promise) => promise.data.id)
+  
+      const body = {
+        patientId:router.query.patientId,
+        startDate,
+        impression,
+        bookedLessons:classIds
+      }
+  
+      await axios.post('/api/specialProgram/create',body)
+      alert('Created classes')
+    }catch(err){
+      console.log(err);
+    }
+    
   };
 
   useEffect(() => {
@@ -63,20 +93,10 @@ export default function SpecialProgram() {
           picturePath="../specialProgram.png"
           isMain
           primaryHeadline="הגדרת תכנית טיפול מיוחדת"
-          secondaryHeadline="להשלים שם מטופל"
+          secondaryHeadline={router.query?.patientName || "אין שם זמין"}
         />
         <form onSubmit={handleClickSpecialProgram}>
           <div className={style.space}>
-            <div>
-              <TextField
-                type="number"
-                label="ת.ז ילד"
-                required
-                value={childId}
-                onChange={(e) => setChildId(e.target.value)}
-                style={{ width: 250 }}
-              />
-            </div>
             <div>
               <DatePicker
                 label="תאריך התחלת התכנית"
