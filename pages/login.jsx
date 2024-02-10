@@ -7,20 +7,24 @@ import style from "../styles/loginRegisterPage.module.css";
 import TextFieldComponent from '@/components/UI/TextFiled';
 import PicAndHeadlines from '@/components/UI/picAndheadline';
 import { setUserData, userStore } from '../stores/userStore';
+import CustomizedDialogs from '@/components/dialog';
 
 export default function login() {
   const router = useRouter(); 
   const [isSaving, setIsSaving] = useState(false);
+  const [dialogError, setDialogError] = useState(""); 
+  const [dialogOpen, setDialogOpen] = useState(false); 
 
   const handleClickLogin = async (e) => {
     e.preventDefault()
     try {
       const email = e.target[0].value
       const password = e.target[2].value
-      const res = await axios.post("api/login", { email, password });
       
       setIsSaving(true); 
 
+      const res = await axios.post("api/login", { email, password });
+      
       await setUserData({
         type: res.data.type,
         email: res.data.email,
@@ -43,12 +47,25 @@ export default function login() {
         await router.push(`/customerFile`);
       }
     } catch (err) {
-      alert('Incorrect credenetials!')
+      let errorMessage = "פרטים ההתחברות אינם נכונים, נסה שנית"; // Default error message
+
+      if (err.response && err.response.data && err.response.data.error) {
+        // If there is a specific error message from the server, use that
+        errorMessage = `Login failed: ${err.response.data.error}`;
+      }
+
+      // Open the error dialog with the specific error message
+      setDialogError(errorMessage); // Set the error message in the state
+      setDialogOpen(true);
     } finally {
       setIsSaving(false);
     }
   };
-  
+
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+    setDialogError(""); // Clear the error message when the dialog is closed
+  };  
 
   return (
     <>
@@ -70,6 +87,18 @@ export default function login() {
         </div>
         <Button type="submit" variant="contained" disabled={isSaving} >התחבר</Button>
       </form>
+
+      <CustomizedDialogs
+        title="ההתחברות נכשלה"
+        text={dialogError}
+        open={dialogOpen}
+        onClose={handleCloseDialog}
+        actions={[
+          <Button key="confirmButton" autoFocus onClick={handleCloseDialog}>
+            OK
+          </Button>,
+        ]}
+      />
     </>
   );
 }
