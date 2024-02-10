@@ -13,6 +13,7 @@ export default function register() {
     const [selectedOption, setSelectedOption] = useState('');
     const [dialogError, setDialogError] = useState(""); // Add a state variable for error message
     const [dialogOpen, setDialogOpen] = React.useState(false); // Initialize state
+    const [isSaving, setIsSaving] = useState(false);
 
     const [formValues, setFormValues] = useState({
         name: '',
@@ -54,6 +55,8 @@ export default function register() {
     const handleClickRegister = async (e) => {
         e.preventDefault();
         try {
+            setIsSaving(true);
+
             const { name, email, id, phone, userType, password, employment_date } = formValues;
             const res = await axios.post("api/register", { name, email, id, phone, userType, password, employment_date });
 
@@ -81,8 +84,16 @@ export default function register() {
             // Open the error dialog with the specific error message
             setDialogOpen(true);
             setDialogError(errorMessage); // Set the error message in the state
-        }
+        } finally {
+            setIsSaving(false);
+          }
     };
+
+    const handleCloseDialog = () => {
+        setDialogOpen(false);
+        setDialogError(""); // Clear the comment when the dialog is closed
+      };
+    
 
     return (
         <>
@@ -166,7 +177,7 @@ export default function register() {
                     ) : null}
                 </div>
                 </div>
-                <Button type="submit" variant="contained">הוספת משתמש</Button>
+                <Button type="submit" disabled={isSaving} variant="contained">הוספת משתמש</Button>
             </form>
 
             <CustomizedDialogs
