@@ -7,6 +7,8 @@ import { Typography, Button, Select, MenuItem, InputLabel, FormControl } from '@
 import { DatePicker } from "@mui/x-date-pickers";
 import PicAndHeadlines from '@/components/UI/picAndheadline';
 import CustomizedDialogs from '@/components/dialog';
+import { useRouter } from 'next/router';
+import { userStore } from '@/stores/userStore';
 
 export default function register() {
     const [options, setOptions] = useState([]);
@@ -14,6 +16,8 @@ export default function register() {
     const [dialogError, setDialogError] = useState(""); // Add a state variable for error message
     const [dialogOpen, setDialogOpen] = React.useState(false); // Initialize state
     const [isSaving, setIsSaving] = useState(false);
+    const { type } = userStore.getState(); 
+    const router = useRouter();
 
     const [formValues, setFormValues] = useState({
         name: '',
@@ -30,6 +34,10 @@ export default function register() {
     };
 
     useEffect(() => {
+        if (type == 1) {
+            router.back();
+          }
+
         async function fetchOptions() {
             try {
                 const response = await fetch('/api/register/user_types_options');
