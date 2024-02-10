@@ -4,14 +4,14 @@ import { sql } from '@vercel/postgres';
 export default async function handler(req, res) {
   if (req.method === 'POST') {
     try {
-      const { lessonId, comment, id} = req.body;
+      const { lessonId, comment, id, type} = req.body;
 
       // You may want to perform some validation on lessonId and comment here
 
       // Insert the comment into the database
       const result = await sql`
         INSERT INTO public.lessons_comments (user_type, user_id, comment, summary_id)
-        VALUES (1, ${id}, ${comment}, ${lessonId})
+        VALUES (${type}, ${id}, ${comment}, ${lessonId})
         RETURNING *;
       `;
 

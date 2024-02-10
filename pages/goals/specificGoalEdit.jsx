@@ -40,6 +40,7 @@ export default function SpecificGoalWatch() {
     const [dialogOpen, setDialogOpen] = React.useState(false);
     const [saveSuccess, setSaveSuccess] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
+    const [isSaving, setIsSaving] = useState(false);
 
     const handleCloseDialog = () => {
         setDialogOpen(false);
@@ -85,6 +86,8 @@ export default function SpecificGoalWatch() {
                 ? dayjs(settingDate).format("YYYY-MM-DD")
                 : '';
 
+            setIsSaving(true);
+
             const res = await axios.post("../api/goals/specficGoalEdit", {
                 date,
                 summary,
@@ -106,7 +109,9 @@ export default function SpecificGoalWatch() {
             setSaveSuccess(false);
             setDialogOpen(true);
             setDialogError(errorMessage);
-        }
+        } finally {
+            setIsSaving(false);
+          }
     };
 
     const selectStyle = {
@@ -253,7 +258,7 @@ export default function SpecificGoalWatch() {
                     </FormControl>
                 </div>
                 <div className={style.submitButtonStyle}>
-                    <Button type='submit' variant="contained" onClick={handleClickSubmit}>עדכן מטרה</Button>
+                    <Button type='submit' disabled={isSaving} variant="contained" onClick={handleClickSubmit}>עדכן מטרה</Button>
                 </div>
             </form>
 

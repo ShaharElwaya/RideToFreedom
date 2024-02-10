@@ -28,6 +28,7 @@ export default function SpecificGoal() {
     const router = useRouter();
     const { time } = router.query;
     const { patientId } = router.query;
+    const [isSaving, setIsSaving] = useState(false);
 
     const date = time ? new Date(time).toLocaleDateString("en-US", {
         day: "2-digit",
@@ -77,6 +78,8 @@ export default function SpecificGoal() {
                 month: "2-digit",
                 year: "numeric",
             }) : '';
+
+            setIsSaving(true);
             
             const res = await axios.post("../api/goals/specificGoal", {
                 date,
@@ -99,7 +102,9 @@ export default function SpecificGoal() {
             setSaveSuccess(false);
             setDialogOpen(true);
             setDialogError(errorMessage);
-        }
+        } finally {
+            setIsSaving(false);
+          }
     };
 
     useEffect(() => {
@@ -247,7 +252,7 @@ export default function SpecificGoal() {
                     </FormControl>
                 </div>
                 <div className={style.submitButtonStyle}>
-                    <Button type='submit' variant="contained" onClick={handleClickSubmit}>קבע מטרה</Button>
+                    <Button type='submit' disabled={isSaving} variant="contained" onClick={handleClickSubmit}>קבע מטרה</Button>
                 </div>
             </form>
 

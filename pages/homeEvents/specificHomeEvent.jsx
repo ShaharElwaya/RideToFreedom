@@ -31,6 +31,7 @@ export default function SpecificHomeEvent() {
   const { time } = router.query;
   const { patientId } = router.query;
   const { type, id } = userStore.getState();
+  const [isSaving, setIsSaving] = useState(false);
 
   const formattedDateTime = time
     ? new Date(time).toLocaleString("en-US", {
@@ -85,6 +86,8 @@ export default function SpecificHomeEvent() {
 
       const date = formattedDateTime;
 
+      setIsSaving(true); 
+
       const res = await axios.post("../api/homeEvents/specificHomeEvent", {
         date,
         summary,
@@ -104,6 +107,8 @@ export default function SpecificHomeEvent() {
       setSaveSuccess(false);
       setDialogOpen(true);
       setDialogError(errorMessage);
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -189,7 +194,7 @@ export default function SpecificHomeEvent() {
           />
         </div>
         <div className={style.submitButtonStyle}>
-          <Button type="submit" variant="contained" onClick={handleClickSubmit}>
+          <Button type="submit" disabled={isSaving} variant="contained" onClick={handleClickSubmit}>
             הגש דיווח
           </Button>
         </div>

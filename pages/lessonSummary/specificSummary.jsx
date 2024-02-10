@@ -27,6 +27,7 @@ export default function SummariesPatientLessons() {
   const { time } = router.query;
   const { patientId } = router.query;
   const { type, id } = userStore.getState(); 
+  const [isSaving, setIsSaving] = useState(false); 
 
   const formattedDateTime = time ? new Date(time).toLocaleString("en-US", {
     day: "2-digit",
@@ -73,6 +74,8 @@ export default function SummariesPatientLessons() {
 
       const date = formattedDateTime;
 
+      setIsSaving(true); 
+
       const res = await axios.post("../api/lessonsSummaries/specificSummary", {
         date,
         summary,
@@ -94,6 +97,8 @@ export default function SummariesPatientLessons() {
       setSaveSuccess(false);
       setDialogOpen(true);
       setDialogError(errorMessage);
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -224,7 +229,7 @@ export default function SummariesPatientLessons() {
           /> האם לאפשר להורה לצפות בשיעור?
         </div>
         <div className={style.submitButtonStyle}>
-          <Button type='submit' variant="contained" onClick={handleClickSubmit}>הגש סיכום</Button>
+          <Button type='submit' disabled={isSaving} variant="contained" onClick={handleClickSubmit}>הגש סיכום</Button>
         </div>
       </form>
 

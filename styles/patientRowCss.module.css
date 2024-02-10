@@ -23,4 +23,9 @@
   .txt {
     font-size: 12px; /* Specify the unit (e.g., px) for font-size */
   }
+
+  .bottomBorder  {
+    border-top: 1px solid white; /* Add top border with a light gray color */
+    border-bottom: 1px solid #ccc; /* Add top border with a light gray color */
+  }
   

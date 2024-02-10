@@ -1,10 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import {
-  Button,
-  Checkbox,
-  Typography,
-} from "@mui/material";
+import { Button, Checkbox, Typography } from "@mui/material";
 import PicAndHeadlines from "@/components/UI/picAndheadline";
 import PatientRow from "@/components/UI/patientRow";
 import style from "../../styles/summariesPatientLessons.module.css";
@@ -26,6 +22,8 @@ export default function SpecificSummaryWatch() {
   const [dialogSuccess, setDialogSuccess] = useState("");
   const [comment, setComment] = useState("");
   const { type, id } = userStore.getState();
+  const [comments, setComments] = useState([]);
+  const [isSaving, setIsSaving] = useState(false);
 
   const handleGoBack = () => {
     router.back();
@@ -48,22 +46,21 @@ export default function SpecificSummaryWatch() {
         return;
       }
 
+      setIsSaving(true);
+
       // Save the comment to the database
       await axios.post("/api/lessonsSummaries/addComment", {
         lessonId,
         comment,
         id,
+        type,
       });
 
-      // Fetch updated lesson details after saving the comment
-      const response = await axios.get(
-        "/api/lessonsSummaries/specificSummaryWatch",
-        {
-          params: { lesson_id: lessonId },
-        }
+      // Fetch updated comments after saving the comment
+      const commentsResponse = await axios.get(
+        `/api/lessonsSummaries/getComments?lesson_id=${lessonId}`
       );
-      setLessonDetails(response.data);
-      setParentPermission(response.data.parent_permission);
+      setComments(commentsResponse.data);
 
       // Close the comment dialog
       handleCloseDialog();
@@ -76,7 +73,9 @@ export default function SpecificSummaryWatch() {
 
       // Open the failure dialog only if there's an actual error
       if (error.response && error.response.data && error.response.data.error) {
-        setDialogError(`אירעה שגיאה בעת שמירת התגובה: ${error.response.data.error}`);
+        setDialogError(
+          `אירעה שגיאה בעת שמירת התגובה: ${error.response.data.error}`
+        );
         setIsDialogOpen(true);
         setIsDialogSuccessOpen(false); // Close the success dialog if there was an error
       } else {
@@ -85,6 +84,8 @@ export default function SpecificSummaryWatch() {
         setIsDialogOpen(true);
         setIsDialogSuccessOpen(false); // Close the success dialog if there was an error
       }
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -107,6 +108,21 @@ export default function SpecificSummaryWatch() {
             `/lessonSummary/summariesPatientLessons?patientId=${response.data.patient_id}`
           );
         }
+
+        const fetchComments = async () => {
+          try {
+            // Fetch comments for the specific lessonId
+            const response = await axios.get(
+              `/api/lessonsSummaries/getComments?lesson_id=${lessonId}`
+            );
+            setComments(response.data);
+            setIsLoading(false);
+          } catch (error) {
+            console.error("Error fetching comments:", error);
+          }
+        };
+
+        fetchComments();
 
         setIsLoading(false);
       } catch (error) {
@@ -144,29 +160,45 @@ export default function SpecificSummaryWatch() {
         lesson={lessonDetails.lesson_type_name}
         isCenter
       />
-      <form>
-        <div className={style.container}>
-          <TextAreaComponent
-            placeholderText=" ספר איך היה השיעור *"
-            value={lessonDetails.summary}
-            required
-            disabled
-          />
-          {type !== 1 && (
-            <div>
-              <Checkbox checked={parentPermission} disabled />
-              האם לאפשר להורה לצפות בשיעור?
-            </div>
-          )}
-        </div>
-      </form>
-
-      <div className={style.submitButtonStyle}>
-        {type === 1 && (
-          <Button variant="contained" onClick={handleOpenDialog}>
-            הוספת תגובה
-          </Button>
+      <div className={style.containerCommenrs}>
+        <TextAreaComponent
+          placeholderText=" ספר איך היה השיעור *"
+          value={lessonDetails.summary}
+          required
+          disabled
+        />
+        {type !== 1 && (
+          <div>
+            <Checkbox checked={parentPermission} disabled />
+            האם לאפשר להורה לצפות בשיעור?
+          </div>
         )}
+        {comments.length > 0 && (
+          <div>
+            <h4>תגובות:</h4>
+            {isLoading ? (
+              <p>Loading comments...</p>
+            ) : (
+              comments.map((comment) => (
+                <PatientRow
+                  pictureName="commentPic"
+                  picturePath={
+                    comment.user_type === 1 ? "/parent.png" : "/guide.webp"
+                  }
+                  name={comment.name}
+                  lesson={comment.comment}
+                  hasBottomBorder={true}
+                  maxLessonTextLength={50}
+                />
+              ))
+            )}
+          </div>
+        )}
+      </div>
+      <div className={style.submitButtonStyle}>
+        <Button variant="contained" onClick={handleOpenDialog}>
+          הוספת תגובה
+        </Button>
       </div>
 
       {/* Comment Dialog */}
@@ -198,6 +230,7 @@ export default function SpecificSummaryWatch() {
             autoFocus
             onClick={handleSaveComment}
             variant="contained"
+            disabled={isSaving}
           >
             שמירה
           </Button>,
@@ -211,7 +244,11 @@ export default function SpecificSummaryWatch() {
         open={isDialogSuccessOpen}
         onClose={() => setIsDialogSuccessOpen(false)}
         actions={[
-          <Button key="confirmButton" autoFocus onClick={() => setIsDialogSuccessOpen(false)}>
+          <Button
+            key="confirmButton"
+            autoFocus
+            onClick={() => setIsDialogSuccessOpen(false)}
+          >
             הבנתי
           </Button>,
         ]}
