@@ -6,6 +6,8 @@ import PatientRow from '@/components/UI/patientRow';
 import style from '../../styles/summariesPatientLessons.module.css';
 import LoadingSpinner from '@/components/loadingSpinner';
 import { useRouter } from 'next/router';
+import { userStore } from '@/stores/userStore';
+import useCustomQuery from "@/utils/useCustomQuery";
 
 export default function SummariesPatientLessons() {
   const router = useRouter();
@@ -14,6 +16,7 @@ export default function SummariesPatientLessons() {
   const [name, setName] = useState();
   const [isLoading, setIsLoading] = useState(true);
   const { patientId } = router.query;
+  const { type } = userStore.getState();
 
   const handleAdd = () => {
     const currentDate = new Date().toLocaleDateString("en-US", {
@@ -37,10 +40,10 @@ export default function SummariesPatientLessons() {
   };
 
   const handleGoBack = () => {
-    router.push(`/personalMenu?id=${encodeURIComponent(patientId)}&name=${encodeURIComponent(name)}`);
+    router.push(`/personalMenu?patientId=${encodeURIComponent(patientId)}&name=${encodeURIComponent(name)}`);
   };
 
-  useEffect(() => {
+  useCustomQuery(() => {
     async function fetchData() {
       try {
         const [lessonsData, patientNameData] = await Promise.all([
@@ -85,17 +88,19 @@ export default function SummariesPatientLessons() {
       <div className={style.leftStyle}>
         <Button onClick={handleGoBack}> חזור &gt;</Button>
       </div>
-
       <PicAndHeadlines
         pictureName="lessonSummary"
         picturePath="../lessonSummary.png"
         primaryHeadline="סיכומי שיעורים"
         secondaryHeadline={name ? name : 'No Name Data'}
       />
-      <div className={style.addButtonStyle}>
-        <Button onClick={handleAdd}>+ הוספת סיכום</Button>
-      </div>
+      {type !== 1 && (
+        <div className={style.addButtonStyle}> 
+          <Button onClick={handleAdd}>+ הוספת סיכום</Button>
+        </div>
+      )}
       {lessons.map((lesson) => (
+        (type === 3 || type === 2 || (type === 1 && lesson.parent_permission)) && (
         <div key={lesson.lesson_id} className={style.rowWrapper} onClick={() => handleRowClick(lesson.lesson_id)}>
           <PatientRow
             pictureName={lesson.type}
@@ -106,6 +111,7 @@ export default function SummariesPatientLessons() {
             lesson={lesson.lesson_type}
           />
         </div>
+        )
       ))}
     </>
   );

@@ -12,6 +12,7 @@ import TextAreaComponent from '@/components/UI/textAreaComponent';
 import CustomizedDialogs from '@/components/dialog';
 import { useRouter } from 'next/router';
 import LoadingSpinner from '@/components/loadingSpinner';
+import useCustomQuery from "@/utils/useCustomQuery";
 
 export default function SpecificGoal() {
     const [summary, setSummary] = useState('');
@@ -28,6 +29,7 @@ export default function SpecificGoal() {
     const router = useRouter();
     const { time } = router.query;
     const { patientId } = router.query;
+    const [isSaving, setIsSaving] = useState(false);
 
     const date = time ? new Date(time).toLocaleDateString("en-US", {
         day: "2-digit",
@@ -77,6 +79,8 @@ export default function SpecificGoal() {
                 month: "2-digit",
                 year: "numeric",
             }) : '';
+
+            setIsSaving(true);
             
             const res = await axios.post("../api/goals/specificGoal", {
                 date,
@@ -99,10 +103,12 @@ export default function SpecificGoal() {
             setSaveSuccess(false);
             setDialogOpen(true);
             setDialogError(errorMessage);
-        }
+        } finally {
+            setIsSaving(false);
+          }
     };
 
-    useEffect(() => {
+    useCustomQuery(() => {
         // Keep track of completion status for each fetch operation
         let isStatusesLoaded = false;
         let isFieldsLoaded = false;
@@ -247,16 +253,20 @@ export default function SpecificGoal() {
                     </FormControl>
                 </div>
                 <div className={style.submitButtonStyle}>
-                    <Button type='submit' variant="contained" onClick={handleClickSubmit}>קבע מטרה</Button>
+                    <Button type='submit' disabled={isSaving} variant="contained" onClick={handleClickSubmit}>קבע מטרה</Button>
                 </div>
             </form>
 
             <CustomizedDialogs
                 title={dialogError ? "הוספת המטרה נכשלה" : "הוספת המטרה הושלמה"}
                 text={dialogError ? dialogError : ""}
-                closeText="הבנתי"
                 open={dialogOpen}
                 onClose={handleCloseDialog}
+                actions={[
+                    <Button key="confirmButton" autoFocus onClick={handleCloseDialog}>
+                      הבנתי
+                    </Button>,
+                  ]}
             />
         </>
     );

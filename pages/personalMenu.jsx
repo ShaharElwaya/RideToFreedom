@@ -7,6 +7,7 @@ import { PicAndText } from '@/components/UI/PicAndName';
 import style from '../styles/summariesPatientLessons.module.css';
 import Link from 'next/link';
 import LoadingSpinner from '@/components/loadingSpinner';
+import { userStore , setUserData} from '@/stores/userStore';
 
 const CustomButton = styled(Button)({
   '&:hover': {
@@ -45,18 +46,26 @@ const Item = styled(Paper)(() => ({
 const PersonalMenu = () => {
   const router = useRouter();
   const { query } = router;
-  const { id, name } = query;
+  const { patientId, name } = query;
   const [gender, setGender] = useState();
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true); 
+  const [isOneChild, setIsOneChild] = useState(false); 
+  const { id, type } = userStore.getState();
 
   useEffect(() => {
     async function getPatientGender() {
       try {
-        if (id) {
-          const response = await fetch(`/api/lessonsSummaries/patientIdToName?patient_id=${encodeURIComponent(id)}`);
+        if (patientId) {
+          const response = await fetch(`/api/lessonsSummaries/patientIdToName?patient_id=${encodeURIComponent(patientId)}`);
           const data = await response.json();
           setGender(data.gender);
           setIsLoading(false); // Set loading to false when data is fetched (success or error)
+        }
+
+        if (type == 1 ) {
+          const isOneChildResponse = await fetch(`/api/login/parent?id=${id}`);
+          const isOneChildData = await isOneChildResponse.json();
+          setIsOneChild(isOneChildData.hasOneChild);
         }
       } catch (error) {
         console.error('Error fetching patient name:', error);
@@ -65,10 +74,21 @@ const PersonalMenu = () => {
     }
 
     getPatientGender();
-  }, [id]);
+  }, [patientId]);
 
   const handleGoBack = () => {
-    router.back();
+    router.push(`/customerFile`);
+  };
+
+  const handleLogOut = () => {
+    setUserData({
+      patientId: 0,
+      type: 0,
+      email: "",
+      is_logged_in: false,
+    });
+
+    router.push(`/login`);
   };
 
   return (
@@ -77,7 +97,11 @@ const PersonalMenu = () => {
       {!isLoading && (
         <>
           <div className={style.leftStyle}>
-            <Button onClick={handleGoBack}> חזור &gt;</Button>
+            {isOneChild ? (
+              <Button onClick={handleLogOut}> התנתק </Button>
+            ) : (
+              <Button onClick={handleGoBack}> חזור &gt;</Button>
+            )}
           </div>
           <CenteredContainer>
             <Item>
@@ -92,17 +116,17 @@ const PersonalMenu = () => {
                   <CustomButton>צפייה בפרטים אישיים</CustomButton>
                 </MenuItem>
               </Link>
-              <Link href={`/lessonSummary/summariesPatientLessons?patientId=${query.id}`}>
+              <Link href={`/lessonSummary/summariesPatientLessons?patientId=${query.patientId}`}>
                 <MenuItem>
                   <CustomButton>צפייה בסיכומי שיעור</CustomButton>
                 </MenuItem>
               </Link>
-              <Link href={`/homeEvents/homeEvents?patientId=${query.id}`}>
+              <Link href={`/homeEvents/homeEvents?patientId=${query.patientId}`}>
                 <MenuItem>
                   <CustomButton>צפייה בדיווחים מהבית</CustomButton>
                 </MenuItem>
               </Link>
-              <Link href={`/goals/goals?patientId=${query.id}`}>
+              <Link href={`/goals/goals?patientId=${query.patientId}`}>
                 <MenuItem>
                   <CustomButton>צפייה במטרות</CustomButton>
                 </MenuItem>

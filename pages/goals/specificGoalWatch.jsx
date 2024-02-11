@@ -11,6 +11,7 @@ import TextAreaComponent from '@/components/UI/textAreaComponent';
 import CustomizedDialogs from '@/components/dialog';
 import { useRouter } from 'next/router';
 import LoadingSpinner from '@/components/loadingSpinner';
+import useCustomQuery from '@/utils/useCustomQuery';
 
 export default function SpecificGoalWatch() {
     const [goalsDetails, setGoalsDetails] = useState({
@@ -36,7 +37,7 @@ export default function SpecificGoalWatch() {
         width: '244px',
     };
 
-    useEffect(() => {
+    useCustomQuery(() => {
         // Fetch lesson details based on lessonId from the URL
         const fetchGoalsDetails = async () => {
             try {

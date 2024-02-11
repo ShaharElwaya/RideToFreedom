@@ -1,5 +1,3 @@
-// CustomizedDialogs.jsx
-
 import React from 'react';
 import Button from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
@@ -18,25 +16,31 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     },
 }));
 
-export default function CustomizedDialogs({ title, text, closeText, open, onClose }) {
+// ...
+
+export default function CustomizedDialogs({ title, text, closeText, open, onClose, actions }) {
     return (
-        <React.Fragment>
-            <BootstrapDialog
-                onClose={onClose}
-                open={open}
-            >
-                <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
-                    {title}
-                </DialogTitle>
-                <DialogContent>
-                    <Typography gutterBottom>{text}</Typography>
-                </DialogContent>
-                <DialogActions>
-                    <Button autoFocus onClick={onClose}>
-                        {closeText}
-                    </Button>
-                </DialogActions>
-            </BootstrapDialog>
-        </React.Fragment>
+      <React.Fragment>
+        <BootstrapDialog onClose={onClose} open={open}>
+          <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
+            {title}
+          </DialogTitle>
+          <DialogContent>
+            <Typography gutterBottom>{text}</Typography>
+          </DialogContent>
+          <DialogActions>
+            {Array.isArray(actions) &&
+              actions.map((action, index) => (
+                // Adding a unique key for each action
+                <React.Fragment key={index}>
+                  {action}
+                  {index !== actions.length - 1 && <span>&nbsp;</span>}
+                </React.Fragment>
+              ))}
+          </DialogActions>
+        </BootstrapDialog>
+      </React.Fragment>
     );
-}
+  }
+  
+  

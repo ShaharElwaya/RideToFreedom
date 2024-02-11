@@ -2,13 +2,13 @@ import { sql } from '@vercel/postgres';
 
 // Handler
 export default async function handler(req, res) {
-  const { summary, date, patientId, parentId } = req.body;
+  const { summary, date, patientId, id } = req.body;
 
   if (req.method === 'POST') {
     try {
       const result = await sql`
         INSERT INTO public.home_events(event, event_date, patient_id, parent_id)
-        VALUES (${summary}, ${date}, ${patientId}, ${parentId})
+        VALUES (${summary}, ${date}, ${patientId}, ${id})
         RETURNING *;`;
 
       const newEvent = result.rows[0];
