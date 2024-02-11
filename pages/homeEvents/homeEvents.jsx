@@ -7,6 +7,7 @@ import style from '../../styles/summariesPatientLessons.module.css';
 import { useRouter } from 'next/router';
 import LoadingSpinner from '@/components/loadingSpinner';
 import { userStore } from '@/stores/userStore';
+import useCustomQuery from "@/utils/useCustomQuery";
 
 export default function HomeEvents() {
   const router = useRouter();
@@ -40,7 +41,7 @@ export default function HomeEvents() {
     router.push(`/homeEvents/specificHomeEvent?time=${encodeURIComponent(formattedDateTime)}&patientId=${encodeURIComponent(patientId)}`);
   };
 
-  useEffect(() => {
+  useCustomQuery(() => {
     // Keep track of completion status for each fetch operation
     let isEventsLoaded = false;
     let isPatientNameLoaded = false;

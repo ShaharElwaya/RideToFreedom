@@ -9,6 +9,7 @@ import style from '../../styles/summariesPatientLessons.module.css';
 import TextAreaComponent from '@/components/UI/textAreaComponent';
 import { useRouter } from 'next/router';
 import LoadingSpinner from '@/components/loadingSpinner';
+import useCustomQuery from "@/utils/useCustomQuery";
 
 export default function SpecificHomeEventWatch() {
   const [eventDetails, setEventDetails] = useState({});
@@ -21,7 +22,7 @@ export default function SpecificHomeEventWatch() {
     router.back();
   };
 
-  useEffect(() => {
+  useCustomQuery(() => {
     // Fetch lesson details based on lessonId from the URL
     const fetchLessonDetails = async () => {;
       try {

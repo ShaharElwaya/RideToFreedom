@@ -17,6 +17,7 @@ import CustomizedDialogs from "@/components/dialog";
 import { useRouter } from "next/router";
 import LoadingSpinner from "@/components/loadingSpinner";
 import { userStore } from "@/stores/userStore";
+import useCustomQuery from "@/utils/useCustomQuery";
 
 export default function SpecificHomeEvent() {
   const [summary, setSummary] = useState("");
@@ -28,8 +29,7 @@ export default function SpecificHomeEvent() {
   const [parentName, setParentName] = useState("");
   const [isLoading, setIsLoading] = useState(true); // Add loading state
   const router = useRouter();
-  const { time } = router.query;
-  const { patientId } = router.query;
+  const { time, patientId } = router.query;
   const { type, id } = userStore.getState();
   const [isSaving, setIsSaving] = useState(false);
 
@@ -112,7 +112,7 @@ export default function SpecificHomeEvent() {
     }
   };
 
-  useEffect(() => {
+  useCustomQuery(() => {
     if (type != 1) {
       router.back();
     }

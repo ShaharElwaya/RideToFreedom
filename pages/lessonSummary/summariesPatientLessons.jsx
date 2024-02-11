@@ -7,6 +7,7 @@ import style from '../../styles/summariesPatientLessons.module.css';
 import LoadingSpinner from '@/components/loadingSpinner';
 import { useRouter } from 'next/router';
 import { userStore } from '@/stores/userStore';
+import useCustomQuery from "@/utils/useCustomQuery";
 
 export default function SummariesPatientLessons() {
   const router = useRouter();
@@ -42,7 +43,7 @@ export default function SummariesPatientLessons() {
     router.push(`/personalMenu?patientId=${encodeURIComponent(patientId)}&name=${encodeURIComponent(name)}`);
   };
 
-  useEffect(() => {
+  useCustomQuery(() => {
     async function fetchData() {
       try {
         const [lessonsData, patientNameData] = await Promise.all([

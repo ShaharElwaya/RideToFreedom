@@ -9,6 +9,7 @@ import CustomizedDialogs from "@/components/dialog";
 import LoadingSpinner from "@/components/loadingSpinner";
 import { useRouter } from "next/router";
 import { userStore } from "@/stores/userStore";
+import useCustomQuery from "@/utils/useCustomQuery";
 
 export default function SpecificSummaryWatch() {
   const [lessonDetails, setLessonDetails] = useState({});
@@ -89,49 +90,51 @@ export default function SpecificSummaryWatch() {
     }
   };
 
-  useEffect(() => {
-    // Fetch lesson details based on lessonId from the URL
-    const fetchLessonDetails = async () => {
-      try {
-        const response = await axios.get(
-          "/api/lessonsSummaries/specificSummaryWatch",
-          {
-            params: { lesson_id: lessonId },
-          }
-        );
-        setLessonDetails(response.data);
-        setParentPermission(response.data.parent_permission);
-
-        if (type == 1 && !response.data.parent_permission) {
-          // Redirect to the desired route for unauthorized users
-          router.push(
-            `/lessonSummary/summariesPatientLessons?patientId=${response.data.patient_id}`
-          );
+  // Fetch lesson details based on lessonId from the URL
+  const fetchLessonDetails = async () => {
+    console.log(window.location)
+    try {
+      const response = await axios.get(
+        "/api/lessonsSummaries/specificSummaryWatch",
+        {
+          params: { lesson_id: lessonId },
         }
+      );
+      setLessonDetails(response.data);
+      setParentPermission(response.data.parent_permission);
 
-        const fetchComments = async () => {
-          try {
-            // Fetch comments for the specific lessonId
-            const response = await axios.get(
-              `/api/lessonsSummaries/getComments?lesson_id=${lessonId}`
-            );
-            setComments(response.data);
-            setIsLoading(false);
-          } catch (error) {
-            console.error("Error fetching comments:", error);
-          }
-        };
-
-        fetchComments();
-
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Error fetching lesson details:", error);
+      if (type == 1 && !response.data.parent_permission) {
+        // Redirect to the desired route for unauthorized users
+        router.push(
+          `/lessonSummary/summariesPatientLessons?patientId=${response.data.patient_id}`
+        );
       }
-    };
 
-    fetchLessonDetails();
-  }, [lessonId]);
+      setIsLoading(false);
+    } catch (error) {
+      console.error("Error fetching lesson details:", error);
+    }
+  };
+
+  const fetchComments = async () => {
+    try {
+      // Fetch comments for the specific lessonId
+      const response = await axios.get(
+        `/api/lessonsSummaries/getComments?lesson_id=${lessonId}`
+      );
+      setComments(response.data);
+      setIsLoading(false);
+    } catch (error) {
+      console.error("Error fetching comments:", error);
+    }
+  };
+
+  const fetchAll = async () => {
+    await fetchLessonDetails();
+    await fetchComments();
+  }
+
+  useCustomQuery(fetchAll, [lessonId]);
 
   return (
     <>

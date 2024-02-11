@@ -9,6 +9,7 @@ import CustomizedDialogs from '@/components/dialog';
 import LoadingSpinner from '@/components/loadingSpinner';
 import { useRouter } from 'next/router';
 import { userStore } from '@/stores/userStore';
+import useCustomQuery from "@/utils/useCustomQuery";
 
 export default function SummariesPatientLessons() {
   const [summary, setSummary] = useState('');
@@ -24,8 +25,7 @@ export default function SummariesPatientLessons() {
   const [selectedOption, setSelectedOption] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
-  const { time } = router.query;
-  const { patientId } = router.query;
+  const { time, patientId } = router.query;
   const { type, id } = userStore.getState(); 
   const [isSaving, setIsSaving] = useState(false); 
 
@@ -106,7 +106,7 @@ export default function SummariesPatientLessons() {
     width: '240px',
   };
 
-  useEffect(() => {
+  useCustomQuery(() => {
     if (type == 1) {
       router.back();
     }

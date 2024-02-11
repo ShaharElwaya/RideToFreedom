@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import Head from "next/head";
 import { AppCacheProvider } from "@mui/material-nextjs/v14-pagesRouter";
@@ -24,7 +24,7 @@ const cacheRtl = createCache({
 export default function MyApp(props) {
   const { Component, pageProps } = props;
   const router = useRouter();
-
+  const [ isClient, setIsClient ] = useState(false);
   const { is_logged_in } = userStore.getState();
 
   // Handle Logged-in global state
@@ -33,7 +33,10 @@ export default function MyApp(props) {
       router.replace("/login");
     }
   }, [is_logged_in]);
-
+  
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -46,7 +49,7 @@ export default function MyApp(props) {
           <CacheProvider value={cacheRtl}>
             {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
             <CssBaseline />
-            <Component {...pageProps} />
+            { isClient && <Component {...pageProps} /> }
           </CacheProvider>
         </ThemeProvider>
       </AppCacheProvider>

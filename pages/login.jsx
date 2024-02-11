@@ -1,47 +1,50 @@
-import React from 'react';
-import { useState } from 'react';
-import { useRouter } from 'next/router';
-import axios from 'axios';
-import { Typography, TextField, Button } from '@mui/material';
+import React from "react";
+import { useState } from "react";
+import { useRouter } from "next/router";
+import axios from "axios";
+import { Typography, TextField, Button } from "@mui/material";
 import style from "../styles/loginRegisterPage.module.css";
-import TextFieldComponent from '@/components/UI/TextFiled';
-import PicAndHeadlines from '@/components/UI/picAndheadline';
-import { setUserData, userStore } from '../stores/userStore';
-import CustomizedDialogs from '@/components/dialog';
+import TextFieldComponent from "@/components/UI/TextFiled";
+import PicAndHeadlines from "@/components/UI/picAndheadline";
+import { setUserData, userStore } from "../stores/userStore";
+import CustomizedDialogs from "@/components/dialog";
 
 export default function login() {
-  const router = useRouter(); 
+  const router = useRouter();
   const [isSaving, setIsSaving] = useState(false);
-  const [dialogError, setDialogError] = useState(""); 
-  const [dialogOpen, setDialogOpen] = useState(false); 
+  const [dialogError, setDialogError] = useState("");
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   const handleClickLogin = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     try {
-      const email = e.target[0].value
-      const password = e.target[2].value
-      
-      setIsSaving(true); 
+      const email = e.target[0].value;
+      const password = e.target[2].value;
+
+      setIsSaving(true);
 
       const res = await axios.post("api/login", { email, password });
-      
+
       await setUserData({
         type: res.data.type,
         email: res.data.email,
         id: res.data.id,
-        is_logged_in: true
+        is_logged_in: true,
       });
 
-      if (res.data.type === 1 ) {
+      if (res.data.type === 1) {
         const response = await fetch(`/api/login/parent?id=${res.data.id}`);
         const isOneChild = await response.json();
 
-        if(isOneChild.hasOneChild) {
+        if (isOneChild.hasOneChild) {
           const { id: patientId, name, gender } = isOneChild.childDetails;
           router.push({
             pathname: "/personalMenu",
             query: { patientId, name, gender },
           });
+        }
+        else{
+          await router.push(`/customerFile`);
         }
       } else {
         await router.push(`/customerFile`);
@@ -65,7 +68,7 @@ export default function login() {
   const handleCloseDialog = () => {
     setDialogOpen(false);
     setDialogError(""); // Clear the error message when the dialog is closed
-  };  
+  };
 
   return (
     <>
@@ -85,7 +88,9 @@ export default function login() {
             <TextFieldComponent type="password" outlinedText="סיסמה" required />
           </div>
         </div>
-        <Button type="submit" variant="contained" disabled={isSaving} >התחבר</Button>
+        <Button type="submit" variant="contained" disabled={isSaving}>
+          התחבר
+        </Button>
       </form>
 
       <CustomizedDialogs

@@ -12,6 +12,7 @@ import TextAreaComponent from '@/components/UI/textAreaComponent';
 import CustomizedDialogs from '@/components/dialog';
 import { useRouter } from 'next/router';
 import LoadingSpinner from '@/components/loadingSpinner';
+import useCustomQuery from "@/utils/useCustomQuery";
 
 export default function SpecificGoal() {
     const [summary, setSummary] = useState('');
@@ -107,7 +108,7 @@ export default function SpecificGoal() {
           }
     };
 
-    useEffect(() => {
+    useCustomQuery(() => {
         // Keep track of completion status for each fetch operation
         let isStatusesLoaded = false;
         let isFieldsLoaded = false;
