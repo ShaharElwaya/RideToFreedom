@@ -6,6 +6,7 @@ import GoalRow from '@/components/UI/goalRow';
 import style from '../../styles/summariesPatientLessons.module.css';
 import { useRouter } from 'next/router';
 import LoadingSpinner from '@/components/loadingSpinner';
+import useCustomQuery from "@/utils/useCustomQuery";
 
 export default function Goals() {
   const router = useRouter();
@@ -25,7 +26,7 @@ export default function Goals() {
     router.push(`/goals/specificGoal?time=${encodeURIComponent(currentDate)}&patientId=${encodeURIComponent(patientId)}`);
   };
 
-  useEffect(() => {
+  useCustomQuery(() => {
     // Keep track of completion status for each fetch operation
     let isGoalsLoaded = false;
     let isPatientNameLoaded = false;
@@ -75,7 +76,7 @@ export default function Goals() {
   };
 
   const handleGoBack = () => {
-    router.push(`/personalMenu?id=${encodeURIComponent(patientId)}&name=${encodeURIComponent(name)}`);
+    router.push(`/personalMenu?patientId=${encodeURIComponent(patientId)}&name=${encodeURIComponent(name)}`);
   };
 
   return (

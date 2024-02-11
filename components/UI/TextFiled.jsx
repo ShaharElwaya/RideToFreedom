@@ -19,7 +19,7 @@ export default function TextFieldComponent({
   };
 
   const textFieldStyle = {
-    width: "250px", // Set a fixed width for both text fields
+    width: "265px", // Set a fixed width for both text fields
   };
 
   const iconStyle = {

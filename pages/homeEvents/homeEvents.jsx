@@ -6,6 +6,8 @@ import PatientRow from '@/components/UI/patientRow';
 import style from '../../styles/summariesPatientLessons.module.css';
 import { useRouter } from 'next/router';
 import LoadingSpinner from '@/components/loadingSpinner';
+import { userStore } from '@/stores/userStore';
+import useCustomQuery from "@/utils/useCustomQuery";
 
 export default function HomeEvents() {
   const router = useRouter();
@@ -14,6 +16,7 @@ export default function HomeEvents() {
   const [name, setName] = useState();
   const [isLoading, setIsLoading] = useState(true);
   const { patientId } = router.query;
+  const { type } = userStore.getState(); 
 
   // Handle function to navigate to the specificSummary page
   const handleAdd = () => {
@@ -38,7 +41,7 @@ export default function HomeEvents() {
     router.push(`/homeEvents/specificHomeEvent?time=${encodeURIComponent(formattedDateTime)}&patientId=${encodeURIComponent(patientId)}`);
   };
 
-  useEffect(() => {
+  useCustomQuery(() => {
     // Keep track of completion status for each fetch operation
     let isEventsLoaded = false;
     let isPatientNameLoaded = false;
@@ -87,7 +90,7 @@ export default function HomeEvents() {
   };
 
   const handleGoBack = () => {
-    router.push(`/personalMenu?id=${encodeURIComponent(patientId)}&name=${encodeURIComponent(name)}`);
+    router.push(`/personalMenu?patientId=${encodeURIComponent(patientId)}&name=${encodeURIComponent(name)}`);
   };
 
   return (
@@ -104,9 +107,11 @@ export default function HomeEvents() {
         primaryHeadline="דיווח אירועים מהבית"
         secondaryHeadline={name ? name : 'No Name Data'}
       />
-      <div className={style.addButtonStyle}>
-        <Button onClick={handleAdd}>+ הוספת אירוע</Button>
-      </div>
+      {type == 1 && (
+        <div className={style.addButtonStyle}>
+          <Button onClick={handleAdd}>+ הוספת אירוע</Button>
+        </div>
+      )}
       <div className={style.rowWrapperContainer}>
         {events.map((event) => (
           <div key={event.event_id} className={style.rowWrapper} onClick={() => handleRowClick(event.event_id)}>

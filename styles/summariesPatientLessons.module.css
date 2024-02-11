@@ -22,6 +22,12 @@
     text-align: right;
 }
 
+.containerCommenrs{
+    margin: auto;
+    width: 500px;
+    text-align: right;
+}
+
 .submitButtonStyle{
     margin-top: 30px;
 }

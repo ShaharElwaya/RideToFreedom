@@ -8,6 +8,8 @@ import TextAreaComponent from '@/components/UI/textAreaComponent';
 import CustomizedDialogs from '@/components/dialog';
 import LoadingSpinner from '@/components/loadingSpinner';
 import { useRouter } from 'next/router';
+import { userStore } from '@/stores/userStore';
+import useCustomQuery from "@/utils/useCustomQuery";
 
 export default function SummariesPatientLessons() {
   const [summary, setSummary] = useState('');
@@ -23,10 +25,9 @@ export default function SummariesPatientLessons() {
   const [selectedOption, setSelectedOption] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
-  const { time } = router.query;
-  const { patientId } = router.query;
-
-  const guideId = '14';
+  const { time, patientId } = router.query;
+  const { type, id } = userStore.getState(); 
+  const [isSaving, setIsSaving] = useState(false); 
 
   const formattedDateTime = time ? new Date(time).toLocaleString("en-US", {
     day: "2-digit",
@@ -73,11 +74,13 @@ export default function SummariesPatientLessons() {
 
       const date = formattedDateTime;
 
+      setIsSaving(true); 
+
       const res = await axios.post("../api/lessonsSummaries/specificSummary", {
         date,
         summary,
         patientId,
-        guideId,
+        id,
         parentPermission,
         lessonType
       });
@@ -94,6 +97,8 @@ export default function SummariesPatientLessons() {
       setSaveSuccess(false);
       setDialogOpen(true);
       setDialogError(errorMessage);
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -101,7 +106,11 @@ export default function SummariesPatientLessons() {
     width: '240px',
   };
 
-  useEffect(() => {
+  useCustomQuery(() => {
+    if (type == 1) {
+      router.back();
+    }
+
     async function fetchData() {
       try {
         const [optionsData, patientData, guideData] = await Promise.all([
@@ -149,7 +158,7 @@ export default function SummariesPatientLessons() {
     async function getGuideName() {
       try {
         const response = await axios.get('/api/lessonsSummaries/guideIdToName', {
-          params: { id: guideId },
+          params: { id: id },
         });
         return response.data;
       } catch (error) {
@@ -220,16 +229,20 @@ export default function SummariesPatientLessons() {
           /> האם לאפשר להורה לצפות בשיעור?
         </div>
         <div className={style.submitButtonStyle}>
-          <Button type='submit' variant="contained" onClick={handleClickSubmit}>הגש סיכום</Button>
+          <Button type='submit' disabled={isSaving} variant="contained" onClick={handleClickSubmit}>הגש סיכום</Button>
         </div>
       </form>
 
       <CustomizedDialogs
         title={dialogError ? "הוספת הסיכום נכשל" : "הוספת הסיכום הושלם"}
         text={dialogError ? dialogError : ""}
-        closeText="הבנתי"
         open={dialogOpen}
         onClose={handleCloseDialog}
+        actions={[
+          <Button key="confirmButton" autoFocus onClick={handleCloseDialog}>
+            הבנתי
+          </Button>,
+        ]}
       />
     </>
   );
