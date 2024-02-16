@@ -10,24 +10,7 @@ import { PicAndText } from "@/components/UI/PicAndName";
 import LoadingSpinner from "@/components/loadingSpinner";
 import { setUserData, userStore } from "@/stores/userStore";
 import style from "../styles/summariesPatientLessons.module.css";
-
-const Item = styled(Paper)(() => ({
-  padding: "20px",
-  textAlign: "center",
-  cursor: "pointer",
-}));
-
-const CenteredContainer = styled(Box)({
-  display: "flex",
-  flexDirection: "column",
-  justifyContent: "center",
-  alignItems: "center",
-});
-
-const ContentContainer = styled(Box)({
-  marginTop: "20px",
-  width: "90%",
-});
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 const RowAndColumnSpacing = () => {
   const [names, setNames] = useState([]);
@@ -36,6 +19,25 @@ const RowAndColumnSpacing = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const { type, id } = userStore.getState();
+  const isSmallScreen = useMediaQuery("(max-width: 600px)");
+
+  const Item = styled(Paper)(() => ({
+    padding: "20px 0",
+    textAlign: "center",
+    cursor: "pointer",
+  }));
+
+  const CenteredContainer = styled(Box)({
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+  });
+
+  const ContentContainer = styled(Box)({
+    marginTop: "20px",
+    width: isSmallScreen ? "100%" : "600px",
+  });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -108,7 +110,7 @@ const RowAndColumnSpacing = () => {
         <PicAndHeadlines
           pictureName="customerFile"
           picturePath="../customerFile.png"
-          primaryHeadline={type === 1 ? 'תיקי ילדים' : 'תיקי לקוחות'}
+          primaryHeadline={type === 1 ? "תיקי ילדים" : "תיקי לקוחות"}
         />
         <ContentContainer>
           {/* Search Input */}
@@ -119,12 +121,10 @@ const RowAndColumnSpacing = () => {
             onChange={handleSearchInputChange}
             InputProps={{
               startAdornment: (
-                <InputAdornment position="start">
-                  🔍
-                </InputAdornment>
+                <InputAdornment position="start">🔍</InputAdornment>
               ),
             }}
-            fullWidth
+            style={{ width: '100%' }}
             margin="normal"
           />
           <Grid container spacing={2}>
@@ -138,6 +138,7 @@ const RowAndColumnSpacing = () => {
                   <PicAndText
                     pictureName={getPictureName(nameData.gender)}
                     name={nameData.name}
+                    containerWidth={window.innerWidth / 3}
                   />
                 </Item>
               </Grid>

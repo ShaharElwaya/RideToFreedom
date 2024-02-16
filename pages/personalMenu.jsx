@@ -38,7 +38,7 @@ const MenuItem = styled('div')({
 });
 
 const Item = styled(Paper)(() => ({
-  padding: '20px',
+  padding: '20px 0',
   textAlign: 'center',
   width: '200px',
 }));
@@ -108,6 +108,7 @@ const PersonalMenu = () => {
               <PicAndText
                 pictureName={gender === 'F' ? 'girlPic' : 'boyPic'}
                 name={`${name}`}
+                containerWidth={175}
               />
             </Item>
             <div>
