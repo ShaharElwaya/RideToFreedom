@@ -364,7 +364,7 @@ export default function SpecificSummaryWatch() {
                         : 46 - maxLettersGuideName
                     }
                     canEdit={comment.user_id === id}
-                  />
+                  /> 
                 </p>
               ))
             )}
