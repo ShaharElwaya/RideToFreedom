@@ -110,6 +110,22 @@ export default function SummariesPatientLessons() {
     );
   };
 
+  const formatDate = (date) => {
+    if (!date) {
+      return ''; // Handle the case when date is undefined or null
+    }
+  
+    if (isSmallScreen) {
+      // Display date in "dd/mm" format for small screens
+      const [day, month] = date.split("-");
+      return `${day}-${month}`;
+    } else {
+      // Keep the original date format for larger screens
+      return date;
+    }
+  };
+  
+
   return (
     <>
       {isLoading && <LoadingSpinner />}
@@ -143,15 +159,14 @@ export default function SummariesPatientLessons() {
                 picturePath={`../${
                   lesson.patient_gender === "F" ? "girlPic" : "boyPic"
                 }.png`}
-                date={lesson.formatted_date}
+                date={formatDate(lesson.formatted_date)}
                 time={lesson.formatted_time}
                 name={lesson.guide_name}
                 maxTextLengthName={isSmallScreen ? 7 : maxLettersGuideName}
                 nameWidth={isSmallScreen ? 77 : (maxLettersGuideName * 9)}
                 lesson={lesson.lesson_type}
                 {...(isSmallScreen && {
-                  maxTextLengthLesson: 6,
-                  lessonWidth: 66,
+                  maxTextLengthLesson: 7,
                 })}
               />
             </div>

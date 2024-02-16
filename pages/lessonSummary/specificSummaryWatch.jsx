@@ -149,6 +149,22 @@ export default function SpecificSummaryWatch() {
 
   useCustomQuery(fetchAll, [lessonId]);
 
+  const formatDate = (date) => {
+    if (!date) {
+      return ''; // Handle the case when date is undefined or null
+    }
+  
+    if (isSmallScreen) {
+      // Display date in "dd/mm" format for small screens
+      const [day, month] = date.split("-");
+      return `${day}-${month}`;
+    } else {
+      // Keep the original date format for larger screens
+      return date;
+    }
+  };
+  
+
   return (
     <>
       {isLoading && <LoadingSpinner />}
@@ -170,17 +186,16 @@ export default function SpecificSummaryWatch() {
         picturePath={`../${
           lessonDetails.gender === "F" ? "girlPic" : "boyPic"
         }.png`}
-        date={lessonDetails.formatted_date}
+        date={formatDate(lessonDetails.formatted_date)}
         time={lessonDetails.formatted_time}
         name={lessonDetails.guide_name}
         lesson={lessonDetails.lesson_type_name}
         {...(isSmallScreen && {
-          maxTextLengthName: 6,
-          nameWidth: 66,
+          maxTextLengthName: 7,
+          nameWidth: 77,
         })}
         {...(isSmallScreen && {
-          maxTextLengthLesson: 6,
-          lessonWidth: 66,
+          maxTextLengthLesson: 7,
         })}
         isCenter
       />
@@ -213,8 +228,8 @@ export default function SpecificSummaryWatch() {
                   lesson={comment.comment}
                   hasBottomBorder={true}
                   maxTextLengthName={isSmallScreen ? 7 : maxLettersGuideName}
-                  nameWidth={isSmallScreen ? 77 : (maxLettersGuideName * 9)}
-                  maxTextLengthLesson={isSmallScreen ? window.innerWidth / 9 - 25 : 46 - maxLettersGuideName}
+                  nameWidth={isSmallScreen ? 70 : (maxLettersGuideName * 9)}
+                  maxTextLengthLesson={isSmallScreen ? window.innerWidth / 9 - 23 : 46 - maxLettersGuideName}
                 />
               ))
             )}
