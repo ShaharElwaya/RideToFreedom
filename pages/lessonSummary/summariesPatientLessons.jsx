@@ -334,22 +334,25 @@ export default function SummariesPatientLessons() {
       {/* Filter Button */}
       <div className={style.rightStyle}>
         <div className="container">
-        <b>סננים: </b>
-        {Object.values(filters).some((value) => value) && (
-  <Button
-    color="secondary"
-    onClick={() => setFilters({
-      selectedGuides: [],
-      selectedLessonTypes: [],
-      startDate: null,
-      endDate: null,
-      startTime: null,
-      endTime: null,
-    })}
-  >
-    איפוס סננים
-  </Button>
-)}</div>
+          <b>סננים: </b>
+          {Object.values(filters).some((value) => value) && (
+            <Button
+              color="secondary"
+              onClick={() =>
+                setFilters({
+                  selectedGuides: [],
+                  selectedLessonTypes: [],
+                  startDate: null,
+                  endDate: null,
+                  startTime: null,
+                  endTime: null,
+                })
+              }
+            >
+              איפוס סננים
+            </Button>
+          )}
+        </div>
         {/* Filter Controls */}
         <FormControl className={style.filterInput}>
           <InputLabel> מדריך</InputLabel>
@@ -394,7 +397,7 @@ export default function SummariesPatientLessons() {
           </Select>
         </FormControl>
         <TextField
-        sx={{ width: isSmallScreen ? "162px" : "210px" }}
+          sx={{ width: isSmallScreen ? "162px" : "210px" }}
           label="מתאריך"
           type="date"
           value={filters.startDate || ""}
@@ -404,7 +407,7 @@ export default function SummariesPatientLessons() {
           }}
         />
         <TextField
-        sx={{ width: isSmallScreen ? "162px" : "210px" }}
+          sx={{ width: isSmallScreen ? "162px" : "210px" }}
           label="עד תאריך"
           type="date"
           value={filters.endDate || ""}
@@ -414,7 +417,7 @@ export default function SummariesPatientLessons() {
           }}
         />
         <TextField
-        sx={{ width: isSmallScreen ? "162px" : "120px" }}
+          sx={{ width: isSmallScreen ? "162px" : "120px" }}
           label="משעה"
           type="time"
           value={filters.startTime || ""}
@@ -425,7 +428,7 @@ export default function SummariesPatientLessons() {
           disabled={!filters.startDate}
         />
         <TextField
-        sx={{ width: isSmallScreen ? "162px" : "120px" }}
+          sx={{ width: isSmallScreen ? "162px" : "120px" }}
           label="עד שעה"
           type="time"
           value={filters.endTime || ""}
@@ -435,10 +438,8 @@ export default function SummariesPatientLessons() {
           }}
           disabled={!filters.endDate}
         />
-        
       </div>
 
-          
       {type !== 1 && (
         <div className={style.addButtonStyle}>
           <Button onClick={handleAdd}>+ הוספת סיכום</Button>

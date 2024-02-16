@@ -16,6 +16,10 @@ import useCustomQuery from "@/utils/useCustomQuery";
 export default function SpecificHomeEventWatch() {
   const [eventDetails, setEventDetails] = useState({});
   const [isLoading, setIsLoading] = useState(true); 
+  const [summary, setSummary] = useState("");
+  const [eventDate, setEventDate] = useState("");
+  const [patientId, setPatientId] = useState("");
+  const [parentId, setParentId] = useState("");
   const router = useRouter();
   const { eventId } = router.query;
   const { type, id } = userStore.getState();
@@ -23,7 +27,6 @@ export default function SpecificHomeEventWatch() {
   const [dialogError, setDialogError] = useState("");
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
-  const [patientId, setPatientId] = useState("");
 
   const handleGoBack = () => {
     router.back();
@@ -37,6 +40,9 @@ export default function SpecificHomeEventWatch() {
             params: { event_id: eventId }, 
         });        
         setEventDetails(response.data);
+        setSummary(response.data.event_summary);
+        setEventDate(response.data.event_date);
+        setParentId(response.data.parent_id);
         setPatientId(response.data.patient_id);
         setIsLoading(false); // Set loading to false when patient data is fetched
 
@@ -64,19 +70,20 @@ export default function SpecificHomeEventWatch() {
     fetchLessonDetails();
   }, [eventId]);
 
-  const handleClick = (eventId) => {
-    router.push(
-      `/homeEvents/specificHomeEventEdit?eventId=${encodeURIComponent(eventId)}`
-    );
-  };
-
-
-  const handleClickDelete = async (e) => {
+  const handleClickSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const res = await axios.post("../api/homeEvents/specificHomeEventDelete", {
-        eventId
+      if (!summary.trim()) {
+        setDialogError("הדיווח אינו יכול להיות ריק, אל תחסוך עלינו סיפורים..");
+        setDialogOpen(true);
+        return;
+      }
+
+      setIsSaving(true); 
+
+      const res = await axios.post("../api/homeEvents/specificHomeEventEdit", {
+        summary, eventId, eventDate, parentId, patientId 
       });
       setDialogError("");
       setSaveSuccess(true);
@@ -131,25 +138,19 @@ export default function SpecificHomeEventWatch() {
       <form>
         <div className={style.container}>
           <TextAreaComponent
-            value={eventDetails.event_summary}
+            value={summary}
             required
-            disabled
+            onChange={(e) => setSummary(e.target.value)}
           />
         </div>
+        
+        <div className={style.submitButtonStyle}>
+          <Button type="submit" disabled={isSaving} variant="contained" onClick={handleClickSubmit}>
+            עדכן דיווח
+          </Button>
+        </div>
       </form>
-        {type == 1 && (<div className={style.centerStyle}>
-          <Button
-            variant="contained"
-            onClick={() => handleClick(eventId)}
-            style={{ margin: '5px' }}
-          >
-            עריכת דיווח
-          </Button>
-          <Button type="submit" disabled={isSaving} variant="contained" onClick={handleClickDelete} style={{ margin: '5px' }}>
-            מחק דיווח
-          </Button>
-        </div>)}
-        <CustomizedDialogs
+      <CustomizedDialogs
         title={dialogError ? "עדכון הדיווח נכשל" : "עדכון הדיווח הושלם"}
         text={dialogError ? dialogError : ""}
         open={dialogOpen}

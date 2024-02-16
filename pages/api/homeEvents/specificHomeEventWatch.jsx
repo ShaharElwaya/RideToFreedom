@@ -8,6 +8,7 @@ export default async function handler(req, res) {
             const result = await sql`SELECT 
             h.event AS event_summary,
             h.parent_id AS parent_id,
+            h.event_date AS event_date,
             TO_CHAR(h.event_date, 'DD-MM-YYYY') AS formatted_date,
             TO_CHAR(h.event_date, 'HH24:MI') AS formatted_time,
             pt.id AS patient_id,
