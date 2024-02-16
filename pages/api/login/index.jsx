@@ -7,8 +7,8 @@ export default async function handler(req, res) {
   if (req.method === "POST") {
     try {
       const data = await sql`SELECT * FROM users WHERE email = ${email};`;
-      console.log("🚀 ~ handler ~ data:", data);
       const actual_password = data.rows[0].password;
+      
       if (password !== actual_password) {
         res.status(404).json("Not authorized");
       }

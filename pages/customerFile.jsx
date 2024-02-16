@@ -97,6 +97,9 @@ const RowAndColumnSpacing = () => {
       nameData.name.toLowerCase().includes(searchValue.toLowerCase())
     );
     setFilteredNames(filtered);
+
+  const handleSetMeeting = () => {
+    router.push('/introductionMeeting');
   };
 
   return (
@@ -113,6 +116,8 @@ const RowAndColumnSpacing = () => {
           primaryHeadline={type === 1 ? "תיקי ילדים" : "תיקי לקוחות"}
         />
         <ContentContainer>
+            {type === 1 && <Button onClick={handleSetMeeting}>קבע פגישת הכרות</Button>}
+          </CenteredContainer>
           {/* Search Input */}
           <TextField
             label="חיפוש"

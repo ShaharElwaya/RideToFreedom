@@ -1,13 +1,12 @@
-import React from "react";
-import { useState } from "react";
-import { useRouter } from "next/router";
-import axios from "axios";
-import { Typography, TextField, Button } from "@mui/material";
-import style from "../styles/loginRegisterPage.module.css";
 import TextFieldComponent from "@/components/UI/TextFiled";
 import PicAndHeadlines from "@/components/UI/picAndheadline";
-import { setUserData, userStore } from "../stores/userStore";
 import CustomizedDialogs from "@/components/dialog";
+import { Button } from "@mui/material";
+import axios from "axios";
+import { useRouter } from "next/router";
+import { useState } from "react";
+import { setUserData } from "../stores/userStore";
+import style from "../styles/loginRegisterPage.module.css";
 
 export default function login() {
   const router = useRouter();
@@ -25,7 +24,7 @@ export default function login() {
 
       const res = await axios.post("api/login", { email, password });
 
-      await setUserData({
+      setUserData({
         type: res.data.type,
         email: res.data.email,
         id: res.data.id,
@@ -42,8 +41,7 @@ export default function login() {
             pathname: "/personalMenu",
             query: { patientId, name, gender },
           });
-        }
-        else{
+        } else {
           await router.push(`/customerFile`);
         }
       } else {

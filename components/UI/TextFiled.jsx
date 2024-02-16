@@ -31,7 +31,7 @@ export default function TextFieldComponent({
     <TextField
       label={outlinedText}
       variant="outlined"
-      type={showPassword ? "text" : type}
+      type={type === "password" && showPassword ? "text" : type}
       value={value}
       onChange={onChange}
       required={required}
