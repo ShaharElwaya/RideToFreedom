@@ -12,30 +12,30 @@ import { userStore , setUserData} from '@/stores/userStore';
 import useCustomQuery from "@/utils/useCustomQuery";
 
 const CustomButton = styled(Button)({
-  '&:hover': {
-    backgroundColor: 'transparent',
+  "&:hover": {
+    backgroundColor: "transparent",
   },
 });
 
-const CenteredContainer = styled('div')({
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  justifyContent: 'center',
-  position: 'relative',
-  minHeight: '100vh',
+const CenteredContainer = styled("div")({
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  justifyContent: "center",
+  position: "relative",
+  minHeight: "100vh",
 });
 
-const MenuItem = styled('div')({
-  padding: '20px',
-  width: '200px',
-  backgroundColor: '#fffafa',
-  borderRadius: '10px',
-  boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-  margin: '0px',
-  transition: 'background-color 0.3s ease',
-  '&:hover': {
-    backgroundColor: '#edebeb',
+const MenuItem = styled("div")({
+  padding: "20px",
+  width: "200px",
+  backgroundColor: "#fffafa",
+  borderRadius: "10px",
+  boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+  margin: "0px",
+  transition: "background-color 0.3s ease",
+  "&:hover": {
+    backgroundColor: "#edebeb",
   },
 });
 
@@ -50,8 +50,8 @@ const PersonalMenu = () => {
   const { query } = router;
   const { patientId, name } = query;
   const [gender, setGender] = useState();
-  const [isLoading, setIsLoading] = useState(true); 
-  const [isOneChild, setIsOneChild] = useState(false); 
+  const [isLoading, setIsLoading] = useState(true);
+  const [isOneChild, setIsOneChild] = useState(false);
   const { id, type } = userStore.getState();
 
   useCustomQuery(() => {
@@ -79,19 +79,23 @@ const PersonalMenu = () => {
     async function getPatientGender() {
       try {
         if (patientId) {
-          const response = await fetch(`/api/lessonsSummaries/patientIdToName?patient_id=${encodeURIComponent(patientId)}`);
+          const response = await fetch(
+            `/api/lessonsSummaries/patientIdToName?patient_id=${encodeURIComponent(
+              patientId
+            )}`
+          );
           const data = await response.json();
           setGender(data.gender);
           setIsLoading(false); // Set loading to false when data is fetched (success or error)
         }
 
-        if (type == 1 ) {
+        if (type == 1) {
           const isOneChildResponse = await fetch(`/api/login/parent?id=${id}`);
           const isOneChildData = await isOneChildResponse.json();
           setIsOneChild(isOneChildData.hasOneChild);
         }
       } catch (error) {
-        console.error('Error fetching patient name:', error);
+        console.error("Error fetching patient name:", error);
         setIsLoading(false); // Set loading to false on error
       }
     }
@@ -115,6 +119,10 @@ const PersonalMenu = () => {
     router.push(`/login`);
   };
 
+  const handleSetMeeting = () => {
+    router.push("/introductionMeeting");
+  };
+
   return (
     <>
       {isLoading && <LoadingSpinner />}
@@ -130,23 +138,29 @@ const PersonalMenu = () => {
           <CenteredContainer>
             <Item>
               <PicAndText
-                pictureName={gender === 'F' ? 'girlPic' : 'boyPic'}
+                pictureName={gender === "F" ? "girlPic" : "boyPic"}
                 name={`${name}`}
                 containerWidth={175}
               />
             </Item>
             <div>
-              <Link href="/somePath3">
+              <Link
+                href={`/introMeetingView?patientId=${query.patientId}&userType=${type}`}
+              >
                 <MenuItem>
                   <CustomButton>צפייה בפרטים אישיים</CustomButton>
                 </MenuItem>
               </Link>
-              <Link href={`/lessonSummary/summariesPatientLessons?patientId=${query.patientId}`}>
+              <Link
+                href={`/lessonSummary/summariesPatientLessons?patientId=${query.patientId}`}
+              >
                 <MenuItem>
                   <CustomButton>צפייה בסיכומי שיעור</CustomButton>
                 </MenuItem>
               </Link>
-              <Link href={`/homeEvents/homeEvents?patientId=${query.patientId}`}>
+              <Link
+                href={`/homeEvents/homeEvents?patientId=${query.patientId}`}
+              >
                 <MenuItem>
                   <CustomButton>צפייה בדיווחים מהבית</CustomButton>
                 </MenuItem>
@@ -162,6 +176,11 @@ const PersonalMenu = () => {
                 </MenuItem>
               </Link>
             </div>
+            {type === 1 && (
+              <Button onClick={handleSetMeeting}>
+                קבע פגישת היכרות למטופל נוסף
+              </Button>
+            )}
           </CenteredContainer>
         </>
       )}
