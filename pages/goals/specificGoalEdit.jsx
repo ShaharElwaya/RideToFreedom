@@ -17,6 +17,7 @@ import style from "../../styles/summariesPatientLessons.module.css";
 import TextAreaComponent from "@/components/UI/textAreaComponent";
 import CustomizedDialogs from "@/components/dialog";
 import { useRouter } from "next/router";
+import { userStore } from "@/stores/userStore";
 import LoadingSpinner from "@/components/loadingSpinner";
 import useCustomQuery from "@/utils/useCustomQuery";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -51,6 +52,7 @@ export default function SpecificGoalWatch() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const isSmallScreen = useMediaQuery("(max-width: 600px)");
+  const { type, id } = userStore.getState();
 
   const handleCloseDialog = () => {
     setDialogOpen(false);
@@ -135,6 +137,22 @@ export default function SpecificGoalWatch() {
         setDestinationDate(goalDetailsData.destination_date);
         setPatientIdType(goalDetailsData.patient_id);
         setDate(goalDetailsData.setting_date);
+
+        if (type === 1) {
+          // Fetch comments for the specific lessonId
+          const childrens = await axios.get(`/api/login/childrens?id=${id}`);
+          let isOk = false;
+  
+          for (let i = 0; i < childrens.data.length && !isOk; i++) {
+            if (childrens.data[i].id == response.data.patient_id) {
+              isOk = true;
+            }
+          }
+  
+          if (isOk == false) {
+            router.back(); // Use await to wait for the navigation to complete
+          }
+        }
       } catch (error) {
         console.error("Error fetching lesson details:", error);
       }

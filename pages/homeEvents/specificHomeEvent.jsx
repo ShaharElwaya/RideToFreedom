@@ -121,6 +121,30 @@ export default function SpecificHomeEvent() {
       router.back();
     }
 
+    async function checkPremission() {
+      try {
+        if (type === 1) {
+          // Fetch comments for the specific lessonId
+          const response = await axios.get(`/api/login/childrens?id=${id}`);
+          let isOk = false;
+          
+          for(let i = 0; i < response.data.length && !isOk; i++) {
+            if(response.data[i].id == patientId){
+              isOk = true;
+            }
+          }
+
+          if (isOk == false) {
+            router.back(); // Use await to wait for the navigation to complete
+          }
+        }
+      } catch (error) {
+        console.error("Error checking permission:", error);
+      }
+    }    
+
+    checkPremission();
+
     // Keep track of completion status for each fetch operation
     let isPatientNameLoaded = false;
     let isParentNameLoaded = false;

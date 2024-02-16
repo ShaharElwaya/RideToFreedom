@@ -17,6 +17,7 @@ import style from "../../styles/summariesPatientLessons.module.css";
 import TextAreaComponent from "@/components/UI/textAreaComponent";
 import CustomizedDialogs from "@/components/dialog";
 import { useRouter } from "next/router";
+import { userStore } from "@/stores/userStore";
 import LoadingSpinner from "@/components/loadingSpinner";
 import useCustomQuery from "@/utils/useCustomQuery";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -37,6 +38,7 @@ export default function SpecificGoalWatch() {
   const { goalId, index } = router.query;
   const [isLoading, setIsLoading] = useState(true);
   const isSmallScreen = useMediaQuery("(max-width: 600px)");
+  const { type, id } = userStore.getState();
 
   const handleGoBack = () => {
     router.back();
@@ -51,6 +53,22 @@ export default function SpecificGoalWatch() {
         });
         setGoalsDetails(response.data);
         setIsLoading(false);
+
+        if (type === 1) {
+          // Fetch comments for the specific lessonId
+          const childrens = await axios.get(`/api/login/childrens?id=${id}`);
+          let isOk = false;
+  
+          for (let i = 0; i < childrens.data.length && !isOk; i++) {
+            if (childrens.data[i].id == response.data.patient_id) {
+              isOk = true;
+            }
+          }
+  
+          if (isOk == false) {
+            router.back(); // Use await to wait for the navigation to complete
+          }
+        }
       } catch (error) {
         console.error("Error fetching lesson details:", error);
         setIsLoading(false);

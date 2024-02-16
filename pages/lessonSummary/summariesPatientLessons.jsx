@@ -17,7 +17,7 @@ export default function SummariesPatientLessons() {
   const [name, setName] = useState();
   const [isLoading, setIsLoading] = useState(true);
   const { patientId } = router.query;
-  const { type } = userStore.getState();
+  const { type, id } = userStore.getState();
   const isSmallScreen = useMediaQuery("(max-width: 600px)");
   const [maxLettersGuideName, setMaxLettersGuideName] = useState(0);
 
@@ -99,6 +99,29 @@ export default function SummariesPatientLessons() {
       }
     }
 
+    async function checkPremission() {
+      try {
+        if (type === 1) {
+          // Fetch comments for the specific lessonId
+          const response = await axios.get(`/api/login/childrens?id=${id}`);
+          let isOk = false;
+          
+          for(let i = 0; i < response.data.length && !isOk; i++) {
+            if(response.data[i].id == patientId){
+              isOk = true;
+            }
+          }
+
+          if (isOk == false) {
+            router.back(); // Use await to wait for the navigation to complete
+          }
+        }
+      } catch (error) {
+        console.error("Error checking permission:", error);
+      }
+    }    
+
+    checkPremission();
     fetchData();
   }, []); // Empty dependency array to run the effect only once on mount
 
@@ -112,9 +135,9 @@ export default function SummariesPatientLessons() {
 
   const formatDate = (date) => {
     if (!date) {
-      return ''; // Handle the case when date is undefined or null
+      return ""; // Handle the case when date is undefined or null
     }
-  
+
     if (isSmallScreen) {
       // Display date in "dd/mm" format for small screens
       const [day, month] = date.split("-");
@@ -124,7 +147,6 @@ export default function SummariesPatientLessons() {
       return date;
     }
   };
-  
 
   return (
     <>
@@ -163,7 +185,7 @@ export default function SummariesPatientLessons() {
                 time={lesson.formatted_time}
                 name={lesson.guide_name}
                 maxTextLengthName={isSmallScreen ? 7 : maxLettersGuideName}
-                nameWidth={isSmallScreen ? 77 : (maxLettersGuideName * 9)}
+                nameWidth={isSmallScreen ? 77 : maxLettersGuideName * 9}
                 lesson={lesson.lesson_type}
                 {...(isSmallScreen && {
                   maxTextLengthLesson: 7,

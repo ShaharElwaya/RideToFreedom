@@ -95,7 +95,7 @@ export default function SpecificSummaryWatch() {
 
   // Fetch lesson details based on lessonId from the URL
   const fetchLessonDetails = async () => {
-    console.log(window.location)
+    console.log(window.location);
     try {
       const response = await axios.get(
         "/api/lessonsSummaries/specificSummaryWatch",
@@ -113,6 +113,21 @@ export default function SpecificSummaryWatch() {
         );
       }
 
+      if (type === 1) {
+        // Fetch comments for the specific lessonId
+        const childrens = await axios.get(`/api/login/childrens?id=${id}`);
+        let isOk = false;
+
+        for (let i = 0; i < childrens.data.length && !isOk; i++) {
+          if (childrens.data[i].id == response.data.patient_id) {
+            isOk = true;
+          }
+        }
+
+        if (isOk == false) {
+          router.back(); // Use await to wait for the navigation to complete
+        }
+      }
       setIsLoading(false);
     } catch (error) {
       console.error("Error fetching lesson details:", error);
@@ -139,21 +154,21 @@ export default function SpecificSummaryWatch() {
       }
     } catch (error) {
       console.error("Error fetching comments:", error);
-    } 
+    }
   };
 
   const fetchAll = async () => {
     await fetchLessonDetails();
     await fetchComments();
-  }
+  };
 
   useCustomQuery(fetchAll, [lessonId]);
 
   const formatDate = (date) => {
     if (!date) {
-      return ''; // Handle the case when date is undefined or null
+      return ""; // Handle the case when date is undefined or null
     }
-  
+
     if (isSmallScreen) {
       // Display date in "dd/mm" format for small screens
       const [day, month] = date.split("-");
@@ -163,7 +178,6 @@ export default function SpecificSummaryWatch() {
       return date;
     }
   };
-  
 
   return (
     <>
@@ -228,8 +242,12 @@ export default function SpecificSummaryWatch() {
                   lesson={comment.comment}
                   hasBottomBorder={true}
                   maxTextLengthName={isSmallScreen ? 7 : maxLettersGuideName}
-                  nameWidth={isSmallScreen ? 70 : (maxLettersGuideName * 9)}
-                  maxTextLengthLesson={isSmallScreen ? window.innerWidth / 9 - 23 : 46 - maxLettersGuideName}
+                  nameWidth={isSmallScreen ? 70 : maxLettersGuideName * 9}
+                  maxTextLengthLesson={
+                    isSmallScreen
+                      ? window.innerWidth / 9 - 23
+                      : 46 - maxLettersGuideName
+                  }
                 />
               ))
             )}

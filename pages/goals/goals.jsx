@@ -7,6 +7,7 @@ import style from '../../styles/summariesPatientLessons.module.css';
 import { useRouter } from 'next/router';
 import LoadingSpinner from '@/components/loadingSpinner';
 import useCustomQuery from "@/utils/useCustomQuery";
+import { userStore } from '@/stores/userStore';
 
 export default function Goals() {
   const router = useRouter();
@@ -14,6 +15,7 @@ export default function Goals() {
   const [name, setName] = useState();
   const [isLoading, setIsLoading] = useState(true); 
   const { patientId } = router.query;
+  const { type, id } = userStore.getState(); 
 
   const handleAdd = () => {
     const currentDate = new Date().toLocaleDateString("en-US", {
@@ -55,6 +57,30 @@ export default function Goals() {
             console.error('Error fetching patient name:', error);
         }
     }
+
+    async function checkPremission() {
+      try {
+        if (type === 1) {
+          // Fetch comments for the specific lessonId
+          const response = await axios.get(`/api/login/childrens?id=${id}`);
+          let isOk = false;
+          
+          for(let i = 0; i < response.data.length && !isOk; i++) {
+            if(response.data[i].id == patientId){
+              isOk = true;
+            }
+          }
+
+          if (isOk == false) {
+            router.back(); // Use await to wait for the navigation to complete
+          }
+        }
+      } catch (error) {
+        console.error("Error checking permission:", error);
+      }
+    }    
+
+    checkPremission();
 
     // Use Promise.all to wait for all asynchronous operations to complete
     Promise.all([fetchData(), getPatientName()])

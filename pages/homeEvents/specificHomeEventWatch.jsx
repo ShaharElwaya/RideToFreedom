@@ -8,6 +8,7 @@ import PatientRow from '@/components/UI/patientRow';
 import style from '../../styles/summariesPatientLessons.module.css';
 import TextAreaComponent from '@/components/UI/textAreaComponent';
 import { useRouter } from 'next/router';
+import { userStore } from "@/stores/userStore";
 import LoadingSpinner from '@/components/loadingSpinner';
 import useCustomQuery from "@/utils/useCustomQuery";
 
@@ -16,7 +17,7 @@ export default function SpecificHomeEventWatch() {
   const [isLoading, setIsLoading] = useState(true); 
   const router = useRouter();
   const { eventId } = router.query;
-
+  const { type, id } = userStore.getState();
 
   const handleGoBack = () => {
     router.back();
@@ -31,8 +32,23 @@ export default function SpecificHomeEventWatch() {
         });        
         setEventDetails(response.data);
         setIsLoading(false); // Set loading to false when patient data is fetched
+
+        if (type === 1) {
+          // Fetch comments for the specific lessonId
+          const childrens = await axios.get(`/api/login/childrens?id=${id}`);
+          let isOk = false;
+  
+          for (let i = 0; i < childrens.data.length && !isOk; i++) {
+            if (childrens.data[i].id == response.data.patient_id) {
+              isOk = true;
+            }
+          }
+  
+          if (isOk == false) {
+            router.back(); // Use await to wait for the navigation to complete
+          }
+        }
       } catch (error) {
-        alert("error");
         console.error('Error fetching lesson details:', error);
         setIsLoading(false); // Set loading to false when patient data is fetched
       }
