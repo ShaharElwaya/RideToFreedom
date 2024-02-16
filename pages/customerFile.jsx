@@ -82,6 +82,10 @@ const RowAndColumnSpacing = () => {
     router.push(`/login`);
   };
 
+  const handleSetMeeting = () => {
+    router.push('/introductionMeeting');
+  };
+
   return (
     <>
       {isLoading && <LoadingSpinner />}
@@ -96,22 +100,29 @@ const RowAndColumnSpacing = () => {
           primaryHeadline={type === 1 ? 'תיקי ילדים' : 'תיקי לקוחות'}
         />
         <ContentContainer>
-          <Grid container spacing={2}>
-            {names.map((nameData) => (
-              <Grid item xs={6} key={nameData.id}>
-                <Item
-                  onClick={() =>
-                    handleClick(nameData.id, nameData.name, nameData.gender)
-                  }
-                >
-                  <PicAndText
-                    pictureName={getPictureName(nameData.gender)}
-                    name={nameData.name}
-                  />
-                </Item>
-              </Grid>
-            ))}
-          </Grid>
+
+          
+        <CenteredContainer>
+        {type === 1 && <Button onClick={handleSetMeeting}>קבע פגישת הכרות</Button>}
+          </CenteredContainer>
+
+        <Grid container spacing={2}>
+              {names.map((nameData) => (
+                <Grid item xs={6} key={nameData.id}>
+                  <Item
+                    onClick={() =>
+                      handleClick(nameData.id, nameData.name, nameData.gender)
+                    }
+                  >
+                    <PicAndText
+                      pictureName={getPictureName(nameData.gender)}
+                      name={nameData.name}
+                    />
+                  </Item>
+                </Grid>
+              ))}
+            </Grid>
+  
         </ContentContainer>
       </CenteredContainer>
     </>
