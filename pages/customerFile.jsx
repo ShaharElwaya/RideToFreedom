@@ -4,7 +4,7 @@ import { styled } from "@mui/material/styles";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
-import { Button } from "@mui/material";
+import { Button, InputAdornment, TextField } from "@mui/material";
 import PicAndHeadlines from "@/components/UI/picAndheadline";
 import { PicAndText } from "@/components/UI/PicAndName";
 import LoadingSpinner from "@/components/loadingSpinner";
@@ -31,6 +31,8 @@ const ContentContainer = styled(Box)({
 
 const RowAndColumnSpacing = () => {
   const [names, setNames] = useState([]);
+  const [filteredNames, setFilteredNames] = useState([]);
+  const [searchInput, setSearchInput] = useState("");
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const { type, id } = userStore.getState();
@@ -40,6 +42,7 @@ const RowAndColumnSpacing = () => {
       try {
         const data = await fetchNamesFromDatabase(type, id);
         setNames(data);
+        setFilteredNames(data); // Initialize filteredNames with all names
       } catch (error) {
         console.error("Error fetching names:", error);
       } finally {
@@ -82,6 +85,18 @@ const RowAndColumnSpacing = () => {
     router.push(`/login`);
   };
 
+  const handleSearchInputChange = (event) => {
+    setSearchInput(event.target.value);
+    filterNames(event.target.value);
+  };
+
+  const filterNames = (searchValue) => {
+    const filtered = names.filter((nameData) =>
+      nameData.name.toLowerCase().includes(searchValue.toLowerCase())
+    );
+    setFilteredNames(filtered);
+  };
+
   return (
     <>
       {isLoading && <LoadingSpinner />}
@@ -96,8 +111,24 @@ const RowAndColumnSpacing = () => {
           primaryHeadline={type === 1 ? 'תיקי ילדים' : 'תיקי לקוחות'}
         />
         <ContentContainer>
+          {/* Search Input */}
+          <TextField
+            label="חיפוש"
+            variant="outlined"
+            value={searchInput}
+            onChange={handleSearchInputChange}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  🔍
+                </InputAdornment>
+              ),
+            }}
+            fullWidth
+            margin="normal"
+          />
           <Grid container spacing={2}>
-            {names.map((nameData) => (
+            {filteredNames.map((nameData) => (
               <Grid item xs={6} key={nameData.id}>
                 <Item
                   onClick={() =>

@@ -163,7 +163,7 @@ export default function SpecificSummaryWatch() {
         lesson={lessonDetails.lesson_type_name}
         isCenter
       />
-      <div className={style.containerCommenrs}>
+      <div className={style.containerComments}>
         <TextAreaComponent
           placeholderText=" ספר איך היה השיעור *"
           value={lessonDetails.summary}
