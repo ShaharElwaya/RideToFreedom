@@ -150,7 +150,7 @@ export default function SpecificHomeEventWatch() {
           </Button>
         </div>)}
         <CustomizedDialogs
-        title={dialogError ? "עדכון הדיווח נכשל" : "עדכון הדיווח הושלם"}
+        title={dialogError ? "מחיקת הדיווח נכשל" : "מחיקת הדיווח הושלם"}
         text={dialogError ? dialogError : ""}
         open={dialogOpen}
         onClose={handleCloseDialog}

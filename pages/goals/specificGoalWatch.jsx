@@ -39,6 +39,11 @@ export default function SpecificGoalWatch() {
   const [isLoading, setIsLoading] = useState(true);
   const isSmallScreen = useMediaQuery("(max-width: 600px)");
   const { type, id } = userStore.getState();
+  const [isSaving, setIsSaving] = useState(false);
+  const [dialogError, setDialogError] = useState("");
+  const [dialogOpen, setDialogOpen] = React.useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false);
+  const [patientId, setPatientId] = useState("");
 
   const handleGoBack = () => {
     router.back();
@@ -52,6 +57,7 @@ export default function SpecificGoalWatch() {
           params: { goal_id: goalId },
         });
         setGoalsDetails(response.data);
+        setPatientId(response.data.patient_id);
         setIsLoading(false);
 
         if (type === 1) {
@@ -84,6 +90,41 @@ export default function SpecificGoalWatch() {
         goalId
       )}&index=${encodeURIComponent(index)}`
     );
+  };
+
+  const handleClickDelete = async (e) => {
+    e.preventDefault();
+
+    try {
+      const res = await axios.post("../api/goals/specificGoalDelete", {
+        goalId
+      });
+      setDialogError("");
+      setSaveSuccess(true);
+      setDialogOpen(true);
+    } catch (err) {
+      let errorMessage = "We have a problem, try again";
+
+      if (err.response && err.response.data && err.response.data.error) {
+        errorMessage = `Add lesson failed: ${err.response.data.error}`;
+      }
+
+      setSaveSuccess(false);
+      setDialogOpen(true);
+      setDialogError(errorMessage);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+
+    if (saveSuccess) {
+      router.push(
+        `/goals/goals?patientId=${encodeURIComponent(patientId)}`
+      );
+    }
   };
 
   return (
@@ -161,11 +202,26 @@ export default function SpecificGoalWatch() {
           <Button
             variant="contained"
             onClick={() => handleClick(goalId, index)}
+            style={{ margin: '5px' }}
           >
             עריכת מטרה
           </Button>
+          <Button type="submit" disabled={isSaving} variant="contained" onClick={handleClickDelete} style={{ margin: '5px' }}>
+            מחיקת מטרה
+          </Button>
         </div>
       </form>
+      <CustomizedDialogs
+        title={dialogError ? "מחיקת המטרה נכשלה" : "מחיקת המטרה הושלמה"}
+        text={dialogError ? dialogError : ""}
+        open={dialogOpen}
+        onClose={handleCloseDialog}
+        actions={[
+          <Button key="confirmButton" autoFocus onClick={handleCloseDialog}>
+            הבנתי
+          </Button>,
+        ]}
+      />
     </>
   );
 }
