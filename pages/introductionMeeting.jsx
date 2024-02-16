@@ -7,8 +7,8 @@ import { DatePicker } from "@mui/x-date-pickers";
 import axios from "axios";
 import { userStore } from "../stores/userStore";
 import { useRouter } from "next/router";
-import TextAreaComponent from '@/components/UI/textAreaComponent'
-
+import TextAreaComponent from "@/components/UI/textAreaComponent";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 export default function introduction_meeting() {
   const [childRealId, setChildRealId] = useState("");
@@ -17,7 +17,8 @@ export default function introduction_meeting() {
   const [birthday, setBirthday] = useState(null);
   const [reasonForRequest, setReasonForRequest] = useState(null);
   const [gender, setGender] = useState("");
-    const router = useRouter()
+  const router = useRouter();
+  const isSmallScreen = useMediaQuery("(max-width: 600px)");
 
   const handleChange = (event) => {
     setGender(event.target.value);
@@ -32,17 +33,16 @@ export default function introduction_meeting() {
         address: address,
         birthday: birthday,
         gender: gender,
-        parent_id:userStore.getState().id,
-        reason_for_request: reasonForRequest
+        parent_id: userStore.getState().id,
+        reason_for_request: reasonForRequest,
       };
 
       await axios.post("/api/patient/insertPatient", body);
-      alert('Successfully added')
-      router.push('/customerFile')
+      alert("Successfully added");
+      router.push("/customerFile");
     } catch (error) {
       console.error("Error creating meeting request:", error);
-      alert('Something went wrong...')
-
+      alert("Something went wrong...");
     }
   };
 
@@ -54,62 +54,66 @@ export default function introduction_meeting() {
         primaryHeadline="בקשה לפגישת היכרות"
       />
       <form onSubmit={createMeetingReq}>
-        <div className={style.space}>
-          <div>
+        <div>
+          <div className={style.container}>
             <TextFieldComponent
               type="number"
-              outlinedText="תז"
+              outlinedText="תז" 
+              sx={{ width: '50%' }}
               required
               onChange={(e) => setChildRealId(e.target.value)}
             />
-          </div>
-          <div>
             <TextFieldComponent
               type="text"
               outlinedText="שם הילד/ה"
+              sx={{ width: '50%' }}
               required
               onChange={(e) => setPatientName(e.target.value)}
             />
           </div>
-          <div>
-            <TextFieldComponent
-              type="text"
-              outlinedText="כתובת"
-              required
-              onChange={(e) => setAddress(e.target.value)}
-            />
+          <div className={style.container}>
+            <div className={style.divStyle}>
+              <TextFieldComponent
+                type="text"
+                outlinedText="כתובת"
+                sx={{ width: '50%' }}
+                required
+                onChange={(e) => setAddress(e.target.value)}
+              />
+            </div>
+            <div className={style.divStyle}>
+              <DatePicker
+                label="תאריך לידה"
+                sx={{ width: '100%' }}
+                value={birthday}
+                onChange={(v) => setBirthday(new Date(v))}
+              />
+            </div>
           </div>
-          <div>
-            <DatePicker
-              label="תאריך לידה"
-              sx={{ width: "265px" }}
-              value={birthday}
-              onChange={(v) => setBirthday(new Date(v))}
-            />
+          <div className={style.container}>
+            <RadioGroup
+              className={style.container}
+              value={gender}
+              onChange={handleChange}
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+              }}
+            >
+              <FormControlLabel value="M" control={<Radio />} label="זכר" />
+              <FormControlLabel value="F" control={<Radio />} label="נקבה" />
+            </RadioGroup>
           </div>
-          <RadioGroup
-            value={gender}
-            onChange={handleChange}
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              flexDirection: "row",
-            }}
-          >
-            <FormControlLabel value="M" control={<Radio />} label="זכר" />
-            <FormControlLabel value="F" control={<Radio />} label="נקבה" />
-          </RadioGroup>
         </div>
-        <div>
-        <TextAreaComponent
+        <div className={style.textArea}>
+          <TextAreaComponent
             placeholderText="סיבת בקשה*"
             value={reasonForRequest}
             required
             onChange={(e) => setReasonForRequest(e.target.value)}
           />
         </div>
-      
+
         <Button type="submit" variant="contained">
           צור בקשה
         </Button>
