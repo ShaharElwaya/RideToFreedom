@@ -10,6 +10,7 @@ import LoadingSpinner from "@/components/loadingSpinner";
 import { useRouter } from "next/router";
 import { userStore } from "@/stores/userStore";
 import useCustomQuery from "@/utils/useCustomQuery";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 export default function SpecificSummaryWatch() {
   const [lessonDetails, setLessonDetails] = useState({});
@@ -25,6 +26,8 @@ export default function SpecificSummaryWatch() {
   const { type, id } = userStore.getState();
   const [comments, setComments] = useState([]);
   const [isSaving, setIsSaving] = useState(false);
+  const isSmallScreen = useMediaQuery("(max-width: 600px)");
+  const [maxLettersGuideName, setMaxLettersGuideName] = useState(0);
 
   const handleGoBack = () => {
     router.back();
@@ -124,9 +127,19 @@ export default function SpecificSummaryWatch() {
       );
       setComments(response.data);
       setIsLoading(false);
+
+      if (response.data.length > 0) {
+        let maxLetters = 0;
+        for (let i = 0; i < response.data.length; i++) {
+          if (response.data[i].name.length > maxLetters) {
+            maxLetters = response.data[i].name.length;
+          }
+        }
+        setMaxLettersGuideName(maxLetters);
+      }
     } catch (error) {
       console.error("Error fetching comments:", error);
-    }
+    } 
   };
 
   const fetchAll = async () => {
@@ -161,6 +174,14 @@ export default function SpecificSummaryWatch() {
         time={lessonDetails.formatted_time}
         name={lessonDetails.guide_name}
         lesson={lessonDetails.lesson_type_name}
+        {...(isSmallScreen && {
+          maxTextLengthName: 6,
+          nameWidth: 66,
+        })}
+        {...(isSmallScreen && {
+          maxTextLengthLesson: 6,
+          lessonWidth: 66,
+        })}
         isCenter
       />
       <div className={style.containerComments}>
@@ -191,7 +212,9 @@ export default function SpecificSummaryWatch() {
                   name={comment.name}
                   lesson={comment.comment}
                   hasBottomBorder={true}
-                  maxLessonTextLength={50}
+                  maxTextLengthName={isSmallScreen ? 7 : maxLettersGuideName}
+                  nameWidth={isSmallScreen ? 77 : (maxLettersGuideName * 9)}
+                  maxTextLengthLesson={isSmallScreen ? window.innerWidth / 9 - 25 : 46 - maxLettersGuideName}
                 />
               ))
             )}

@@ -14,6 +14,13 @@
     align-items: center; /* Align items vertically in the center */
     border-top: 1px solid #ccc; /* Add top border with a light gray color */
   }
+
+  .textContainer{
+    justify-content: center;
+    display: flex;
+    align-items: center;
+  }
+  
   .pic {
     height: 40px;
     width: 40px;
