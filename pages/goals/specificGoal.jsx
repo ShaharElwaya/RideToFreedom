@@ -13,6 +13,7 @@ import CustomizedDialogs from '@/components/dialog';
 import { useRouter } from 'next/router';
 import LoadingSpinner from '@/components/loadingSpinner';
 import useCustomQuery from "@/utils/useCustomQuery";
+import useMediaQuery from '@mui/material/useMediaQuery'; 
 
 export default function SpecificGoal() {
     const [summary, setSummary] = useState('');
@@ -30,6 +31,7 @@ export default function SpecificGoal() {
     const { time } = router.query;
     const { patientId } = router.query;
     const [isSaving, setIsSaving] = useState(false);
+    const isSmallScreen = useMediaQuery('(max-width: 600px)');
 
     const date = time ? new Date(time).toLocaleDateString("en-US", {
         day: "2-digit",
@@ -149,6 +151,30 @@ export default function SpecificGoal() {
                 console.error('Error fetching options:', error);
             }
         }
+
+        async function checkPremission() {
+            try {
+              if (type === 1) {
+                // Fetch comments for the specific lessonId
+                const response = await axios.get(`/api/login/childrens?id=${id}`);
+                let isOk = false;
+                
+                for(let i = 0; i < response.data.length && !isOk; i++) {
+                  if(response.data[i].id == patientId){
+                    isOk = true;
+                  }
+                }
+      
+                if (isOk == false) {
+                  router.back(); // Use await to wait for the navigation to complete
+                }
+              }
+            } catch (error) {
+              console.error("Error checking permission:", error);
+            }
+          }    
+      
+          checkPremission();
     
         // Use Promise.all to wait for all asynchronous operations to complete
         Promise.all([getPatientName(), fetchStatusesOptions(), fetchFieldsOptions()])
@@ -163,10 +189,6 @@ export default function SpecificGoal() {
     
     }, []);
     
-    const selectStyle = {
-        width: '244px',
-    };
-
     const handleSelectChangeField = (event) => {
         setFieldType(event.target.value);
     };
@@ -202,20 +224,20 @@ export default function SpecificGoal() {
                 <div className={style.container}>
                     <DatePicker
                             label="תאריך קביעת מטרה"
-                            sx={{ width: 255 }}
+                            sx={{ width: isSmallScreen ? '50%' : '255px', }}
                             value={dayjs(date)}
                             disabled
                     />
                     <DatePicker
                         label="תאריך יעד רצוי *"
-                        sx={{ width: 255 }}
+                        sx={{ width: isSmallScreen ? '50%' : '255px', }}
                         value={destinationDate}
                         required
                         onChange={(v) => setDestinationDate(new Date(v))}
                     />
                 </div>
                 <div className={style.container}>
-                    <FormControl className={style.rightStyle}>
+                    <FormControl className={style.rightStyleGoal}>
                         <InputLabel id="selectUsersTypes">תחום המטרה *</InputLabel>
                         <Select
                             labelId="selectUsersTypes"
@@ -224,7 +246,7 @@ export default function SpecificGoal() {
                             value={fieldType}
                             onChange={handleSelectChangeField}
                             required
-                            style={selectStyle}
+                            sx={{ width: isSmallScreen ? "93%" : "95%" }}
                         >
                             {fieldsOptions.map(option => (
                                 <MenuItem key={option.id} value={option.id}>
@@ -233,7 +255,7 @@ export default function SpecificGoal() {
                             ))}
                         </Select>
                     </FormControl>
-                    <FormControl className={style.rightStyle}>
+                    <FormControl className={style.rightStyleGoal}>
                         <InputLabel id="selectUsersTypes">סטטוס המטרה *</InputLabel>
                         <Select
                             labelId="selectUsersTypes"
@@ -242,7 +264,7 @@ export default function SpecificGoal() {
                             value={statusType}
                             onChange={handleSelectChangeStatus}
                             required
-                            style={selectStyle}
+                            sx={{ width: isSmallScreen ? "93%" : "95%" }}
                         >
                             {statusesOptions.map(option => (
                                 <MenuItem key={option.id} value={option.id}>
