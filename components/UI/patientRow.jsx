@@ -3,8 +3,10 @@
 import React from 'react';
 import style from "../../styles/patientRowCss.module.css";
 import { Typography, Tooltip } from '@mui/material';
+import IconButton from "@mui/material/IconButton";
+import EditIcon from "@mui/icons-material/Edit";
 
-export default function PatientRow({ pictureName, picturePath, date, time, name, lesson, isCenter = false, hasBottomBorder = false, maxTextLengthName, maxTextLengthLesson, nameWidth, lessonWidth }) {
+export default function PatientRow({ pictureName, picturePath, date, time, name, lesson, isCenter = false, hasBottomBorder = false, maxTextLengthName, maxTextLengthLesson, nameWidth, lessonWidth, canEdit }) {
   let needTooltipName = false;
   let needTooltipLesson = false;
 
@@ -60,6 +62,11 @@ export default function PatientRow({ pictureName, picturePath, date, time, name,
           {name && <>&nbsp;</>}
           {renderTooltip(lesson, 'lesson', lessonWidth)}{/* Set the desired width, e.g., 150px */}
         </Typography>
+        {canEdit && (
+          <IconButton style={{ fontSize: '12px', padding: '2px' }}>
+            <EditIcon style={{ fontSize: '12px' }}/>
+          </IconButton>
+        )}
       </div>
     </div>
   );

@@ -28,6 +28,12 @@ export default function SpecificSummaryWatch() {
   const [isSaving, setIsSaving] = useState(false);
   const isSmallScreen = useMediaQuery("(max-width: 600px)");
   const [maxLettersGuideName, setMaxLettersGuideName] = useState(0);
+  const [commentBeingEdited, setCommentBeingEdited] = useState(null);
+  const [editedComment, setEditedComment] = useState("");
+  const [dialogOpen, setDialogOpen] = React.useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false);
+
+  const [isDialogEditOpen, setIsDialogEditOpen] = useState(false);
 
   const handleGoBack = () => {
     router.back();
@@ -179,6 +185,113 @@ export default function SpecificSummaryWatch() {
     }
   };
 
+  const handleEditClick = (comment) => {
+    // Only allow the owner of the comment to edit it
+    if (comment.user_id === id) {
+      setEditedComment(comment.comment);
+      setCommentBeingEdited(comment);
+      setIsDialogEditOpen(true);
+    }
+  };
+
+  const handleCloseEditDialog = () => {
+    setEditedComment("");
+    setIsDialogEditOpen(false);
+    setDialogError("");
+    setCommentBeingEdited(null);
+  };
+
+  const handleUpdateComment = async () => {
+    try {
+      if (!editedComment.trim()) {
+        setDialogError("התגובה אינה יכולה להיות ריקה");
+        setIsDialogOpen(true);
+        return;
+      }
+
+      setIsSaving(true);
+
+      // Save the comment to the database
+      await axios.post("/api/lessonsSummaries/updateComment", {
+        id: commentBeingEdited.id,
+        comment: editedComment
+      });
+
+      // Fetch updated comments after saving the comment
+      const commentsResponse = await axios.get(
+        `/api/lessonsSummaries/getComments?lesson_id=${lessonId}`
+      );
+      setComments(commentsResponse.data);
+
+      // Close the comment dialog
+      handleCloseEditDialog();
+
+      // Open the success dialog
+      setDialogSuccess("התגובה נשמרה בהצלחה");
+      setIsDialogSuccessOpen(true);
+    } catch (error) {
+      console.error("Error saving comment:", error);
+
+      // Open the failure dialog only if there's an actual error
+      if (error.response && error.response.data && error.response.data.error) {
+        setDialogError(
+          `אירעה שגיאה בעת שמירת התגובה: ${error.response.data.error}`
+        );
+        setIsDialogEditOpen(true);
+        setIsDialogSuccessOpen(false); // Close the success dialog if there was an error
+      } else {
+        // If it's not an error from the server, it might be a network issue
+        setDialogError("אירעה שגיאה בעת שמירת התגובה");
+        setIsDialogEditOpen(true);
+        setIsDialogSuccessOpen(false); // Close the success dialog if there was an error
+      }
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleDeleteComment = async () => {
+    try {
+      setIsSaving(true);
+
+      // Save the comment to the database
+      await axios.post("/api/lessonsSummaries/deleteComment", {
+        id: commentBeingEdited.id,
+      });
+
+      // Fetch updated comments after saving the comment
+      const commentsResponse = await axios.get(
+        `/api/lessonsSummaries/getComments?lesson_id=${lessonId}`
+      );
+      setComments(commentsResponse.data);
+
+      // Close the comment dialog
+      handleCloseEditDialog();
+
+      // Open the success dialog
+      setDialogSuccess("התגובה נמחקה בהצלחה");
+      setIsDialogSuccessOpen(true);
+    } catch (error) {
+      console.error("Error saving comment:", error);
+
+      // Open the failure dialog only if there's an actual error
+      if (error.response && error.response.data && error.response.data.error) {
+        setDialogError(
+          `אירעה שגיאה בעת שמירת התגובה: ${error.response.data.error}`
+        );
+        setIsDialogEditOpen(true);
+        setIsDialogSuccessOpen(false); // Close the success dialog if there was an error
+      } else {
+        // If it's not an error from the server, it might be a network issue
+        setDialogError("אירעה שגיאה בעת מחיקת התגובה");
+        setIsDialogEditOpen(true);
+        setIsDialogSuccessOpen(false); // Close the success dialog if there was an error
+      }
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   return (
     <>
       {isLoading && <LoadingSpinner />}
@@ -233,22 +346,26 @@ export default function SpecificSummaryWatch() {
               <p>Loading comments...</p>
             ) : (
               comments.map((comment) => (
-                <PatientRow
-                  pictureName="commentPic"
-                  picturePath={
-                    comment.user_type === 1 ? "/parent.png" : "/guide.webp"
-                  }
-                  name={comment.name}
-                  lesson={comment.comment}
-                  hasBottomBorder={true}
-                  maxTextLengthName={isSmallScreen ? 7 : maxLettersGuideName}
-                  nameWidth={isSmallScreen ? 70 : maxLettersGuideName * 9}
-                  maxTextLengthLesson={
-                    isSmallScreen
-                      ? window.innerWidth / 9 - 23
-                      : 46 - maxLettersGuideName
-                  }
-                />
+                <p onClick={() => handleEditClick(comment)}
+                title={comment.user_id === id ? 'Click to edit' : ''} >
+                  <PatientRow
+                    pictureName="commentPic"
+                    picturePath={
+                      comment.user_type === 1 ? "/parent.png" : "/guide.webp"
+                    }
+                    name={comment.name}
+                    lesson={comment.comment}
+                    hasBottomBorder={true}
+                    maxTextLengthName={isSmallScreen ? 7 : maxLettersGuideName}
+                    nameWidth={isSmallScreen ? 70 : maxLettersGuideName * 9}
+                    maxTextLengthLesson={
+                      isSmallScreen
+                        ? window.innerWidth / 9 - 28
+                        : 46 - maxLettersGuideName
+                    }
+                    canEdit={comment.user_id === id}
+                  />
+                </p>
               ))
             )}
           </div>
@@ -309,6 +426,44 @@ export default function SpecificSummaryWatch() {
             onClick={() => setIsDialogSuccessOpen(false)}
           >
             הבנתי
+          </Button>,
+        ]}
+      />
+
+      {/* Comment Dialog */}
+      <CustomizedDialogs
+        title="עריכת תגובה"
+        text={
+          <React.Fragment>
+            <TextAreaComponent
+              value={editedComment}
+              onChange={(e) => setEditedComment(e.target.value)}
+              required
+            />
+            {dialogError && (
+              <Typography color="error" variant="body2">
+                {dialogError}
+              </Typography>
+            )}
+          </React.Fragment>
+        }
+        open={isDialogEditOpen}
+        onClose={handleCloseEditDialog}
+        actions={[
+          <Button
+            key="cancelButton"
+            onClick={() => handleDeleteComment()}
+          >
+            מחיקה
+          </Button>,
+          <Button
+            key="saveButton"
+            autoFocus
+            onClick={() => handleUpdateComment()}
+            variant="contained"
+            disabled={isSaving}
+          >
+            שמירה
           </Button>,
         ]}
       />
