@@ -40,7 +40,7 @@ export default function PatientRow({ pictureName, picturePath, date, time, name,
 
     return (
       <Tooltip title={(variableName === 'name' && needTooltipName) || (variableName === 'lesson' && needTooltipLesson) ? text : ""} key={variableName}>
-        <div style={{ width: `${width}px`, display:'inline-block', border:'1px solid', textAlign:'right'}}>
+        <div style={{ width: `${width}px`, display:'inline-block', textAlign:'right'}}>
           {formattedText}
         </div>
       </Tooltip>
