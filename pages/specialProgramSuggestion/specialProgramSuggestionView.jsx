@@ -4,14 +4,15 @@ import PatientRow from "@/components/UI/patientRow";
 import style from "../../styles/summariesPatientLessons.module.css";
 import TextAreaComponent from "@/components/UI/textAreaComponent";
 import axios from "axios";
-import { useRouter } from "next/router";
+import { useRouter } from 'next/router';
 import { Button } from "@mui/material";
 
 export default function SpecialProgramSuggestion() {
   const [data, setData] = useState();
-  const {query, push} = useRouter();
-  console.log("🚀 ~ SpecialProgramSuggestion ~ query:", query)
+  const { query, push } = useRouter();
+  const router = useRouter();
 
+  
   useEffect(() => {
     const fetchSuggestion = async () => {
       try {
@@ -26,43 +27,64 @@ export default function SpecialProgramSuggestion() {
     fetchSuggestion();
   }, []);
 
+  const handleGoBack = () => {
+    router.back();
+  };
+
   const handleCreateProgram = () => {
     push({
-        pathname: "/specialProgram",
-        query: {
-          patientName: query.patientName,
-          patientId:query.patientId
-        },
-      });
+      pathname: "/specialProgram",
+      query: {
+        patientName: query.patientName,
+        patientId: query.patientId,
+      },
+    });
   };
-  if (!query.date || !query.guideName || !query.suggestionId || !query.patientName) return <div>Not valid!</div>
+
+  const formattedDate = () => {
+    if (query.date) {
+      const [date, time] = query.date.split('T');
+      const currentTime = time.split('.')[0];
+      const formattedDateString = `${date.split("-").reverse().join("-")} ${currentTime.slice(0, -3)}`;
+      return formattedDateString;
+    }
+  };
+
+  if (!query.date || !query.guideName || !query.suggestionId || !query.patientName) return <div>Not valid!</div>;
 
   return (
-    <div>
-      <PicAndHeadlines
-        pictureName="specialProgramSuggestion"
-        picturePath="../specialProgramSuggestion.png"
-        primaryHeadline="הצעה לתכנית טיפול מיוחדת"
-      />
+    <>
+      <div className={style.leftStyle}>
+        <Button onClick={handleGoBack}> חזור &gt;</Button>
+      </div>
 
-      <PatientRow
-        pictureName="GenderPic"
-        picturePath="../girlPic.png"
-        date={query.date}
-        name={query.guideName}
-        isCenter
-      />
+      <div>
+        <PicAndHeadlines
+          pictureName="specialProgramSuggestion"
+          picturePath="../specialProgramSuggestion.png"
+          primaryHeadline="הצעה לתכנית טיפול מיוחדת"
+          secondaryHeadline= {query.patientName}
+        />
 
-      <form>
-        <div className={style.container}>
-          <TextAreaComponent value={data?.suggestion} required />
-        </div>
-      </form>
-      {data?.status === "wait for program" && (
-        <Button variant="outlined" onClick={handleCreateProgram}>
-          יצירת תכנית
-        </Button>
-      )}
-    </div>
+        <PatientRow
+          pictureName="GenderPic"
+          picturePath="../girlPic.png"
+          date={formattedDate()}
+          name={query.guideName}
+          isCenter
+        />
+
+        <form>
+          <div className={style.container}>
+            <TextAreaComponent value={data?.suggestion} required />
+          </div>
+        </form>
+        {data?.status === "wait for program" && (
+          <Button variant="contained" onClick={handleCreateProgram}>
+            יצירת תכנית
+          </Button>
+        )}
+      </div>
+    </>
   );
 }

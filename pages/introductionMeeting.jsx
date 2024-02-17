@@ -17,6 +17,7 @@ import TextAreaComponent from "@/components/UI/textAreaComponent";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import CustomizedDialogs from "@/components/dialog";
 import LoadingSpinner from "@/components/loadingSpinner";
+import { DateTimePicker } from "@mui/x-date-pickers";
 
 export default function IntroductionMeeting() {
   const [childRealId, setChildRealId] = useState("");
@@ -155,7 +156,7 @@ export default function IntroductionMeeting() {
                 />
               </div>
               <div className={style.divStyle}>
-                <DatePicker
+                <DateTimePicker
                   required
                   label="תאריך לפגישה *"
                   sx={{ width: "100%" }}

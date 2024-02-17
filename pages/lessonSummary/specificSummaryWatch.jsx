@@ -14,6 +14,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 
 export default function SpecificSummaryWatch() {
   const [lessonDetails, setLessonDetails] = useState({});
+  console.log("🚀 ~ SpecificSummaryWatch ~ lessonDetails:", lessonDetails)
   const router = useRouter();
   const { lessonId } = router.query;
   const [parentPermission, setParentPermission] = useState(false);
