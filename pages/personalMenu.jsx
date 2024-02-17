@@ -8,6 +8,7 @@ import style from "../styles/summariesPatientLessons.module.css";
 import Link from "next/link";
 import LoadingSpinner from "@/components/loadingSpinner";
 import { userStore, setUserData } from "@/stores/userStore";
+import axios from "axios";
 
 const CustomButton = styled(Button)({
   "&:hover": {
@@ -50,6 +51,8 @@ const PersonalMenu = () => {
   const [gender, setGender] = useState();
   const [isLoading, setIsLoading] = useState(true);
   const [isOneChild, setIsOneChild] = useState(false);
+  const [hasSpecialTreatmentPlans, setHasSpecialTreatmentPlans] =
+    useState(false);
   const { id, type } = userStore.getState();
 
   useEffect(() => {
@@ -62,6 +65,12 @@ const PersonalMenu = () => {
             )}`
           );
           const data = await response.json();
+
+          const specialTreatmentPlans = await axios.get("/api/specialProgram");
+          const hasTreatmentPlans = specialTreatmentPlans.data.some(
+            (plan) => plan.patient_id == patientId
+          );
+          setHasSpecialTreatmentPlans(hasTreatmentPlans);
           setGender(data.gender);
           setIsLoading(false); // Set loading to false when data is fetched (success or error)
         }
@@ -145,11 +154,13 @@ const PersonalMenu = () => {
                   <CustomButton>צפייה במטרות</CustomButton>
                 </MenuItem>
               </Link>
-              <Link href="/somePath1">
-                <MenuItem>
-                  <CustomButton>צפייה בתכניות טיפול</CustomButton>
-                </MenuItem>
-              </Link>
+              {hasSpecialTreatmentPlans && (
+                <Link href={`/specialProgramView?patientId=${query.patientId}`}>
+                  <MenuItem>
+                    <CustomButton>צפייה בתכניות טיפול</CustomButton>
+                  </MenuItem>
+                </Link>
+              )}
             </div>
             {type === 1 && (
               <Button onClick={handleSetMeeting}>
