@@ -3,7 +3,7 @@ import { Button, Radio, RadioGroup, FormControlLabel } from "@mui/material";
 import style from "../styles/loginRegisterPage.module.css";
 import PicAndHeadlines from "@/components/UI/picAndheadline";
 import TextFieldComponent from "@/components/UI/TextFiled";
-import { DatePicker } from "@mui/x-date-pickers";
+import { DatePicker, DateTimePicker } from "@mui/x-date-pickers";
 import axios from "axios";
 import { userStore } from "../stores/userStore";
 import { useRouter } from "next/router";
@@ -42,8 +42,6 @@ export default function introduction_meeting() {
 
       await axios.post("/api/patient/insertPatient", body);
 
-      alert("Successfully added");
-
       const { data: allUsers } = await axios.get("/api/users");
       const filteredUsers = allUsers.filter((user) => user.type !== 1);
       const randomIndex = Math.floor(Math.random() * filteredUsers.length);
@@ -80,15 +78,15 @@ export default function introduction_meeting() {
           <div className={style.container}>
             <TextFieldComponent
               type="number"
-              outlinedText="תז" 
-              sx={{ width: '50%' }}
+              outlinedText="תז"
+              sx={{ width: "50%" }}
               required
               onChange={(e) => setChildRealId(e.target.value)}
             />
             <TextFieldComponent
               type="text"
               outlinedText="שם הילד/ה"
-              sx={{ width: '50%' }}
+              sx={{ width: "50%" }}
               required
               onChange={(e) => setPatientName(e.target.value)}
             />
@@ -98,7 +96,7 @@ export default function introduction_meeting() {
               <TextFieldComponent
                 type="text"
                 outlinedText="כתובת"
-                sx={{ width: '50%' }}
+                sx={{ width: "50%" }}
                 required
                 onChange={(e) => setAddress(e.target.value)}
               />
@@ -106,7 +104,7 @@ export default function introduction_meeting() {
             <div className={style.divStyle}>
               <DatePicker
                 label="תאריך לידה"
-                sx={{ width: '100%' }}
+                sx={{ width: "100%" }}
                 value={birthday}
                 onChange={(v) => setBirthday(new Date(v))}
               />
@@ -126,13 +124,13 @@ export default function introduction_meeting() {
               <FormControlLabel value="F" control={<Radio />} label="נקבה" />
             </RadioGroup>
             <div className={style.divStyle}>
-            <DatePicker
-              label="בחירת תאריך לפגישה"
-              sx={{ width: "265px" }}
-              value={meetingDate}
-              onChange={(v) => setMeetingDate(new Date(v))}
-            />
-        </div>
+              <DateTimePicker
+                label="בחירת תאריך לפגישה"
+                sx={{ width: "265px" }}
+                value={meetingDate}
+                onChange={(v) => setMeetingDate(new Date(v))}
+              />
+            </div>
           </div>
         </div>
         <div>
