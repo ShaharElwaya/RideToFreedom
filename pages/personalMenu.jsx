@@ -52,6 +52,9 @@ const PersonalMenu = () => {
   const [gender, setGender] = useState();
   const [isLoading, setIsLoading] = useState(true);
   const [isOneChild, setIsOneChild] = useState(false);
+  const [hasSpecialTreatmentPlans, setHasSpecialTreatmentPlans] =
+    useState(false);
+  const [hasGuideSuggestions, setHasGuideSuggestions] = useState(false);
   const { id, type } = userStore.getState();
 
   useCustomQuery(() => {
@@ -85,6 +88,26 @@ const PersonalMenu = () => {
             )}`
           );
           const data = await response.json();
+
+          // Check if user has special treatment plans
+          const specialTreatmentPlans = await axios.get("/api/specialProgram");
+          const hasTreatmentPlans = specialTreatmentPlans.data.some(
+            (plan) => plan.patient_id == patientId
+          );
+          setHasSpecialTreatmentPlans(hasTreatmentPlans);
+
+          // Check if user has guide suggestions for patient
+          const guideSuggestion = await axios.get(
+            `/api/suggestions/getByPatientId?patientId=${patientId}`
+          );
+
+          console.log("🚀 ~ guideSuggestion:", guideSuggestion);
+          console.log("🚀 ~ guideSuggestion data:", guideSuggestion.data);
+          const hasGuideSuggestions =
+            guideSuggestion.data.patient_id == patientId;
+          console.log("🚀 ~ hasGuideSuggestions:", hasGuideSuggestions);
+          setHasGuideSuggestions(hasGuideSuggestions);
+
           setGender(data.gender);
           setIsLoading(false); // Set loading to false when data is fetched (success or error)
         }
@@ -121,6 +144,60 @@ const PersonalMenu = () => {
 
   const handleSetMeeting = () => {
     router.push("/introductionMeeting");
+  };
+
+  async function getPatientName(patientId) {
+    try {
+      const response = await fetch(
+        `/api/lessonsSummaries/patientIdToName?patient_id=${encodeURIComponent(
+          patientId
+        )}`
+      );
+      const data = await response.json();
+      return data.name;
+    } catch (error) {
+      console.error("Error fetching patient name:", error);
+      return "";
+    }
+  }
+
+  async function getGuideName(guideId) {
+    try {
+      const response = await axios.get("/api/lessonsSummaries/guideIdToName", {
+        params: { id: guideId },
+      });
+      return response.data.name;
+    } catch (error) {
+      console.error("Error fetching guide name:", error);
+      return "";
+    }
+  }
+
+  const handleNavigateToSpecialProgramSuggestionView = async () => {
+    try {
+      const guideSuggestion = await axios.get(
+        `/api/suggestions/getByPatientId?patientId=${patientId}`
+      );
+      const patientInfo = await axios.get("/api/patient/getPatient", {
+        params: { patient_id: patientId },
+      });
+      const { data: guideName } = await axios.get(
+        "/api/lessonsSummaries/guideIdToName",
+        { params: { id: guideSuggestion.data.guide_id } }
+      );
+      
+      router.push({
+        pathname: "specialProgramSuggestion/specialProgramSuggestionView",
+        query: {
+          suggestionId: guideSuggestion.data.id,
+          patientName: patientInfo.data[0].name,
+          date: guideSuggestion.data.date,
+          guideName: guideName.name,
+        },
+      });
+    } catch (error) {
+      console.error("Error fetching guide suggestions:", error);
+    }
   };
 
   return (
@@ -170,11 +247,23 @@ const PersonalMenu = () => {
                   <CustomButton>צפייה במטרות</CustomButton>
                 </MenuItem>
               </Link>
-              <Link href="/somePath1">
+              {hasGuideSuggestions && (
                 <MenuItem>
-                  <CustomButton>צפייה בתכניות טיפול</CustomButton>
+                  <CustomButton
+                    onClick={handleNavigateToSpecialProgramSuggestionView}
+                  >
+                    צפייה בהצעות לתכניות טיפול מיוחדות
+                  </CustomButton>
                 </MenuItem>
-              </Link>
+              )}
+
+              {hasSpecialTreatmentPlans && (
+                <Link href={`/specialProgramView?patientId=${query.patientId}`}>
+                  <MenuItem>
+                    <CustomButton>צפייה בתכניות טיפול מיוחדות</CustomButton>
+                  </MenuItem>
+                </Link>
+              )}
             </div>
             {type === 1 && (
               <Button onClick={handleSetMeeting}>

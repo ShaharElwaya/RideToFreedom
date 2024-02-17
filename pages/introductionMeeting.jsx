@@ -15,10 +15,12 @@ export default function introduction_meeting() {
   const [patientName, setPatientName] = useState("");
   const [address, setAddress] = useState("");
   const [birthday, setBirthday] = useState(null);
-  const [reasonForRequest, setReasonForRequest] = useState(null);
+  const [meetingDate, setMeetingDate] = useState(null);
+  const [reasonForRequest, setReasonForRequest] = useState("");
   const [gender, setGender] = useState("");
-  const router = useRouter();
   const isSmallScreen = useMediaQuery("(max-width: 600px)");
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   const handleChange = (event) => {
     setGender(event.target.value);
@@ -27,6 +29,7 @@ export default function introduction_meeting() {
   const createMeetingReq = async (e) => {
     e.preventDefault();
     try {
+      setIsLoading(true);
       const body = {
         child_real_id: childRealId,
         name: patientName,
@@ -38,11 +41,30 @@ export default function introduction_meeting() {
       };
 
       await axios.post("/api/patient/insertPatient", body);
+
       alert("Successfully added");
+
+      const { data: allUsers } = await axios.get("/api/users");
+      const filteredUsers = allUsers.filter((user) => user.type !== 1);
+      const randomIndex = Math.floor(Math.random() * filteredUsers.length);
+      const randomGuide = filteredUsers[randomIndex];
+
+      const googleMeetingBody = {
+        users: [userStore.getState().email, randomGuide.email],
+        date: meetingDate,
+        location: "israel",
+        description: reasonForRequest,
+        name: `פגישה לילד: ${patientName}`,
+      };
+
+      await axios.post("/api/google", googleMeetingBody);
+      setIsLoading(false);
+
       router.push("/customerFile");
     } catch (error) {
       console.error("Error creating meeting request:", error);
       alert("Something went wrong...");
+      setIsLoading(false);
     }
   };
 
@@ -106,6 +128,16 @@ export default function introduction_meeting() {
           </div>
         </div>
         <div className={style.textArea}>
+          <div>
+            <DatePicker
+              label="בחירת תאריך לפגישה"
+              sx={{ width: "265px" }}
+              value={meetingDate}
+              onChange={(v) => setMeetingDate(new Date(v))}
+            />
+          </div>
+        </div>
+        <div>
           <TextAreaComponent
             placeholderText="סיבת בקשה*"
             value={reasonForRequest}
@@ -113,9 +145,8 @@ export default function introduction_meeting() {
             onChange={(e) => setReasonForRequest(e.target.value)}
           />
         </div>
-
-        <Button type="submit" variant="contained">
-          צור בקשה
+        <Button type="submit" variant="contained" disabled={isLoading}>
+          קביעת פגישה לילד
         </Button>
       </form>
     </div>
