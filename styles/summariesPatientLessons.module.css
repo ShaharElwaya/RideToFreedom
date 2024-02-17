@@ -8,26 +8,31 @@
   text-align: center;
 }
 
+.noResults {
+  text-align: center;
+  margin: 30px auto;
+}
+
 .rightStyle {
   text-align: right;
   width: 96%;
 }
 
-  @media (max-width: 600px) {
-    /* Styles for screens with a maximum width of 600px (e.g., phone screens) */
-    .rightStyleGoal {
-        text-align: right;
-        width: 50%;
-    }
+@media (max-width: 600px) {
+  /* Styles for screens with a maximum width of 600px (e.g., phone screens) */
+  .rightStyleGoal {
+    text-align: right;
+    width: 50%;
   }
-  
-  @media (min-width: 601px) {
-    /* Styles for screens with a minimum width of 601px (e.g., larger screens) */
-    .rightStyleGoal {
-        text-align: right;
-        width: 48.5%;
-    }
+}
+
+@media (min-width: 601px) {
+  /* Styles for screens with a minimum width of 601px (e.g., larger screens) */
+  .rightStyleGoal {
+    text-align: right;
+    width: 48.5%;
   }
+}
 
 .leftStyle {
   text-align: left;
@@ -39,7 +44,7 @@
     width: 100%;
     margin: auto;
     text-align: right;
-    justify-content: space-between ;
+    justify-content: space-between;
   }
 }
 
@@ -71,22 +76,22 @@
 }
 
 @media (max-width: 600px) {
-    /* Styles for screens with a maximum width of 600px (e.g., phone screens) */
-    .textArea {
-      width: 100%;
-      margin: auto;
-      text-align: right;
-    }
+  /* Styles for screens with a maximum width of 600px (e.g., phone screens) */
+  .textArea {
+    width: 100%;
+    margin: auto;
+    text-align: right;
   }
-  
-  @media (min-width: 601px) {
-    /* Styles for screens with a minimum width of 601px (e.g., larger screens) */
-    .textArea {
-      width: 525px;
-      margin: auto;
-      text-align: right;
-    }
+}
+
+@media (min-width: 601px) {
+  /* Styles for screens with a minimum width of 601px (e.g., larger screens) */
+  .textArea {
+    width: 525px;
+    margin: auto;
+    text-align: right;
   }
+}
 
 .submitButtonStyle {
   margin-top: 30px;

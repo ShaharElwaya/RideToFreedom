@@ -5,6 +5,11 @@ import axios from "axios";
 import CustomizedDialogs from "@/components/dialog";
 import TextAreaComponent from "@/components/UI/textAreaComponent";
 import PatientRow from "@/components/UI/patientRow";
+import style from "../styles/summariesPatientLessons.module.css";
+import PicAndHeadlines from "@/components/UI/picAndheadline";
+import useCustomQuery from "@/utils/useCustomQuery";
+import { userStore } from '@/stores/userStore';
+import LoadingSpinner from "@/components/loadingSpinner";
 
 export default function ViewForm() {
   const [formData, setFormData] = useState([]);
@@ -18,9 +23,53 @@ export default function ViewForm() {
   const [comments, setComments] = useState([]);
   const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [showComments, setShowComments] = useState(false); // State to control visibility of comments section
+  const [showComments, setShowComments] = useState(false);
+  const router = useRouter();
+  const { type, id } = userStore.getState(); 
 
+  function formatDate(date) {
+    const birthday = new Date (date);
+    // Ensure the input is a valid Date object
+    if (!(birthday instanceof Date) || isNaN(birthday)) {
+      return "Invalid Date";
+    }
+  
+    // Get day, month, and year components
+    const day = birthday.getDate().toString().padStart(2, "0");
+    const month = (birthday.getMonth() + 1).toString().padStart(2, "0"); // Months are zero-based
+    const year = birthday.getFullYear();
+  
+    // Concatenate components with "-"
+    return `${day}-${month}-${year}`;
+  };
+  
   useEffect(() => {
+    async function checkPremission() {
+      try {
+        if (type === 1) {
+          // Fetch comments for the specific lessonId
+          const response = await axios.get(`/api/login/childrens?id=${id}`);
+          let isOk = false;
+          
+          for(let i = 0; i < response.data.length && !isOk; i++) {
+            if(response.data[i].id == patientId){
+              isOk = true;
+            }
+          }
+
+          if (isOk == false) {
+            router.back(); // Use await to wait for the navigation to complete
+          }
+        }
+      } catch (error) {
+        console.error("Error checking permission:", error);
+      }
+    }    
+
+    checkPremission();
+  }, []);
+
+  useCustomQuery(() => {
     const fetchData = async () => {
       try {
         const { data: formData } = await axios.get("/api/patient/getPatient", {
@@ -33,8 +82,11 @@ export default function ViewForm() {
 
         setParentName(parentData[0].name);
         setFormData(formData);
+
+        setIsLoading(false);
       } catch (error) {
         console.error("Error fetching form data:", error);
+        setIsLoading(false);
       }
     };
 
@@ -69,7 +121,10 @@ export default function ViewForm() {
       });
 
       // Fetch updated comments after saving the comment
-      await fetchComments();
+      const response = await axios.get(
+        `/api/introMeeting/getComments?patient_id=${query.patientId}`
+      );
+      setComments(response.data);
 
       // Close the comment dialog
       handleCloseDialog();
@@ -97,10 +152,15 @@ export default function ViewForm() {
           `/api/introMeeting/getComments?patient_id=${query.patientId}`
         );
         setComments(response.data); // Set comments
-        setShowComments(true); // Show comments section if there are comments
+
+        if (response.data.length > 0) {
+          setShowComments(true); // Show comments section if there are comments
+        }
+
         setIsLoading(false);
       } catch (error) {
         console.error("Error fetching comments:", error);
+        setIsLoading(false);
       }
     };
 
@@ -109,47 +169,48 @@ export default function ViewForm() {
     }
   }, [query.patientId]);
 
+  const handleGoBack = () => {
+    router.back();
+  };
+
   return (
+    <>
+    {isLoading && <LoadingSpinner />}
     <div style={{ height: "90vh" }}>
-      <h1>פרטי פגישת היכרות</h1>
-      <div
-        style={{
-          height: "90%",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <div>
-          {formData.map((data, index) => (
-            <Paper
-              key={index}
-              style={{ padding: "20px", marginBottom: "20px" }}
-            >
-              <Typography>
-                <strong> שם ההורה:</strong> {}
-              </Typography>
-              <Typography>
-                <strong>שם הילד:</strong> {data.name}
-              </Typography>
-              <Typography>
-                <strong>כתובת:</strong> {data.address}
-              </Typography>
-              <Typography>
-                <strong>יום הולדת:</strong> {data.birthday}
-              </Typography>
-              <Typography>
-                <strong>מין:</strong> {data.gender === "M" ? "זכר" : "נקבה"}
-              </Typography>
-              <Typography>
-                <strong>סיבת בקשה:</strong> {data.reason_for_request}
-              </Typography>
-            </Paper>
-          ))}
-        </div>
+      <div className={style.leftStyle}>
+        <Button onClick={handleGoBack}> חזור &gt;</Button>
+      </div>
+      <PicAndHeadlines
+        pictureName="introduction"
+        picturePath="../introduction.png"
+        primaryHeadline="פרטי פגישת היכרות"
+      />
+      <div className={style.container}>
+        {formData.map((data, index) => (
+          <Paper key={index} style={{ padding: "20px", marginBottom: "20px" }}>
+            <Typography>
+              <strong> שם ההורה:</strong> {parentName}
+            </Typography>
+            <Typography>
+              <strong>שם הילד:</strong> {data.name}
+            </Typography>
+            <Typography>
+              <strong>כתובת:</strong> {data.address}
+            </Typography>
+            <Typography>
+              <strong>יום הולדת:</strong> {formatDate(data.birthday)}
+            </Typography>
+            <Typography>
+              <strong>מין:</strong> {data.gender === "M" ? "זכר" : "נקבה"}
+            </Typography>
+            <Typography>
+              <strong>סיבת בקשה:</strong> {data.reason_for_request}
+            </Typography>
+          </Paper>
+        ))}
       </div>
       {showComments && ( // Render comments section only if there are comments
-        <div>
+        <div className={style.container}>
           <h4>תגובות:</h4>
           {isLoading ? (
             <p>Loading comments...</p>
@@ -166,7 +227,7 @@ export default function ViewForm() {
           )}
         </div>
       )}
-      {query.userType !== "1" && (
+      {type !== 1 && (
         <div className="submitButtonStyle">
           <Button variant="contained" onClick={handleOpenDialog}>
             הוספת תגובה
@@ -175,7 +236,7 @@ export default function ViewForm() {
       )}
 
       {/* Comment Dialog */}
-      {query.userType !== "1" && ( // Render the comment dialog only if userType is not 1
+      {type !== 1 && ( // Render the comment dialog only if userType is not 1
         <CustomizedDialogs
           title="הוספת תגובה"
           text={
@@ -229,5 +290,6 @@ export default function ViewForm() {
         ]}
       />
     </div>
+    </>
   );
 }

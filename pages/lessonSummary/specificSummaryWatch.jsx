@@ -312,7 +312,7 @@ export default function SpecificSummaryWatch() {
       <PatientRow
         pictureName="GenderPic"
         picturePath={`../${
-          lessonDetails.gender === "F" ? "girlPic" : "boyPic"
+          lessonDetails.patient_gender === "F" ? "girlPic" : "boyPic"
         }.png`}
         date={formatDate(lessonDetails.formatted_date)}
         time={lessonDetails.formatted_time}
