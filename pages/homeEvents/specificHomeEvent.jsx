@@ -33,33 +33,37 @@ export default function SpecificHomeEvent() {
   const { type, id } = userStore.getState();
   const [isSaving, setIsSaving] = useState(false);
 
-  const formattedDateTime = time
-    ? new Date(time).toLocaleString("en-US", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-        hour: "numeric",
-        minute: "numeric",
-        hour12: false,
-      })
-    : "";
-
-  const date = time
-    ? new Date(time).toLocaleDateString("en-US", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-      })
-    : "";
-
-  const timeOfDay = time
-    ? new Date(time).toLocaleTimeString("en-US", {
-        hour: "numeric",
-        minute: "numeric",
-        hour12: false,
-      })
-    : "";
-
+  const parseDateString = (dateString) => {
+    const [datePart, timePart] = dateString.split(' ');
+    const [month, day, year] = datePart.split('/');
+    const [hour, minute] = timePart.split(':');
+  
+    let parsedDate = new Date(year, month - 1, day, hour, minute);
+  
+    // Set hours to 00 instead of 24
+    if (hour === '24') {
+      parsedDate.setHours(0);
+      parsedDate.setDate(parsedDate.getDate() - 1);
+    }
+  
+    return parsedDate;
+  };
+  
+  const parsedDate = time ? parseDateString(time) : null;
+  
+  const formattedDateTime = parsedDate
+  ? `${parsedDate.getFullYear()}-${(parsedDate.getMonth() + 1).toString().padStart(2, '0')}-${parsedDate.getDate().toString().padStart(2, '0')} ` +
+    `${parsedDate.getHours().toString().padStart(2, '0')}:${parsedDate.getMinutes().toString().padStart(2, '0')}:00`
+  : '';
+  
+  const date = parsedDate
+    ? `${parsedDate.getDate().toString().padStart(2, '0')}/${(parsedDate.getMonth() + 1).toString().padStart(2, '0')}/${parsedDate.getFullYear()}`
+    : '';
+  
+  const hours = parsedDate ? parsedDate.getHours().toString().padStart(2, '0') : '';
+  const minutes = parsedDate ? parsedDate.getMinutes().toString().padStart(2, '0') : '';
+  const timeOfDay = parsedDate ? `${hours}:${minutes}` : '';
+  
   const handleCloseDialog = () => {
     setDialogOpen(false);
 
@@ -116,6 +120,30 @@ export default function SpecificHomeEvent() {
     if (type != 1) {
       router.back();
     }
+
+    async function checkPremission() {
+      try {
+        if (type === 1) {
+          // Fetch comments for the specific lessonId
+          const response = await axios.get(`/api/login/childrens?id=${id}`);
+          let isOk = false;
+          
+          for(let i = 0; i < response.data.length && !isOk; i++) {
+            if(response.data[i].id == patientId){
+              isOk = true;
+            }
+          }
+
+          if (isOk == false) {
+            router.back(); // Use await to wait for the navigation to complete
+          }
+        }
+      } catch (error) {
+        console.error("Error checking permission:", error);
+      }
+    }    
+
+    checkPremission();
 
     // Keep track of completion status for each fetch operation
     let isPatientNameLoaded = false;

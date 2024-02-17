@@ -4,42 +4,47 @@ import { styled } from "@mui/material/styles";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
-import { Button } from "@mui/material";
+import { Button, InputAdornment, TextField } from "@mui/material";
 import PicAndHeadlines from "@/components/UI/picAndheadline";
 import { PicAndText } from "@/components/UI/PicAndName";
 import LoadingSpinner from "@/components/loadingSpinner";
 import { setUserData, userStore } from "@/stores/userStore";
 import style from "../styles/summariesPatientLessons.module.css";
-
-const Item = styled(Paper)(() => ({
-  padding: "20px",
-  textAlign: "center",
-  cursor: "pointer",
-}));
-
-const CenteredContainer = styled(Box)({
-  display: "flex",
-  flexDirection: "column",
-  justifyContent: "center",
-  alignItems: "center",
-});
-
-const ContentContainer = styled(Box)({
-  marginTop: "20px",
-  width: "90%",
-});
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 const RowAndColumnSpacing = () => {
   const [names, setNames] = useState([]);
+  const [filteredNames, setFilteredNames] = useState([]);
+  const [searchInput, setSearchInput] = useState("");
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const { type, id } = userStore.getState();
+  const isSmallScreen = useMediaQuery("(max-width: 600px)");
+
+  const Item = styled(Paper)(() => ({
+    padding: "20px 0",
+    textAlign: "center",
+    cursor: "pointer",
+  }));
+
+  const CenteredContainer = styled(Box)({
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+  });
+
+  const ContentContainer = styled(Box)({
+    marginTop: "20px",
+    width: isSmallScreen ? "100%" : "600px",
+  });
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const data = await fetchNamesFromDatabase(type, id);
         setNames(data);
+        setFilteredNames(data); // Initialize filteredNames with all names
       } catch (error) {
         console.error("Error fetching names:", error);
       } finally {
@@ -82,6 +87,18 @@ const RowAndColumnSpacing = () => {
     router.push(`/login`);
   };
 
+  const handleSearchInputChange = (event) => {
+    setSearchInput(event.target.value);
+    filterNames(event.target.value);
+  };
+
+  const filterNames = (searchValue) => {
+    const filtered = names.filter((nameData) =>
+      nameData.name.toLowerCase().includes(searchValue.toLowerCase())
+    );
+    setFilteredNames(filtered);
+  };
+  
   const handleSetMeeting = () => {
     router.push('/introductionMeeting');
   };
@@ -97,32 +114,41 @@ const RowAndColumnSpacing = () => {
         <PicAndHeadlines
           pictureName="customerFile"
           picturePath="../customerFile.png"
-          primaryHeadline={type === 1 ? 'תיקי ילדים' : 'תיקי לקוחות'}
+          primaryHeadline={type === 1 ? "תיקי ילדים" : "תיקי לקוחות"}
         />
+        {type === 1 && (<Button onClick={handleSetMeeting}>קבע פגישת הכרות</Button>)}
         <ContentContainer>
-
-          
-        <CenteredContainer>
-        {type === 1 && <Button onClick={handleSetMeeting}>קבע פגישת הכרות</Button>}
-          </CenteredContainer>
-
-        <Grid container spacing={2}>
-              {names.map((nameData) => (
-                <Grid item xs={6} key={nameData.id}>
-                  <Item
-                    onClick={() =>
-                      handleClick(nameData.id, nameData.name, nameData.gender)
-                    }
-                  >
-                    <PicAndText
-                      pictureName={getPictureName(nameData.gender)}
-                      name={nameData.name}
-                    />
-                  </Item>
-                </Grid>
-              ))}
-            </Grid>
-  
+          {/* Search Input */}
+          <TextField
+            label="חיפוש"
+            variant="outlined"
+            value={searchInput}
+            onChange={handleSearchInputChange}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">🔍</InputAdornment>
+              ),
+            }}
+            style={{ width: '100%' }}
+            margin="normal"
+          />
+          <Grid container spacing={2}>
+            {filteredNames.map((nameData) => (
+              <Grid item xs={6} key={nameData.id}>
+                <Item
+                  onClick={() =>
+                    handleClick(nameData.id, nameData.name, nameData.gender)
+                  }
+                >
+                  <PicAndText
+                    pictureName={getPictureName(nameData.gender)}
+                    name={nameData.name}
+                    containerWidth={window.innerWidth / 3}
+                  />
+                </Item>
+              </Grid>
+            ))}
+          </Grid>
         </ContentContainer>
       </CenteredContainer>
     </>

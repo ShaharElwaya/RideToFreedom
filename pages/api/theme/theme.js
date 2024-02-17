@@ -10,7 +10,7 @@ export const theme = createTheme({
           fontFamily: 'Heebo, sans-serif'
         },
         secondary: {
-          main: '#19857b',
+          main: '#424769',
         },
         error: {
           main: red.A400,

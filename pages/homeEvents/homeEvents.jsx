@@ -16,7 +16,7 @@ export default function HomeEvents() {
   const [name, setName] = useState();
   const [isLoading, setIsLoading] = useState(true);
   const { patientId } = router.query;
-  const { type } = userStore.getState(); 
+  const { type, id } = userStore.getState(); 
 
   // Handle function to navigate to the specificSummary page
   const handleAdd = () => {
@@ -70,6 +70,30 @@ export default function HomeEvents() {
             console.error('Error fetching patient name:', error);
         }
     }
+
+    async function checkPremission() {
+      try {
+        if (type === 1) {
+          // Fetch comments for the specific lessonId
+          const response = await axios.get(`/api/login/childrens?id=${id}`);
+          let isOk = false;
+          
+          for(let i = 0; i < response.data.length && !isOk; i++) {
+            if(response.data[i].id == patientId){
+              isOk = true;
+            }
+          }
+
+          if (isOk == false) {
+            router.back(); // Use await to wait for the navigation to complete
+          }
+        }
+      } catch (error) {
+        console.error("Error checking permission:", error);
+      }
+    }    
+
+    checkPremission();
 
     // Use Promise.all to wait for all asynchronous operations to complete
     Promise.all([fetchData(), getPatientName()])

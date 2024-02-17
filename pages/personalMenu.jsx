@@ -1,14 +1,15 @@
-import React, { useState, useEffect } from "react";
-import { useRouter } from "next/router";
-import { styled } from "@mui/system";
-import { Button } from "@mui/material";
-import Paper from "@mui/material/Paper";
-import { PicAndText } from "@/components/UI/PicAndName";
-import style from "../styles/summariesPatientLessons.module.css";
-import Link from "next/link";
-import LoadingSpinner from "@/components/loadingSpinner";
-import { userStore, setUserData } from "@/stores/userStore";
+import React, { useState, useEffect } from 'react';
 import axios from "axios";
+import { useRouter } from 'next/router';
+import { styled } from '@mui/system';
+import { Button } from '@mui/material';
+import Paper from '@mui/material/Paper';
+import { PicAndText } from '@/components/UI/PicAndName';
+import style from '../styles/summariesPatientLessons.module.css';
+import Link from 'next/link';
+import LoadingSpinner from '@/components/loadingSpinner';
+import { userStore , setUserData} from '@/stores/userStore';
+import useCustomQuery from "@/utils/useCustomQuery";
 
 const CustomButton = styled(Button)({
   "&:hover": {
@@ -39,9 +40,9 @@ const MenuItem = styled("div")({
 });
 
 const Item = styled(Paper)(() => ({
-  padding: "20px",
-  textAlign: "center",
-  width: "200px",
+  padding: '20px 0',
+  textAlign: 'center',
+  width: '200px',
 }));
 
 const PersonalMenu = () => {
@@ -56,7 +57,28 @@ const PersonalMenu = () => {
   const [hasGuideSuggestions, setHasGuideSuggestions] = useState(false);
   const { id, type } = userStore.getState();
 
-  useEffect(() => {
+  useCustomQuery(() => {
+    async function checkPremission() {
+      try {
+        if (type === 1) {
+          const response = await axios.get(`/api/login/childrens?id=${id}`);
+          let isOk = false;
+          
+          for(let i = 0; i < response.data.length && !isOk; i++) {
+            if(response.data[i].id == patientId){
+              isOk = true;
+            }
+          }
+
+          if (isOk == false) {
+            router.back(); // Use await to wait for the navigation to complete
+          }
+        }
+      } catch (error) {
+        console.error("Error checking permission:", error);
+      }
+    }    
+
     async function getPatientGender() {
       try {
         if (patientId) {
@@ -101,6 +123,7 @@ const PersonalMenu = () => {
       }
     }
 
+    checkPremission();
     getPatientGender();
   }, [patientId]);
 
@@ -194,6 +217,7 @@ const PersonalMenu = () => {
               <PicAndText
                 pictureName={gender === "F" ? "girlPic" : "boyPic"}
                 name={`${name}`}
+                containerWidth={175}
               />
             </Item>
             <div>

@@ -1,25 +1,28 @@
 import React from 'react';
 import { TextareaAutosize } from '@mui/material';
-import { Margin } from '@mui/icons-material';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 export default function TextAreaComponent({ placeholderText, value, onChange, required }) {
-    const iconStyle = {
-        height: '200px',
-        width: '500px',
-        resize: 'none',
-        fontFamily: 'Heebo, sans-serif',
-        margin: 0
-    };
+  const isLargeScreen = useMediaQuery('(min-width: 601px)');
 
-    return (
-        <div>
-            <TextareaAutosize
-                style={iconStyle}
-                placeholder={placeholderText}
-                value={value}
-                onChange={onChange}
-                required={required}
-            />
-        </div>
-    );
+  const textStyle = {
+    height: '200px',
+    resize: 'none',
+    fontFamily: 'Heebo, sans-serif',
+    margin: 0,
+    width: isLargeScreen ? '500px' : '100%', // Adjust the width based on the screen size
+
+  };
+
+  return (
+    <div>
+      <TextareaAutosize
+        style={{ ...textStyle }}
+        placeholder={placeholderText}
+        value={value}
+        onChange={onChange}
+        required={required}
+      />
+    </div>
+  );
 }

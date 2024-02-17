@@ -13,11 +13,12 @@ export default async function handler(req, res) {
         options = await sql`
           SELECT name, gender, id
           FROM public.patient
-          WHERE parent_id = ${id};
+          WHERE parent_id = ${id} 
+          ORDER BY name;
         `;
       } else {
         // For other types, select all patients
-        options = await sql`SELECT name, gender, id FROM public.patient;`;
+        options = await sql`SELECT name, gender, id FROM public.patient ORDER BY name;`;
       }
 
       res.status(200).json(options.rows);
