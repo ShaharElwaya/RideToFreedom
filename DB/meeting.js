@@ -63,12 +63,10 @@ async function authorize() {
 }
 
 export async function createMeeting(body) {
-    console.log("creating meeting from", body)
     const auth = await authorize()
     const calendar = google.calendar({ version: 'v3' });
     console.log("created calender")
     const { name, date, location, users, description } = body;
-    console.log("🚀 ~ createMeeting ~ users:", users)
     
     const event = {
         summary: name,

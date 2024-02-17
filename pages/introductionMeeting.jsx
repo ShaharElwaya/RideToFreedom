@@ -7,17 +7,18 @@ import { DatePicker } from "@mui/x-date-pickers";
 import axios from "axios";
 import { userStore } from "../stores/userStore";
 import { useRouter } from "next/router";
-import TextAreaComponent from '@/components/UI/textAreaComponent'
-
+import TextAreaComponent from "@/components/UI/textAreaComponent";
 
 export default function introduction_meeting() {
   const [childRealId, setChildRealId] = useState("");
   const [patientName, setPatientName] = useState("");
   const [address, setAddress] = useState("");
   const [birthday, setBirthday] = useState(null);
-  const [reasonForRequest, setReasonForRequest] = useState(null);
+  const [meetingDate, setMeetingDate] = useState(null);
+  const [reasonForRequest, setReasonForRequest] = useState("");
   const [gender, setGender] = useState("");
-    const router = useRouter()
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   const handleChange = (event) => {
     setGender(event.target.value);
@@ -26,23 +27,38 @@ export default function introduction_meeting() {
   const createMeetingReq = async (e) => {
     e.preventDefault();
     try {
+      setIsLoading(true);
       const body = {
         child_real_id: childRealId,
         name: patientName,
         address: address,
         birthday: birthday,
         gender: gender,
-        parent_id:userStore.getState().id,
-        reason_for_request: reasonForRequest
+        parent_id: userStore.getState().id,
+        reason_for_request: reasonForRequest,
       };
 
       await axios.post("/api/patient/insertPatient", body);
-      alert('Successfully added')
-      router.push('/customerFile')
+      const { data: allUsers } = await axios.get("/api/users");
+      const filteredUsers = allUsers.filter((user) => user.type !== 1);
+      const randomIndex = Math.floor(Math.random() * filteredUsers.length);
+      const randomGuide = filteredUsers[randomIndex];
+
+      const googleMeetingBody = {
+        users: [userStore.getState().email, randomGuide.email],
+        date: meetingDate,
+        location: "israel",
+        description: reasonForRequest,
+        name: `פגישה לילד: ${patientName}`,
+      };
+
+      await axios.post("/api/google", googleMeetingBody);
+      setIsLoading(false);
+      router.push("/customerFile");
     } catch (error) {
       console.error("Error creating meeting request:", error);
-      alert('Something went wrong...')
-
+      alert("Something went wrong...");
+      setIsLoading(false);
     }
   };
 
@@ -87,6 +103,14 @@ export default function introduction_meeting() {
               onChange={(v) => setBirthday(new Date(v))}
             />
           </div>
+          <div>
+            <DatePicker
+              label="בחירת תאריך לפגישה"
+              sx={{ width: "265px" }}
+              value={meetingDate}
+              onChange={(v) => setMeetingDate(new Date(v))}
+            />
+          </div>
           <RadioGroup
             value={gender}
             onChange={handleChange}
@@ -102,16 +126,16 @@ export default function introduction_meeting() {
           </RadioGroup>
         </div>
         <div>
-        <TextAreaComponent
+          <TextAreaComponent
             placeholderText="סיבת בקשה*"
             value={reasonForRequest}
             required
             onChange={(e) => setReasonForRequest(e.target.value)}
           />
         </div>
-      
-        <Button type="submit" variant="contained">
-          צור בקשה
+
+        <Button type="submit" variant="contained" disabled={isLoading}>
+          קביעת פגישה לילד
         </Button>
       </form>
     </div>
