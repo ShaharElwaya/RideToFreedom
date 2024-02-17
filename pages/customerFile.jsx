@@ -17,7 +17,6 @@ const RowAndColumnSpacing = () => {
   const [filteredNames, setFilteredNames] = useState([]);
   const [searchInput, setSearchInput] = useState("");
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(true);
   const { type, id } = userStore.getState();
   const isSmallScreen = useMediaQuery("(max-width: 600px)");
 
@@ -44,11 +43,9 @@ const RowAndColumnSpacing = () => {
       try {
         const data = await fetchNamesFromDatabase(type, id);
         setNames(data);
-        setFilteredNames(data); // Initialize filteredNames with all names
+        setFilteredNames(data);
       } catch (error) {
         console.error("Error fetching names:", error);
-      } finally {
-        setIsLoading(false);
       }
     };
 
@@ -88,8 +85,9 @@ const RowAndColumnSpacing = () => {
   };
 
   const handleSearchInputChange = (event) => {
-    setSearchInput(event.target.value);
-    filterNames(event.target.value);
+    const value = event.target.value;
+    setSearchInput(value);
+    filterNames(value);
   };
 
   const filterNames = (searchValue) => {
@@ -98,14 +96,14 @@ const RowAndColumnSpacing = () => {
     );
     setFilteredNames(filtered);
   };
-  
+
   const handleSetMeeting = () => {
-    router.push('/introductionMeeting');
+    router.push("/introductionMeeting");
   };
 
   return (
     <>
-      {isLoading && <LoadingSpinner />}
+      {names.length === 0 && <LoadingSpinner />}
       <div className={style.leftStyle}>
         <Button onClick={handleLogOut}> התנתק </Button>
       </div>
@@ -116,12 +114,12 @@ const RowAndColumnSpacing = () => {
           picturePath="../customerFile.png"
           primaryHeadline={type === 1 ? "תיקי ילדים" : "תיקי לקוחות"}
         />
-        {type === 1 && (<Button onClick={handleSetMeeting}>קבע פגישת הכרות</Button>)}
         <ContentContainer>
           {/* Search Input */}
           <TextField
             label="חיפוש"
             variant="outlined"
+            autoFocus
             value={searchInput}
             onChange={handleSearchInputChange}
             InputProps={{
@@ -129,25 +127,42 @@ const RowAndColumnSpacing = () => {
                 <InputAdornment position="start">🔍</InputAdornment>
               ),
             }}
-            style={{ width: '100%' }}
+            style={{ width: "100%" }}
             margin="normal"
           />
           <Grid container spacing={2}>
-            {filteredNames.map((nameData) => (
-              <Grid item xs={6} key={nameData.id}>
-                <Item
-                  onClick={() =>
-                    handleClick(nameData.id, nameData.name, nameData.gender)
-                  }
-                >
+            {filteredNames.length === 0 && type !== 1 ? (
+              <div className={style.noResults}>
+                אין תוצאות
+              </div>
+            ) : (
+              filteredNames.map((nameData) => (
+                <Grid item xs={6} key={nameData.id}>
+                  <Item
+                    onClick={() =>
+                      handleClick(nameData.id, nameData.name, nameData.gender)
+                    }
+                  >
+                    <PicAndText
+                      pictureName={getPictureName(nameData.gender)}
+                      name={nameData.name}
+                      containerWidth={window.innerWidth / 3}
+                    />
+                  </Item>
+                </Grid>
+              ))
+            )}
+            {type === 1 && (
+              <Grid item xs={6}>
+                <Item onClick={() => handleSetMeeting()}>
                   <PicAndText
-                    pictureName={getPictureName(nameData.gender)}
-                    name={nameData.name}
+                    pictureName={"newPic"}
+                    name={"קבע פגישת היכרות לילד נוסף"}
                     containerWidth={window.innerWidth / 3}
                   />
                 </Item>
               </Grid>
-            ))}
+            )}
           </Grid>
         </ContentContainer>
       </CenteredContainer>

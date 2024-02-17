@@ -222,29 +222,29 @@ const PersonalMenu = () => {
             </Item>
             <div>
               <Link
-                href={`/introMeetingView?patientId=${query.patientId}&userType=${type}`}
+                href={`/introMeetingView?patientId=${query.patientId}`}
               >
                 <MenuItem>
-                  <CustomButton>צפייה בפרטים אישיים</CustomButton>
+                  <CustomButton>פרטים כללים והיכרות</CustomButton>
                 </MenuItem>
               </Link>
               <Link
                 href={`/lessonSummary/summariesPatientLessons?patientId=${query.patientId}`}
               >
                 <MenuItem>
-                  <CustomButton>צפייה בסיכומי שיעור</CustomButton>
+                  <CustomButton>סיכומי שיעורים</CustomButton>
                 </MenuItem>
               </Link>
               <Link
                 href={`/homeEvents/homeEvents?patientId=${query.patientId}`}
               >
                 <MenuItem>
-                  <CustomButton>צפייה בדיווחים מהבית</CustomButton>
+                  <CustomButton>דיווחים מהבית</CustomButton>
                 </MenuItem>
               </Link>
               <Link href={`/goals/goals?patientId=${query.patientId}`}>
                 <MenuItem>
-                  <CustomButton>צפייה במטרות</CustomButton>
+                  <CustomButton>מטרות</CustomButton>
                 </MenuItem>
               </Link>
               {hasGuideSuggestions && (
@@ -252,7 +252,7 @@ const PersonalMenu = () => {
                   <CustomButton
                     onClick={handleNavigateToSpecialProgramSuggestionView}
                   >
-                    צפייה בהצעות לתכניות טיפול מיוחדות
+                    הצעות לתכניות טיפול מיוחדות
                   </CustomButton>
                 </MenuItem>
               )}
@@ -260,15 +260,15 @@ const PersonalMenu = () => {
               {hasSpecialTreatmentPlans && (
                 <Link href={`/specialProgramView?patientId=${query.patientId}`}>
                   <MenuItem>
-                    <CustomButton>צפייה בתכניות טיפול מיוחדות</CustomButton>
+                    <CustomButton>בתכניות טיפול מיוחדות</CustomButton>
                   </MenuItem>
                 </Link>
               )}
             </div>
-            {type === 1 && (
-              <Button onClick={handleSetMeeting}>
-                קבע פגישת היכרות למטופל נוסף
-              </Button>
+            {type === 1 && isOneChild && (
+              <MenuItem>
+              <CustomButton onClick={handleSetMeeting}> פגישת היכרות לילד נוסף</CustomButton>
+            </MenuItem>
             )}
           </CenteredContainer>
         </>

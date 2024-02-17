@@ -8,6 +8,11 @@
   text-align: center;
 }
 
+.noResults {
+  text-align: center;
+  margin: 30px auto;
+}
+
 .rightStyle {
   text-align: right;
   width: 96%;
