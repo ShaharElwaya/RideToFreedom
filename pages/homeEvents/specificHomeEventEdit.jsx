@@ -107,9 +107,7 @@ export default function SpecificHomeEventWatch() {
     setDialogOpen(false);
 
     if (saveSuccess) {
-      router.push(
-        `/homeEvents/homeEvents?patientId=${encodeURIComponent(patientId)}`
-      );
+      router.back();
     }
   };
 

@@ -12,12 +12,16 @@
 }
 
 .divStyle {
-    display: flex;
-    justify-content: center;
-    width: 50%;
-    margin: 0px;
-    padding: 0px;
-  }
+  display: flex;
+  justify-content: center;
+  width: 50%;
+  margin: 0px;
+  padding: 0px;
+}
+
+.leftStyle {
+  text-align: left;
+}
 
 @media (max-width: 600px) {
   /* Styles for screens with a maximum width of 600px (e.g., phone screens) */

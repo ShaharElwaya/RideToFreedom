@@ -12,6 +12,7 @@ import {
   Card,
   CardContent,
   Chip,
+  Typography,
 } from "@mui/material";
 import PicAndHeadlines from "@/components/UI/picAndheadline";
 import PatientRow from "@/components/UI/patientRow";
@@ -352,6 +353,9 @@ export default function SummariesPatientLessons() {
               איפוס סננים
             </Button>
           )}
+          <Typography style={{ fontSize: "12px", marginRight: "6px" }}>
+            ניתן לבחור כמה מדריכים / סוגי שיעורים
+          </Typography>
         </div>
         {/* Filter Controls */}
         <FormControl className={style.filterInput}>

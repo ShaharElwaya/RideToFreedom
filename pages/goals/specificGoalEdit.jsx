@@ -58,7 +58,7 @@ export default function SpecificGoalWatch() {
     setDialogOpen(false);
 
     if (saveSuccess) {
-      router.push(`/goals/goals?patientId=${encodeURIComponent(patientId)}`);
+      router.back();
     }
   };
 
