@@ -125,16 +125,14 @@ export default function introduction_meeting() {
               <FormControlLabel value="M" control={<Radio />} label="זכר" />
               <FormControlLabel value="F" control={<Radio />} label="נקבה" />
             </RadioGroup>
-          </div>
-        </div>
-        <div className={style.textArea}>
-          <div>
+            <div className={style.divStyle}>
             <DatePicker
               label="בחירת תאריך לפגישה"
               sx={{ width: "265px" }}
               value={meetingDate}
               onChange={(v) => setMeetingDate(new Date(v))}
             />
+        </div>
           </div>
         </div>
         <div>
