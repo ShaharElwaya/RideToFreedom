@@ -35,12 +35,18 @@ export default function login() {
         const response = await fetch(`/api/login/parent?id=${res.data.id}`);
         const isOneChild = await response.json();
 
+        const numberOfChildren = response.childDetails
+          ? response.childDetails.length
+          : 0;
+
         if (isOneChild.hasOneChild) {
           const { id: patientId, name, gender } = isOneChild.childDetails;
           router.push({
             pathname: "/personalMenu",
             query: { patientId, name, gender },
           });
+        } else if (numberOfChildren === 0) {
+          await router.push(`/introductionMeeting`);
         } else {
           await router.push(`/customerFile`);
         }

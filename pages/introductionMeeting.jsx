@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Button,
   Select,
@@ -6,6 +6,7 @@ import {
   FormControl,
   InputLabel,
 } from "@mui/material";
+
 import style from "../styles/loginRegisterPage.module.css";
 import PicAndHeadlines from "@/components/UI/picAndheadline";
 import TextFieldComponent from "@/components/UI/TextFiled";
@@ -29,9 +30,11 @@ export default function IntroductionMeeting() {
   const [gender, setGender] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [dialogError, setDialogError] = useState("");
-  const [dialogOpen, setDialogOpen] = React.useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
   const router = useRouter();
   const isSmallScreen = useMediaQuery("(max-width: 600px)");
+  const [previousRoute, setPreviousRoute] = useState("");
+  const { type, id } = userStore.getState();
 
   const handleChange = (event) => {
     setGender(event.target.value);
@@ -87,8 +90,21 @@ export default function IntroductionMeeting() {
     }
   };
 
-  const handleGoBack = () => {
-    router.back();
+  const handleGoBack = async () => {
+    if (type === 1) {
+      const response = await fetch(`/api/login/parent?id=${id}`);
+      const isOneChild = await response.json();
+
+      const numberOfChildren = response.childDetails
+        ? response.childDetails.length
+        : 0;
+
+      if (numberOfChildren === 0) {
+        await router.push(`/customerFile`);
+      }
+    } else {
+      router.back();
+    }
   };
 
   return (
@@ -139,7 +155,7 @@ export default function IntroductionMeeting() {
                   label="מגדר"
                   required
                   sx={{ width: isSmallScreen ? "93%" : "95%" }}
-                  >
+                >
                   <MenuItem value="M">זכר</MenuItem>
                   <MenuItem value="F">נקבה</MenuItem>
                 </Select>

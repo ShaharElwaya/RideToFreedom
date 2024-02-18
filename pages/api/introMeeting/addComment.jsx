@@ -3,13 +3,13 @@ import { sql } from '@vercel/postgres';
 export default async function handler(req, res) {
   if (req.method === 'POST') {
     try {
-      const { comment, patient_id } = req.body;
+      const { comment, patient_id, guide_id } = req.body;
       console.log("🚀 ~ handler ~ req.body:", req.body)
 
       // Insert comment using parameterized query to prevent SQL injection
       const result = await sql`
-      INSERT INTO public.personal_details_comments (comment, patient_id)
-      VALUES (${comment}, ${patient_id})
+      INSERT INTO public.personal_details_comments (comment, patient_id, guide_id)
+      VALUES (${comment}, ${patient_id}, ${guide_id})
       RETURNING *;
     `;
     

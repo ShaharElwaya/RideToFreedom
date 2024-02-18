@@ -282,21 +282,6 @@ export default function SummariesPatientLessons() {
     return false; // Should not reach here
   };
 
-  const isTimeMatch = (lessonTime) => {
-    if (!filters.startTime && !filters.endTime) {
-      return true; // No date filter applied, consider it a match
-    }
-    if (filters.startTime && filters.endTime) {
-      return lessonTime >= filters.startTime && lessonTime <= filters.endTime;
-    } else if (filters.startTime) {
-      return lessonTime >= filters.startTime;
-    } else if (filters.endTime) {
-      return lessonTime <= filters.endTime;
-    }
-
-    return false; // Should not reach here
-  };
-
   const filteredLessons = lessons.filter((lesson) => {
     const isGuideMatch =
       filters.selectedGuides.length === 0 ||
@@ -354,7 +339,8 @@ export default function SummariesPatientLessons() {
             </Button>
           )}
           <Typography style={{ fontSize: "12px", marginRight: "6px" }}>
-            ניתן לבחור כמה מדריכים / סוגי שיעורים
+            ניתן לבחור כמה מדריכים / סוגי שיעורים, ניתן לסנן שעה
+            רק לאחר בחירת תאריך
           </Typography>
         </div>
         {/* Filter Controls */}
