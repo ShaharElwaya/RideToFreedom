@@ -70,10 +70,10 @@ const RowAndColumnSpacing = () => {
     return gender === "F" ? "girlPic" : "boyPic";
   };
 
-  const handleClick = (patientId, name, gender) => {
+  const handleClick = (patientId ) => {
     router.push({
       pathname: "/personalMenu",
-      query: { patientId, name, gender },
+      query: { patientId },
     });
   };
 
@@ -144,7 +144,7 @@ const RowAndColumnSpacing = () => {
                 <Grid item xs={6} key={nameData.id}>
                   <Item
                     onClick={() =>
-                      handleClick(nameData.id, nameData.name, nameData.gender)
+                      handleClick(nameData.id)
                     }
                   >
                     <PicAndText
