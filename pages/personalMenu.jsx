@@ -48,12 +48,12 @@ const Item = styled(Paper)(() => ({
 const PersonalMenu = () => {
   const router = useRouter();
   const { query } = router;
-  const { patientId, name } = query;
+  const { patientId } = query;
   const [gender, setGender] = useState();
+  const [name, setName] = useState();
   const [isLoading, setIsLoading] = useState(true);
   const [isOneChild, setIsOneChild] = useState(false);
-  const [hasSpecialTreatmentPlans, setHasSpecialTreatmentPlans] =
-    useState(false);
+  const [hasSpecialTreatmentPlans, setHasSpecialTreatmentPlans] = useState(false);
   const [hasGuideSuggestions, setHasGuideSuggestions] = useState(false);
   const { id, type } = userStore.getState();
 
@@ -109,6 +109,7 @@ const PersonalMenu = () => {
           setHasGuideSuggestions(hasGuideSuggestions);
 
           setGender(data.gender);
+          setName(data.name);
           setIsLoading(false); // Set loading to false when data is fetched (success or error)
         }
 
@@ -145,33 +146,6 @@ const PersonalMenu = () => {
   const handleSetMeeting = () => {
     router.push("/introductionMeeting");
   };
-
-  async function getPatientName(patientId) {
-    try {
-      const response = await fetch(
-        `/api/lessonsSummaries/patientIdToName?patient_id=${encodeURIComponent(
-          patientId
-        )}`
-      );
-      const data = await response.json();
-      return data.name;
-    } catch (error) {
-      console.error("Error fetching patient name:", error);
-      return "";
-    }
-  }
-
-  async function getGuideName(guideId) {
-    try {
-      const response = await axios.get("/api/lessonsSummaries/guideIdToName", {
-        params: { id: guideId },
-      });
-      return response.data.name;
-    } catch (error) {
-      console.error("Error fetching guide name:", error);
-      return "";
-    }
-  }
 
   const handleNavigateToSpecialProgramSuggestionView = async () => {
     try {

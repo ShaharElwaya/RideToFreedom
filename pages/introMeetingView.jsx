@@ -8,8 +8,9 @@ import PatientRow from "@/components/UI/patientRow";
 import style from "../styles/summariesPatientLessons.module.css";
 import PicAndHeadlines from "@/components/UI/picAndheadline";
 import useCustomQuery from "@/utils/useCustomQuery";
-import { userStore } from '@/stores/userStore';
+import { userStore } from "@/stores/userStore";
 import LoadingSpinner from "@/components/loadingSpinner";
+import Navigation from "@/components/nevigation";
 
 export default function ViewForm() {
   const [formData, setFormData] = useState([]);
@@ -25,7 +26,8 @@ export default function ViewForm() {
   const [isLoading, setIsLoading] = useState(true);
   const [showComments, setShowComments] = useState(false);
   const router = useRouter();
-  const { type, id } = userStore.getState(); 
+  const { type, id } = userStore.getState();
+  const { patientId } = router.query;
   const [commentBeingEdited, setCommentBeingEdited] = useState(null);
   const [editedComment, setEditedComment] = useState("");
   const [dialogOpen, setDialogOpen] = React.useState(false);
@@ -33,23 +35,22 @@ export default function ViewForm() {
 
   const [isDialogEditOpen, setIsDialogEditOpen] = useState(false);
 
-
   function formatDate(date) {
-    const birthday = new Date (date);
+    const birthday = new Date(date);
     // Ensure the input is a valid Date object
     if (!(birthday instanceof Date) || isNaN(birthday)) {
       return "Invalid Date";
     }
-  
+
     // Get day, month, and year components
     const day = birthday.getDate().toString().padStart(2, "0");
     const month = (birthday.getMonth() + 1).toString().padStart(2, "0"); // Months are zero-based
     const year = birthday.getFullYear();
-  
+
     // Concatenate components with "-"
     return `${day}-${month}-${year}`;
-  };
-  
+  }
+
   useEffect(() => {
     async function checkPremission() {
       try {
@@ -57,9 +58,9 @@ export default function ViewForm() {
           // Fetch comments for the specific lessonId
           const response = await axios.get(`/api/login/childrens?id=${id}`);
           let isOk = false;
-          
-          for(let i = 0; i < response.data.length && !isOk; i++) {
-            if(response.data[i].id == patientId){
+
+          for (let i = 0; i < response.data.length && !isOk; i++) {
+            if (response.data[i].id == patientId) {
               isOk = true;
             }
           }
@@ -71,7 +72,7 @@ export default function ViewForm() {
       } catch (error) {
         console.error("Error checking permission:", error);
       }
-    }    
+    }
 
     checkPremission();
   }, []);
@@ -210,7 +211,7 @@ export default function ViewForm() {
       // Save the comment to the database
       await axios.post("/api/introMeeting/updateComment", {
         id: commentBeingEdited.id,
-        comment: editedComment
+        comment: editedComment,
       });
 
       // Fetch updated comments after saving the comment
@@ -272,80 +273,137 @@ export default function ViewForm() {
 
   return (
     <>
-    {isLoading && <LoadingSpinner />}
-    <div style={{ height: "90vh" }}>
-      <div className={style.leftStyle}>
-        <Button onClick={handleGoBack}> חזור &gt;</Button>
-      </div>
-      <PicAndHeadlines
-        pictureName="introduction"
-        picturePath="../introduction.png"
-        primaryHeadline="פרטי פגישת היכרות"
-      />
-      <div className={style.container}>
-        {formData.map((data, index) => (
-          <Paper key={index} style={{ padding: "20px", marginBottom: "20px" }}>
-            <Typography>
-              <strong> שם ההורה:</strong> {parentName}
-            </Typography>
-            <Typography>
-              <strong>שם הילד:</strong> {data.name}
-            </Typography>
-            <Typography>
-              <strong>כתובת:</strong> {data.address}
-            </Typography>
-            <Typography>
-              <strong>יום הולדת:</strong> {formatDate(data.birthday)}
-            </Typography>
-            <Typography>
-              <strong>מין:</strong> {data.gender === "M" ? "זכר" : "נקבה"}
-            </Typography>
-            <Typography>
-              <strong>סיבת בקשה:</strong> {data.reason_for_request}
-            </Typography>
-          </Paper>
-        ))}
-      </div>
-      {showComments && ( // Render comments section only if there are comments
+      {isLoading && <LoadingSpinner />}
+      <div style={{ height: "90vh" }}>
+        <div className={style.leftStyle}>
+          <Button onClick={handleGoBack}> חזור &gt;</Button>
+        </div>
+        <PicAndHeadlines
+          pictureName="introduction"
+          picturePath="../introduction.png"
+          primaryHeadline="פרטי פגישת היכרות"
+        />
         <div className={style.container}>
-          <h4>תגובות:</h4>
-          {isLoading ? (
-            <p>Loading comments...</p>
-          ) : (
-            comments.map((comment, index) => (
-              <p onClick={() => handleEditClick(comment)}
-                title={comment.guide_id === id ? 'Click to edit' : undefined} >
-              <PatientRow
-                key={index}
-                pictureName="guidePic"
-                picturePath="/guide.webp"
-                lesson={comment.comment}
-                hasBottomBorder={true}
-                canEdit={comment.guide_id === id}
-              />
-              </p>
-            ))
-          )}
+          {formData.map((data, index) => (
+            <Paper
+              key={index}
+              style={{ padding: "20px", marginBottom: "20px" }}
+            >
+              <Typography>
+                <strong> שם ההורה:</strong> {parentName}
+              </Typography>
+              <Typography>
+                <strong>שם הילד:</strong> {data.name}
+              </Typography>
+              <Typography>
+                <strong>כתובת:</strong> {data.address}
+              </Typography>
+              <Typography>
+                <strong>יום הולדת:</strong> {formatDate(data.birthday)}
+              </Typography>
+              <Typography>
+                <strong>מין:</strong> {data.gender === "M" ? "זכר" : "נקבה"}
+              </Typography>
+              <Typography>
+                <strong>סיבת בקשה:</strong> {data.reason_for_request}
+              </Typography>
+            </Paper>
+          ))}
         </div>
-      )}
-      {type !== 1 && (
-        <div className="submitButtonStyle">
-          <Button variant="contained" onClick={handleOpenDialog}>
-            הוספת תגובה
-          </Button>
-        </div>
-      )}
+        {showComments && ( // Render comments section only if there are comments
+          <div className={style.container}>
+            <h4>תגובות:</h4>
+            {isLoading ? (
+              <p>Loading comments...</p>
+            ) : (
+              comments.map((comment, index) => (
+                <p
+                  onClick={() => handleEditClick(comment)}
+                  title={comment.guide_id === id ? "Click to edit" : undefined}
+                >
+                  <PatientRow
+                    key={index}
+                    pictureName="guidePic"
+                    picturePath="/guide.webp"
+                    lesson={comment.comment}
+                    hasBottomBorder={true}
+                    canEdit={comment.guide_id === id}
+                  />
+                </p>
+              ))
+            )}
+          </div>
+        )}
+        {type !== 1 && (
+          <div className="submitButtonStyle">
+            <Button variant="contained" onClick={handleOpenDialog}>
+              הוספת תגובה
+            </Button>
+          </div>
+        )}
 
-      {/* Comment Dialog */}
-      {type !== 1 && ( // Render the comment dialog only if userType is not 1
+        {/* Comment Dialog */}
+        {type !== 1 && ( // Render the comment dialog only if userType is not 1
+          <CustomizedDialogs
+            title="הוספת תגובה"
+            text={
+              <React.Fragment>
+                <TextAreaComponent
+                  placeholderText="הוספת תגובה"
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)}
+                  required
+                />
+                {dialogError && (
+                  <Typography color="error" variant="body2">
+                    {dialogError}
+                  </Typography>
+                )}
+              </React.Fragment>
+            }
+            open={isDialogOpen}
+            onClose={handleCloseDialog}
+            actions={[
+              <Button key="cancelButton" onClick={handleCloseDialog}>
+                ביטול
+              </Button>,
+              <Button
+                key="saveButton"
+                autoFocus
+                onClick={handleSaveComment}
+                variant="contained"
+                disabled={isSaving}
+              >
+                שמירה
+              </Button>,
+            ]}
+          />
+        )}
+
+        {/* Success Dialog */}
         <CustomizedDialogs
-          title="הוספת תגובה"
+          title="שמירת תגובה"
+          text={dialogSuccess}
+          open={isDialogSuccessOpen}
+          onClose={() => setIsDialogSuccessOpen(false)}
+          actions={[
+            <Button
+              key="confirmButton"
+              autoFocus
+              onClick={() => setIsDialogSuccessOpen(false)}
+            >
+              הבנתי
+            </Button>,
+          ]}
+        />
+        {/* Comment Dialog */}
+        <CustomizedDialogs
+          title="עריכת תגובה"
           text={
             <React.Fragment>
               <TextAreaComponent
-                placeholderText="הוספת תגובה"
-                value={comment}
-                onChange={(e) => setComment(e.target.value)}
+                value={editedComment}
+                onChange={(e) => setEditedComment(e.target.value)}
                 required
               />
               {dialogError && (
@@ -355,16 +413,16 @@ export default function ViewForm() {
               )}
             </React.Fragment>
           }
-          open={isDialogOpen}
-          onClose={handleCloseDialog}
+          open={isDialogEditOpen}
+          onClose={handleCloseEditDialog}
           actions={[
-            <Button key="cancelButton" onClick={handleCloseDialog}>
-              ביטול
+            <Button key="cancelButton" onClick={() => handleDeleteComment()}>
+              מחיקה
             </Button>,
             <Button
               key="saveButton"
               autoFocus
-              onClick={handleSaveComment}
+              onClick={() => handleUpdateComment()}
               variant="contained"
               disabled={isSaving}
             >
@@ -372,62 +430,8 @@ export default function ViewForm() {
             </Button>,
           ]}
         />
-      )}
-
-      {/* Success Dialog */}
-      <CustomizedDialogs
-        title="שמירת תגובה"
-        text={dialogSuccess}
-        open={isDialogSuccessOpen}
-        onClose={() => setIsDialogSuccessOpen(false)}
-        actions={[
-          <Button
-            key="confirmButton"
-            autoFocus
-            onClick={() => setIsDialogSuccessOpen(false)}
-          >
-            הבנתי
-          </Button>,
-        ]}
-      />
-      {/* Comment Dialog */}
-      <CustomizedDialogs
-        title="עריכת תגובה"
-        text={
-          <React.Fragment>
-            <TextAreaComponent
-              value={editedComment}
-              onChange={(e) => setEditedComment(e.target.value)}
-              required
-            />
-            {dialogError && (
-              <Typography color="error" variant="body2">
-                {dialogError}
-              </Typography>
-            )}
-          </React.Fragment>
-        }
-        open={isDialogEditOpen}
-        onClose={handleCloseEditDialog}
-        actions={[
-          <Button
-            key="cancelButton"
-            onClick={() => handleDeleteComment()}
-          >
-            מחיקה
-          </Button>,
-          <Button
-            key="saveButton"
-            autoFocus
-            onClick={() => handleUpdateComment()}
-            variant="contained"
-            disabled={isSaving}
-          >
-            שמירה
-          </Button>,
-        ]}
-        />
-    </div>
+      </div>
+      <Navigation patientId={patientId} screen="introMeetingView" />
     </>
   );
 }

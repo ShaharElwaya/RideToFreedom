@@ -37,10 +37,10 @@ export default function login() {
         const numberOfChildren = isOneChild.childDetails.length;
 
         if (isOneChild.hasOneChild) {
-          const { id: patientId, name, gender } = isOneChild.childDetails;
+          const { id: patientId } = isOneChild.childDetails;
           router.push({
             pathname: "/personalMenu",
-            query: { patientId, name, gender },
+            query: { patientId },
           });
         } else if (numberOfChildren === 0) {
           await router.push(`/introductionMeeting`);

@@ -17,6 +17,7 @@ import LoadingSpinner from "@/components/loadingSpinner";
 import { userStore } from "@/stores/userStore";
 import useCustomQuery from "@/utils/useCustomQuery";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import Navigation from "@/components/nevigation";
 
 export default function HomeEvents() {
   const router = useRouter();
@@ -154,9 +155,7 @@ export default function HomeEvents() {
 
   const handleGoBack = () => {
     router.push(
-      `/personalMenu?patientId=${encodeURIComponent(
-        patientId
-      )}&name=${encodeURIComponent(name)}`
+      `/personalMenu?patientId=${encodeURIComponent(patientId)}`
     );
   };
 
@@ -410,6 +409,7 @@ export default function HomeEvents() {
           </>
         )}
       </div>
+      <Navigation patientId={patientId} screen="homeEvents" />
     </>
   );
 }

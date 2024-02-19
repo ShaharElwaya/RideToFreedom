@@ -332,7 +332,7 @@ export default function SpecificSummaryWatch() {
           placeholderText=" ספר איך היה השיעור *"
           value={lessonDetails.summary}
           required
-          disabled
+          readOnly={true}
         />
         {type !== 1 && (
           <div>

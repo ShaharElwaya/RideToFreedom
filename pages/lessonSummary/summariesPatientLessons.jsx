@@ -23,6 +23,7 @@ import { userStore } from "@/stores/userStore";
 import useCustomQuery from "@/utils/useCustomQuery";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { isThenable } from "next/dist/client/components/router-reducer/router-reducer-types";
+import Navigation from "@/components/nevigation";
 
 export default function SummariesPatientLessons() {
   const router = useRouter();
@@ -74,9 +75,7 @@ export default function SummariesPatientLessons() {
 
   const handleGoBack = () => {
     router.push(
-      `/personalMenu?patientId=${encodeURIComponent(
-        patientId
-      )}&name=${encodeURIComponent(name)}`
+      `/personalMenu?patientId=${encodeURIComponent(patientId)}`
     );
   };
 
@@ -475,6 +474,7 @@ export default function SummariesPatientLessons() {
               אין סיכומי שיעורים
             </div>
           )}
+          <Navigation patientId={patientId} screen="summariesPatientLessons" />
         </>
       )}
     </>
