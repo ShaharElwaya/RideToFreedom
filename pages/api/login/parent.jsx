@@ -17,7 +17,7 @@ export default async function handler(req, res) {
         res.status(200).json({ hasOneChild: true, childDetails: { name, gender, id: childId } });
       } else {
         // If there's more than one child or no child, return a default value
-        res.status(200).json({ hasOneChild: false, childDetails: null });
+        res.status(200).json({ hasOneChild: false, childDetails: childrens.rows });
       }
     } catch (error) {
       console.error(error);

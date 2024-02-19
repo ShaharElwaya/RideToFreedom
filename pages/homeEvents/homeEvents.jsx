@@ -1,6 +1,14 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { Button, FormControl, InputLabel, Select, TextField, MenuItem, Typography } from "@mui/material";
+import {
+  Button,
+  FormControl,
+  InputLabel,
+  Select,
+  TextField,
+  MenuItem,
+  Typography,
+} from "@mui/material";
 import PicAndHeadlines from "@/components/UI/picAndheadline";
 import PatientRow from "@/components/UI/patientRow";
 import style from "../../styles/summariesPatientLessons.module.css";
@@ -277,95 +285,95 @@ export default function HomeEvents() {
         picturePath="../homeEvents.png"
         primaryHeadline="דיווח אירועים מהבית"
         secondaryHeadline={name ? name : "No Name Data"}
-      />      
+      />
       <div className={style.rightStyle}>
-      <div className="container">
-        <b>סננים: </b>
-        {Object.values(filters).some((value) => value) && (
-          <Button
-            color="secondary"
-            onClick={() =>
-              setFilters({
-                selectedParents: [],
-                startDate: null,
-                endDate: null,
-                startTime: null,
-                endTime: null,
-              })
-            }
-          >
-            איפוס סננים
-          </Button>
-        )}
-        <Typography style={{ fontSize: "12px", marginRight: "6px" }}>
-            בסינון הורה ניתן לבחור כמה ערכים מהרשימה, ניתן לסנן שעה
-            רק לאחר בחירת תאריך
+        <div className="container">
+          <b>סננים: </b>
+          {Object.values(filters).some((value) => value) && (
+            <Button
+              color="secondary"
+              onClick={() =>
+                setFilters({
+                  selectedParents: [],
+                  startDate: null,
+                  endDate: null,
+                  startTime: null,
+                  endTime: null,
+                })
+              }
+            >
+              איפוס סננים
+            </Button>
+          )}
+          <Typography style={{ fontSize: "12px", marginRight: "6px" }}>
+            בסינון הורה ניתן לבחור כמה ערכים מהרשימה, ניתן לסנן שעה רק לאחר
+            בחירת תאריך
           </Typography>
-      </div>
-      {/* Filter Controls */}
-      <FormControl className={style.filterInput}>
-        <InputLabel>הורה</InputLabel>
-        <Select
-          sx={{ width: isSmallScreen ? "150px" : "200px" }}
-          style={selectStyle}
-          label="הורה"
-          multiple
-          value={filters.selectedParents}
-          onChange={(e) =>
-            handleFilterChange("selectedParents", e.target.value)
-          }
-          variant="outlined"
-        >
-          {/* Replace with the actual list of lesson types */}
-          {parents.map((parent) => (
-            <MenuItem key={parent} value={parent}>
-              {parent}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-      <TextField
-        sx={{ width: isSmallScreen ? "162px" : "210px" }}
-        label="מתאריך"
-        type="date"
-        value={filters.startDate || ""}
-        onChange={(e) => handleFilterChange("startDate", e.target.value)}
-        InputLabelProps={{
-          shrink: true,
-        }}
-      />
-      <TextField
-        sx={{ width: isSmallScreen ? "162px" : "210px" }}
-        label="עד תאריך"
-        type="date"
-        value={filters.endDate || ""}
-        onChange={(e) => handleFilterChange("endDate", e.target.value)}
-        InputLabelProps={{
-          shrink: true,
-        }}
-      />
-      <TextField
-        sx={{ width: isSmallScreen ? "162px" : "120px" }}
-        label="משעה"
-        type="time"
-        value={filters.startTime || ""}
-        onChange={(e) => handleFilterChange("startTime", e.target.value)}
-        InputLabelProps={{
-          shrink: true,
-        }}
-        disabled={!filters.startDate}
-      />
-      <TextField
-        sx={{ width: isSmallScreen ? "162px" : "120px" }}
-        label="עד שעה"
-        type="time"
-        value={filters.endTime || ""}
-        onChange={(e) => handleFilterChange("endTime", e.target.value)}
-        InputLabelProps={{
-          shrink: true,
-        }}
-        disabled={!filters.endDate}
-      />
+        </div>
+        {/* Filter Controls */}
+        <FormControl className={style.filterInput}>
+          <InputLabel>הורה</InputLabel>
+          <Select
+            sx={{ width: isSmallScreen ? "150px" : "200px" }}
+            style={selectStyle}
+            label="הורה"
+            multiple
+            value={filters.selectedParents}
+            onChange={(e) =>
+              handleFilterChange("selectedParents", e.target.value)
+            }
+            variant="outlined"
+          >
+            {/* Replace with the actual list of lesson types */}
+            {parents.map((parent) => (
+              <MenuItem key={parent} value={parent}>
+                {parent}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <TextField
+          sx={{ width: isSmallScreen ? "162px" : "210px" }}
+          label="מתאריך"
+          type="date"
+          value={filters.startDate || ""}
+          onChange={(e) => handleFilterChange("startDate", e.target.value)}
+          InputLabelProps={{
+            shrink: true,
+          }}
+        />
+        <TextField
+          sx={{ width: isSmallScreen ? "162px" : "210px" }}
+          label="עד תאריך"
+          type="date"
+          value={filters.endDate || ""}
+          onChange={(e) => handleFilterChange("endDate", e.target.value)}
+          InputLabelProps={{
+            shrink: true,
+          }}
+        />
+        <TextField
+          sx={{ width: isSmallScreen ? "162px" : "120px" }}
+          label="משעה"
+          type="time"
+          value={filters.startTime || ""}
+          onChange={(e) => handleFilterChange("startTime", e.target.value)}
+          InputLabelProps={{
+            shrink: true,
+          }}
+          disabled={!filters.startDate}
+        />
+        <TextField
+          sx={{ width: isSmallScreen ? "162px" : "120px" }}
+          label="עד שעה"
+          type="time"
+          value={filters.endTime || ""}
+          onChange={(e) => handleFilterChange("endTime", e.target.value)}
+          InputLabelProps={{
+            shrink: true,
+          }}
+          disabled={!filters.endDate}
+        />
       </div>
       {type == 1 && (
         <div className={style.addButtonStyle}>
@@ -374,24 +382,33 @@ export default function HomeEvents() {
       )}
       <div className={style.rowWrapperContainer}>
         {/* Display filtered lessons */}
-        {!isLoading &&
-          filteredEvents.map((event) => (
-            <div
-              key={event.event_id}
-              className={style.rowWrapper}
-              onClick={() => handleRowClick(event.event_id)}
-            >
-              <PatientRow
-                pictureName={event.type}
-                picturePath={`../${
-                  event.patient_gender === "F" ? "girlPic" : "boyPic"
-                }.png`}
-                date={event.formatted_date}
-                time={event.formatted_time}
-                name={event.parent_name}
-              />
-            </div>
-          ))}
+        {!isLoading && (
+          <>
+            {filteredEvents.length > 0 ? (
+              filteredEvents.map((event) => (
+                <div
+                  key={event.event_id}
+                  className={style.rowWrapper}
+                  onClick={() => handleRowClick(event.event_id)}
+                >
+                  <PatientRow
+                    pictureName={event.type}
+                    picturePath={`../${
+                      event.patient_gender === "F" ? "girlPic" : "boyPic"
+                    }.png`}
+                    date={event.formatted_date}
+                    time={event.formatted_time}
+                    name={event.parent_name}
+                  />
+                </div>
+              ))
+            ) : (
+              <div style={{ textAlign: "center", marginTop: "20px" }}>
+                אין דיווחים מהבית
+              </div>
+            )}
+          </>
+        )}
       </div>
     </>
   );

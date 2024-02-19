@@ -34,10 +34,7 @@ export default function login() {
       if (res.data.type === 1) {
         const response = await fetch(`/api/login/parent?id=${res.data.id}`);
         const isOneChild = await response.json();
-
-        const numberOfChildren = response.childDetails
-          ? response.childDetails.length
-          : 0;
+        const numberOfChildren = isOneChild.childDetails.length;
 
         if (isOneChild.hasOneChild) {
           const { id: patientId, name, gender } = isOneChild.childDetails;
