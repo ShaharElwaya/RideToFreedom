@@ -34,6 +34,7 @@ export default function login() {
       if (res.data.type === 1) {
         const response = await fetch(`/api/login/parent?id=${res.data.id}`);
         const isOneChild = await response.json();
+        const numberOfChildren = isOneChild.childDetails.length;
 
         if (isOneChild.hasOneChild) {
           const { id: patientId, name, gender } = isOneChild.childDetails;
@@ -41,6 +42,8 @@ export default function login() {
             pathname: "/personalMenu",
             query: { patientId, name, gender },
           });
+        } else if (numberOfChildren === 0) {
+          await router.push(`/introductionMeeting`);
         } else {
           await router.push(`/customerFile`);
         }

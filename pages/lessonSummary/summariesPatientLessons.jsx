@@ -282,21 +282,6 @@ export default function SummariesPatientLessons() {
     return false; // Should not reach here
   };
 
-  const isTimeMatch = (lessonTime) => {
-    if (!filters.startTime && !filters.endTime) {
-      return true; // No date filter applied, consider it a match
-    }
-    if (filters.startTime && filters.endTime) {
-      return lessonTime >= filters.startTime && lessonTime <= filters.endTime;
-    } else if (filters.startTime) {
-      return lessonTime >= filters.startTime;
-    } else if (filters.endTime) {
-      return lessonTime <= filters.endTime;
-    }
-
-    return false; // Should not reach here
-  };
-
   const filteredLessons = lessons.filter((lesson) => {
     const isGuideMatch =
       filters.selectedGuides.length === 0 ||
@@ -354,7 +339,8 @@ export default function SummariesPatientLessons() {
             </Button>
           )}
           <Typography style={{ fontSize: "12px", marginRight: "6px" }}>
-            ניתן לבחור כמה מדריכים / סוגי שיעורים
+            ניתן לבחור כמה מדריכים / סוגי שיעורים, ניתן לסנן שעה רק לאחר בחירת
+            תאריך
           </Typography>
         </div>
         {/* Filter Controls */}
@@ -451,35 +437,46 @@ export default function SummariesPatientLessons() {
       )}
 
       {/* Display filtered lessons */}
-      {!isLoading &&
-        filteredLessons.map(
-          (lesson) =>
-            (type === 3 ||
-              type === 2 ||
-              (type === 1 && lesson.parent_permission)) && (
-              <div
-                key={lesson.lesson_id}
-                className={style.rowWrapper}
-                onClick={() => handleRowClick(lesson.lesson_id)}
-              >
-                <PatientRow
-                  pictureName={lesson.type}
-                  picturePath={`../${
-                    lesson.patient_gender === "F" ? "girlPic" : "boyPic"
-                  }.png`}
-                  date={formatDate(lesson.formatted_date)}
-                  time={lesson.formatted_time}
-                  name={lesson.guide_name}
-                  maxTextLengthName={isSmallScreen ? 7 : maxLettersGuideName}
-                  nameWidth={isSmallScreen ? 77 : maxLettersGuideName * 9}
-                  lesson={lesson.lesson_type}
-                  {...(isSmallScreen && {
-                    maxTextLengthLesson: 7,
-                  })}
-                />
-              </div>
+      {!isLoading && (
+        <>
+          {filteredLessons.length > 0 ? (
+            filteredLessons.map(
+              (lesson) =>
+                (type === 3 ||
+                  type === 2 ||
+                  (type === 1 && lesson.parent_permission)) && (
+                  <div
+                    key={lesson.lesson_id}
+                    className={style.rowWrapper}
+                    onClick={() => handleRowClick(lesson.lesson_id)}
+                  >
+                    <PatientRow
+                      pictureName={lesson.type}
+                      picturePath={`../${
+                        lesson.patient_gender === "F" ? "girlPic" : "boyPic"
+                      }.png`}
+                      date={formatDate(lesson.formatted_date)}
+                      time={lesson.formatted_time}
+                      name={lesson.guide_name}
+                      maxTextLengthName={
+                        isSmallScreen ? 7 : maxLettersGuideName
+                      }
+                      nameWidth={isSmallScreen ? 77 : maxLettersGuideName * 9}
+                      lesson={lesson.lesson_type}
+                      {...(isSmallScreen && {
+                        maxTextLengthLesson: 7,
+                      })}
+                    />
+                  </div>
+                )
             )
-        )}
+          ) : (
+            <div style={{ textAlign: "center", marginTop: "20px" }}>
+              אין סיכומי שיעורים
+            </div>
+          )}
+        </>
+      )}
     </>
   );
 }

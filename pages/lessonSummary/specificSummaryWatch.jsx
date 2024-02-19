@@ -416,7 +416,7 @@ export default function SpecificSummaryWatch() {
 
       {/* Success Dialog */}
       <CustomizedDialogs
-        title="הוספת התגובה הושלמה"
+        title="שמירת תגובה"
         text={dialogSuccess}
         open={isDialogSuccessOpen}
         onClose={() => setIsDialogSuccessOpen(false)}

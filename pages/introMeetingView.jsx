@@ -26,6 +26,13 @@ export default function ViewForm() {
   const [showComments, setShowComments] = useState(false);
   const router = useRouter();
   const { type, id } = userStore.getState(); 
+  const [commentBeingEdited, setCommentBeingEdited] = useState(null);
+  const [editedComment, setEditedComment] = useState("");
+  const [dialogOpen, setDialogOpen] = React.useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false);
+
+  const [isDialogEditOpen, setIsDialogEditOpen] = useState(false);
+
 
   function formatDate(date) {
     const birthday = new Date (date);
@@ -117,7 +124,8 @@ export default function ViewForm() {
       // Save the comment to the database
       await axios.post("/api/introMeeting/addComment", {
         comment,
-        patient_id: query.patientId, // Send data in request body
+        patient_id: query.patientId,
+        guide_id: id, // Send data in request body
       });
 
       // Fetch updated comments after saving the comment
@@ -173,6 +181,95 @@ export default function ViewForm() {
     router.back();
   };
 
+  const handleEditClick = (comment) => {
+    // Only allow the owner of the comment to edit it
+    if (comment.guide_id === id) {
+      setEditedComment(comment.comment);
+      setCommentBeingEdited(comment);
+      setIsDialogEditOpen(true);
+    }
+  };
+
+  const handleCloseEditDialog = () => {
+    setEditedComment("");
+    setIsDialogEditOpen(false);
+    setDialogError("");
+    setCommentBeingEdited(null);
+  };
+
+  const handleUpdateComment = async () => {
+    try {
+      if (!editedComment.trim()) {
+        setDialogError("התגובה אינה יכולה להיות ריקה");
+        setIsDialogEditOpen(true);
+        return;
+      }
+
+      setIsSaving(true);
+
+      // Save the comment to the database
+      await axios.post("/api/introMeeting/updateComment", {
+        id: commentBeingEdited.id,
+        comment: editedComment
+      });
+
+      // Fetch updated comments after saving the comment
+      const response = await axios.get(
+        `/api/introMeeting/getComments?patient_id=${query.patientId}`
+      );
+      setComments(response.data);
+
+      // Close the comment dialog
+      handleCloseEditDialog();
+
+      // Open the success dialog
+      setDialogSuccess("התגובה נשמרה בהצלחה");
+      setIsDialogSuccessOpen(true);
+    } catch (error) {
+      console.error("Error saving comment:", error);
+
+      // Handle error
+      setDialogError("אירעה שגיאה בעת שמירת התגובה");
+      setIsDialogEditOpen(true);
+      setIsDialogSuccessOpen(false); // Close the success dialog if there was an error
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleDeleteComment = async () => {
+    try {
+      setIsSaving(true);
+
+      // Save the comment to the database
+      await axios.post("/api/introMeeting/deleteComment", {
+        id: commentBeingEdited.id,
+      });
+
+      // Fetch updated comments after saving the comment
+      const response = await axios.get(
+        `/api/introMeeting/getComments?patient_id=${query.patientId}`
+      );
+      setComments(response.data);
+
+      // Close the comment dialog
+      handleCloseEditDialog();
+
+      // Open the success dialog
+      setDialogSuccess("התגובה נמחקה בהצלחה");
+      setIsDialogSuccessOpen(true);
+    } catch (error) {
+      console.error("Error saving comment:", error);
+
+      // Handle error
+      setDialogError("אירעה שגיאה בעת מחיקת התגובה");
+      setIsDialogEditOpen(true);
+      setIsDialogSuccessOpen(false); // Close the success dialog if there was an error
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   return (
     <>
     {isLoading && <LoadingSpinner />}
@@ -216,13 +313,17 @@ export default function ViewForm() {
             <p>Loading comments...</p>
           ) : (
             comments.map((comment, index) => (
+              <p onClick={() => handleEditClick(comment)}
+                title={comment.guide_id === id ? 'Click to edit' : undefined} >
               <PatientRow
                 key={index}
                 pictureName="guidePic"
                 picturePath="/guide.webp"
-                lesson={comment}
+                lesson={comment.comment}
                 hasBottomBorder={true}
+                canEdit={comment.guide_id === id}
               />
+              </p>
             ))
           )}
         </div>
@@ -275,7 +376,7 @@ export default function ViewForm() {
 
       {/* Success Dialog */}
       <CustomizedDialogs
-        title="הוספת התגובה הושלמה"
+        title="שמירת תגובה"
         text={dialogSuccess}
         open={isDialogSuccessOpen}
         onClose={() => setIsDialogSuccessOpen(false)}
@@ -289,6 +390,43 @@ export default function ViewForm() {
           </Button>,
         ]}
       />
+      {/* Comment Dialog */}
+      <CustomizedDialogs
+        title="עריכת תגובה"
+        text={
+          <React.Fragment>
+            <TextAreaComponent
+              value={editedComment}
+              onChange={(e) => setEditedComment(e.target.value)}
+              required
+            />
+            {dialogError && (
+              <Typography color="error" variant="body2">
+                {dialogError}
+              </Typography>
+            )}
+          </React.Fragment>
+        }
+        open={isDialogEditOpen}
+        onClose={handleCloseEditDialog}
+        actions={[
+          <Button
+            key="cancelButton"
+            onClick={() => handleDeleteComment()}
+          >
+            מחיקה
+          </Button>,
+          <Button
+            key="saveButton"
+            autoFocus
+            onClick={() => handleUpdateComment()}
+            variant="contained"
+            disabled={isSaving}
+          >
+            שמירה
+          </Button>,
+        ]}
+        />
     </div>
     </>
   );

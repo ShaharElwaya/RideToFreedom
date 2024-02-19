@@ -122,11 +122,17 @@ export default function Goals() {
       <div className={style.addButtonStyle}>
         <Button onClick={handleAdd}>+ הוספת מטרה</Button>
       </div>
-      {goals.map((goal, index) => (
-        <div key={goal.id} className={style.rowWrapper} onClick={() => handleRowClick(goal.id, index)}>
-          <GoalRow goal={`מטרה ${index + 1}`} isCenter={false}/>
+      {goals.length > 0 ? (
+        goals.map((goal, index) => (
+          <div key={goal.id} className={style.rowWrapper} onClick={() => handleRowClick(goal.id, index)}>
+            <GoalRow goal={`מטרה ${index + 1}`} isCenter={false}/>
+          </div>
+        ))
+      ) : (
+        <div style={{ textAlign: 'center', marginTop: '20px' }}>
+          אין מטרות 
         </div>
-      ))}
+      )}
     </>
   );
 }

@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Button,
   Select,
   MenuItem,
   FormControl,
   InputLabel,
+  Typography,
 } from "@mui/material";
 import style from "../styles/loginRegisterPage.module.css";
 import PicAndHeadlines from "@/components/UI/picAndheadline";
@@ -29,9 +30,12 @@ export default function IntroductionMeeting() {
   const [gender, setGender] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [dialogError, setDialogError] = useState("");
-  const [dialogOpen, setDialogOpen] = React.useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
   const router = useRouter();
   const isSmallScreen = useMediaQuery("(max-width: 600px)");
+  const { type, id } = userStore.getState();
+  const [birthdayError, setBirthdayError] = useState(false);
+  const [meetingDateError, setMeetingDateError] = useState(false);
 
   const handleChange = (event) => {
     setGender(event.target.value);
@@ -48,6 +52,16 @@ export default function IntroductionMeeting() {
   const createMeetingReq = async (e) => {
     e.preventDefault();
     try {
+      // Validate date pickers
+      if (!birthday) {
+        setBirthdayError(true);
+        return;
+      }
+
+      if (!meetingDate) {
+        setMeetingDateError(true);
+        return;
+      }
       setIsLoading(true);
       const body = {
         child_real_id: childRealId,
@@ -87,8 +101,21 @@ export default function IntroductionMeeting() {
     }
   };
 
-  const handleGoBack = () => {
-    router.back();
+  const handleGoBack = async () => {
+    if (type === 1) {
+      const response = await fetch(`/api/login/parent?id=${id}`);
+      const isOneChild = await response.json();
+
+      const numberOfChildren = response.childDetails
+        ? response.childDetails.length
+        : 0;
+
+      if (numberOfChildren === 0) {
+        await router.push(`/customerFile`);
+      }
+    } else {
+      router.back();
+    }
   };
 
   return (
@@ -139,7 +166,7 @@ export default function IntroductionMeeting() {
                   label="מגדר"
                   required
                   sx={{ width: isSmallScreen ? "93%" : "95%" }}
-                  >
+                >
                   <MenuItem value="M">זכר</MenuItem>
                   <MenuItem value="F">נקבה</MenuItem>
                 </Select>
@@ -150,21 +177,42 @@ export default function IntroductionMeeting() {
                 <DatePicker
                   label="תאריך לידה *"
                   required
+                  error={birthdayError}
                   sx={{ width: "100%" }}
                   value={birthday}
-                  onChange={(v) => setBirthday(new Date(v))}
+                  onChange={(v) => {
+                    setBirthday(new Date(v));
+                    setBirthdayError(false);
+                  }}
                 />
               </div>
+
               <div className={style.divStyle}>
                 <DateTimePicker
                   required
                   label="תאריך לפגישה *"
+                  error={meetingDateError}
                   sx={{ width: "100%" }}
                   value={meetingDate}
-                  onChange={(v) => setMeetingDate(new Date(v))}
+                  onChange={(v) => {
+                    setMeetingDate(new Date(v));
+                    setMeetingDateError(false);
+                  }}
                 />
               </div>
             </div>
+          </div>
+          <div className={style.container}>
+            {birthdayError && (
+              <Typography style={{ color: "red", marginRight: "10px" }}>
+                תאריך לידה הינו שדה חובה
+              </Typography>
+            )}
+            {meetingDateError && (
+              <Typography style={{ color: "red", marginRight: "270px" }}>
+                תאריך לפגישה הינו שדה חובה
+              </Typography>
+            )}
           </div>
           <div>
             <TextAreaComponent
