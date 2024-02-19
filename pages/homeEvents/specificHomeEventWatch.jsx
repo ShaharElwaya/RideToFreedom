@@ -133,7 +133,7 @@ export default function SpecificHomeEventWatch() {
           <TextAreaComponent
             value={eventDetails.event_summary}
             required
-            disabled
+            readOnly={true}
           />
         </div>
       </form>
