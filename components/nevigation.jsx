@@ -50,7 +50,11 @@ export default function Nevigation({ patientId, screen }) {
     const urlWithPatientId = `${link}?patientId=${patientId}`;
     router.push(urlWithPatientId);
   };
-  const topPosition = window.innerHeight - 340;
+  
+  const topPosition = screen && actions.some((action) => action.screen === screen)
+    ? window.innerHeight - 340
+    : window.innerHeight - 395;
+
 
   return (
     <Box
