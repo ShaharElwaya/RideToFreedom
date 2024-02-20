@@ -36,6 +36,8 @@ export default function IntroductionMeeting() {
   const { type, id } = userStore.getState();
   const [birthdayError, setBirthdayError] = useState(false);
   const [meetingDateError, setMeetingDateError] = useState(false);
+  const [birthdayErrorPrevious, setBirthdayErrorPrevious] = useState(false);
+  const [meetingDateErrorPrevious, setMeetingDateErrorPrevious] = useState(false);
 
   const handleChange = (event) => {
     setGender(event.target.value);
@@ -56,10 +58,17 @@ export default function IntroductionMeeting() {
       if (!birthday) {
         setBirthdayError(true);
         return;
+      } 
+      else if (birthday > new Date()) {
+        setBirthdayErrorPrevious(true);
+        return;
       }
-
-      if (!meetingDate) {
+      else if (!meetingDate) {
         setMeetingDateError(true);
+        return;
+      }
+      else if (meetingDate < new Date()) {
+        setMeetingDateErrorPrevious(true);
         return;
       }
       setIsLoading(true);
@@ -183,6 +192,7 @@ export default function IntroductionMeeting() {
                   onChange={(v) => {
                     setBirthday(new Date(v));
                     setBirthdayError(false);
+                    setBirthdayErrorPrevious(false);
                   }}
                 />
               </div>
@@ -197,6 +207,7 @@ export default function IntroductionMeeting() {
                   onChange={(v) => {
                     setMeetingDate(new Date(v));
                     setMeetingDateError(false);
+                    setMeetingDateErrorPrevious(false);
                   }}
                 />
               </div>
@@ -211,6 +222,16 @@ export default function IntroductionMeeting() {
             {meetingDateError && (
               <Typography style={{ color: "red", marginRight: "270px" }}>
                 תאריך לפגישה הינו שדה חובה
+              </Typography>
+            )}
+            {birthdayErrorPrevious && (
+              <Typography style={{ color: "red", marginRight: "10px" }}>
+                תאריך הלידה אינו יכול להיות עתידי
+              </Typography>
+            )}
+            {meetingDateErrorPrevious && (
+              <Typography style={{ color: "red", marginRight: "270px" }}>
+                יש לבחור תאריך עתידי לפגישה 
               </Typography>
             )}
           </div>

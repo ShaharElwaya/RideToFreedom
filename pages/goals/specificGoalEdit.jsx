@@ -74,6 +74,10 @@ export default function SpecificGoalWatch() {
         setDialogError("המטרה אינה יכולה להיות ריקה");
         setDialogOpen(true);
         return;
+      } else if (!destinationDate) {
+        setDialogError("יש לבחור תאריך יעד רצוי");
+        setDialogOpen(true);
+        return;
       } else if (!fieldType) {
         setDialogError("יש לבחור תחום למטרה");
         setDialogOpen(true);
@@ -82,8 +86,8 @@ export default function SpecificGoalWatch() {
         setDialogError("יש לבחור סטטוס למטרה");
         setDialogOpen(true);
         return;
-      } else if (!destinationDate) {
-        setDialogError("יש לבחור תאריך יעד רצוי");
+      } else if (destinationDate < new Date()) {
+        setDialogError("יש לבחור תאריך עתידי");
         setDialogOpen(true);
         return;
       }
@@ -142,13 +146,13 @@ export default function SpecificGoalWatch() {
           // Fetch comments for the specific lessonId
           const childrens = await axios.get(`/api/login/childrens?id=${id}`);
           let isOk = false;
-  
+
           for (let i = 0; i < childrens.data.length && !isOk; i++) {
             if (childrens.data[i].id == response.data.patient_id) {
               isOk = true;
             }
           }
-  
+
           if (isOk == false) {
             router.back(); // Use await to wait for the navigation to complete
           }
@@ -172,7 +176,14 @@ export default function SpecificGoalWatch() {
       try {
         const response = await fetch("../api/goals/fieldsOptions");
         const data = await response.json();
-        setFieldsOptions(data); // Fix the state variable name
+
+        // Check if data is an array before setting the state
+        if (Array.isArray(data)) {
+          setFieldsOptions(data);
+        } else {
+          console.error("Invalid data format for fieldsOptions:", data);
+          // You might want to handle this case, e.g., setFieldsOptions([]) or show an error
+        }
       } catch (error) {
         console.error("Error fetching options:", error);
       }
@@ -253,11 +264,13 @@ export default function SpecificGoalWatch() {
               required
               sx={{ width: isSmallScreen ? "93%" : "95%" }}
             >
-              {fieldsOptions.map((option) => (
-                <MenuItem key={option.id} value={option.id}>
-                  {option.field}
-                </MenuItem>
-              ))}
+              {Array.isArray(fieldsOptions) &&
+                fieldsOptions.length > 0 &&
+                fieldsOptions.map((option) => (
+                  <MenuItem key={option.id} value={option.id}>
+                    {option.field}
+                  </MenuItem>
+                ))}
             </Select>
           </FormControl>
           <FormControl className={style.rightStyleGoal}>

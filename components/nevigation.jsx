@@ -44,7 +44,6 @@ const actions = [
   },
 ];
 
-
 export default function Nevigation({ patientId, screen }) {
   const router = useRouter();
   const handleActionClick = (link) => {

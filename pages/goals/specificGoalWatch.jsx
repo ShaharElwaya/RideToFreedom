@@ -21,6 +21,7 @@ import { userStore } from "@/stores/userStore";
 import LoadingSpinner from "@/components/loadingSpinner";
 import useCustomQuery from "@/utils/useCustomQuery";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import Navigation from "@/components/nevigation";
 
 export default function SpecificGoalWatch() {
   const [goalsDetails, setGoalsDetails] = useState({
@@ -222,6 +223,7 @@ export default function SpecificGoalWatch() {
           </Button>,
         ]}
       />
+      <Navigation patientId={patientId} screen="specificGoalsWatch" />
     </>
   );
 }
