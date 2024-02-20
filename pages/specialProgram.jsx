@@ -13,6 +13,9 @@ import { useEffect, useState } from "react";
 import style from "../styles/loginRegisterPage.module.css";
 import { useRouter } from "next/router";
 import axios from "axios";
+import TextAreaComponent from "@/components/UI/textAreaComponent";
+import CustomizedDialogs from "@/components/dialog";
+import LoadingSpinner from "@/components/loadingSpinner";
 
 export default function SpecialProgram() {
   const [options, setOptions] = useState([]);
@@ -22,6 +25,11 @@ export default function SpecialProgram() {
   const [startDate, setStartDate] = useState(null);
   const [impression, setImpression] = useState("");
   const router = useRouter();
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogTitle, setDialogTitle] = useState("");
+  const [dialogContent, setDialogContent] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
 
   const handleChange = (index, field, value) => {
     const newClasses = [...classes];
@@ -65,10 +73,36 @@ export default function SpecialProgram() {
   
       await axios.post('/api/specialProgram/create',body)
       alert('Created classes')
-    }catch(err){
-      console.log(err);
+
+      console.log("Suggestion ID:", router.query.suggestionId);
+      await axios.post("/api/suggestions/update", {
+        id: router.query.suggestionId,
+        status: "הסתיים",
+      });
+      alert('Update suggestion status')
+
+   
+      setDialogTitle("התכנית נוצרה בהצלחה");
+      setDialogContent("");
+    } catch (error) {
+      console.error("Error saving suggestion:", error.message);
+      setDialogTitle("שגיאה בהגשת ההצעה");
+      setDialogContent("הייתה שגיאה בעת שמירת ההצעה. נסה שוב מאוחר יותר.");
+    } finally {
+      setDialogOpen(true);
+      setIsLoading(false);
     }
     
+  };
+
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+    setDialogTitle("");
+    setDialogContent("");
+
+    if (!dialogContent) {
+      router.push("/customerFile");
+    }
   };
 
   useEffect(() => {
@@ -87,6 +121,7 @@ export default function SpecialProgram() {
 
   return (
     <>
+    {isLoading && <LoadingSpinner />}
       <div className={style.general}>
         <PicAndHeadlines
           pictureName="specialProgram"
@@ -106,9 +141,9 @@ export default function SpecialProgram() {
               />
             </div>
             <div>
-              <TextFieldComponent
+              <TextAreaComponent
                 type="text"
-                outlinedText="התרשמות"
+                placeholderText="התרשמות *"
                 required
                 value={impression}
                 onChange={(e) => setImpression(e.target.value)}
@@ -181,7 +216,18 @@ export default function SpecialProgram() {
             צור תכנית טיפול
           </Button>
         </form>
+        <CustomizedDialogs
+          title={dialogTitle}
+          text={dialogContent}
+          open={dialogOpen}
+          onClose={handleCloseDialog}
+          actions={[
+            <Button key="confirmButton" autoFocus onClick={handleCloseDialog}>
+              הבנתי
+            </Button>,
+          ]}
+        />
       </div>
-    </>
+       </>
   );
 }

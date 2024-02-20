@@ -1,46 +1,123 @@
 import React from "react";
 import style from "../../styles/patientRowCss.module.css";
-import { Typography } from "@mui/material";
+import { Typography, Button } from "@mui/material";
 import { useRouter } from "next/router";
+import axios from "axios";
 
 export default function SuggestionRow({
-  pictureName,
-  patientId,
-  picturePath,
-  patient_name,
-  guide_name,
-  date,
-  status,
   isCenter = false,
-  onSetMeeting,
-  suggestionId,
+  suggestion,
+  suggestions,
+  setSuggestions,
 }) {
   const router = useRouter();
+  const query = useRouter();
+
   const onClick = () => {
     router.push({
       pathname: "/specialProgramSuggestion/specialProgramSuggestionView",
       query: {
-        suggestionId,
-        patientName: patient_name,
-        guideName: guide_name,
-        date: date,
-        patientId,
+        suggestionId: suggestion.id,
+        patientName: suggestion.patientName,
+        guideName: suggestion.guideName,
+        patientId: suggestion.patient_id,
+        date:suggestion.date
       },
     });
   };
 
+  const handleCreateTreatmentPlan = async (e) => {
+    e.stopPropagation();
+    router.push({
+      pathname: "/specialProgram",
+      query: {
+        patientName: suggestion.patientName,
+        patientId: suggestion.patient_id,
+        suggestionId: suggestion.id
+      },
+    });
+  };
+  
+
+  const handleSetMeeting = async (e) => {
+    e.stopPropagation();
+    const {data:guideUser} = await axios.get('/api/users/getUserById', {params:{id:suggestion.guide_id}})
+    const {data:patientUser} = await axios.get('/api/patient/getPatient', {params:{patient_id:suggestion.patient_id}})
+    const {data:parentUser} = await axios.get('/api/users/getUserById', {params:{id:patientUser[0].parent_id}})
+
+    try {
+      const body = {
+        name: "פגישה",
+        date: new Date(),
+        location: "Israel",
+        description: suggestion.suggestion,
+        users: [
+          parentUser.email,
+          guideUser.email
+        ],
+      };
+      const updatedSuggestion = {
+        ...suggestion,
+        status: "ממתין ליצירת תכנית",
+      };
+      const filteredSuggestions = suggestions.filter(
+        (suggestion) => suggestion.patient_id !== updatedSuggestion.patient_id
+      );
+      const newSuggestions = [...filteredSuggestions, updatedSuggestion];
+      await axios.post("/api/suggestions/update", {
+        id: updatedSuggestion.id,
+        status: updatedSuggestion.status,
+      });
+
+      setSuggestions(newSuggestions);
+
+      await axios.post("/api/google", body);
+    } catch (error) {
+      console.error("Error setting meeting:", error);
+    }
+  };
+
+  const formattedDate = (date) => {
+    if (!date) return "";
+    const [datePart, timePart] = date.split("T");
+    if (!datePart || !timePart) return "";
+    const [year, month, day] = datePart.split("-");
+    const [hour, minute] = timePart.split(":");
+    return `${day}-${month}-${year} ${hour}:${minute}`;
+  };
+
   return (
     <div
-      className={isCenter ? style.containerCenter : style.container}
+      className={`${isCenter ? style.containerCenter : style.container} ${
+        style.bottomBorder
+      }`}
       onClick={onClick}
     >
-      <img src={picturePath} alt={pictureName} className={style.pic} />
-      <Typography className={style.txt}>
-        {patient_name} &nbsp; {guide_name} &nbsp; {date} &nbsp; {status}
-      </Typography>
-      {status === "onhold" && (
-        <button onClick={onSetMeeting}>Set a Meeting</button>
-      )}
+      <img
+        src={`../${suggestion.gender === "F" ? "boyPic" : "girlPic"}.png`}
+        alt={suggestion.gender}
+        className={style.pic}
+      />
+      <div className={style.textContainer}>
+        <Typography className={style.txt}>
+          {suggestion.date && formattedDate(suggestion.date)} &nbsp;
+          {suggestion.patientName && <>&nbsp;{suggestion.patientName}&nbsp;</>}
+          {suggestion.guideName && <>&nbsp;{suggestion.guideName}&nbsp;</>}
+          {suggestion.status && <>&nbsp;{suggestion.status}</>}
+        </Typography>
+      </div>
+      { suggestion.status === "ממתין לקביעת פגישה" && (
+          <Button variant="contained" onClick={handleSetMeeting}>
+            קביעת פגישה
+          </Button>
+        )}
+
+        { suggestion.status === "ממתין ליצירת תכנית" && (
+          <Button variant="contained" onClick={handleCreateTreatmentPlan}>
+            צור תכנית טיפול
+          </Button>
+        )}
+        
     </div>
   );
 }
