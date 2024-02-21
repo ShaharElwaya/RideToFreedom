@@ -48,7 +48,7 @@ export default function SpecialProgramView() {
       {isLoading ? (
         <Typography>טוען נתונים...</Typography>
       ) : programs.length === 0 ? (
-        <Typography>אין לך תוכניות ימניאק!</Typography>
+        <Typography>אין לך תוכניות!</Typography>
       ) : (
         <Box>
           {programs?.map((program) => (

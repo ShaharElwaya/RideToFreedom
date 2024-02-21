@@ -44,11 +44,12 @@ export default function SpecialProgramSuggestion() {
   const formattedDate = () => {
     if (query.date) {
       const [date, time] = query.date.split('T');
-      const currentTime = time.split('.')[0];
+      const currentTime = time ? time.split('.')[0] : '';
       const formattedDateString = `${date.split("-").reverse().join("-")} ${currentTime.slice(0, -3)}`;
       return formattedDateString;
     }
   };
+  
 
   if (!query.date || !query.guideName || !query.suggestionId || !query.patientName) return <div>Not valid!</div>;
 
@@ -79,11 +80,11 @@ export default function SpecialProgramSuggestion() {
             <TextAreaComponent value={data?.suggestion} required />
           </div>
         </form>
-        {data?.status === "wait for program" && (
+        {/* {data?.status === "ממתין ליצירת תכנית" && (
           <Button variant="contained" onClick={handleCreateProgram}>
             יצירת תכנית
           </Button>
-        )}
+        )} */}
       </div>
     </>
   );

@@ -105,6 +105,10 @@ const RowAndColumnSpacing = () => {
     router.push("/introductionMeeting");
   };
 
+  const handleSuggestionsAll = () => {
+    router.push("/specialProgramSuggestion/specialProgramSuggestionAll")
+  }
+
   return (
     <>
       {isLoading && <LoadingSpinner />}
@@ -118,6 +122,10 @@ const RowAndColumnSpacing = () => {
           picturePath="../customerFile.png"
           primaryHeadline={type === 1 ? "תיקי ילדים" : "תיקי לקוחות"}
         />
+        {type === 3 && (
+          <Button onClick={handleSuggestionsAll}> כל ההצעות לטיפול </Button>
+        )}
+        
         <ContentContainer>
           {/* Search Input */}
           <TextField

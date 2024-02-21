@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useRouter } from 'next/router';
-import { styled } from '@mui/system';
-import { Button } from '@mui/material';
-import Paper from '@mui/material/Paper';
-import { PicAndText } from '@/components/UI/PicAndName';
-import style from '../styles/summariesPatientLessons.module.css';
-import Link from 'next/link';
-import LoadingSpinner from '@/components/loadingSpinner';
-import { userStore , setUserData} from '@/stores/userStore';
+import { useRouter } from "next/router";
+import { styled } from "@mui/system";
+import { Button } from "@mui/material";
+import Paper from "@mui/material/Paper";
+import { PicAndText } from "@/components/UI/PicAndName";
+import style from "../styles/summariesPatientLessons.module.css";
+import Link from "next/link";
+import LoadingSpinner from "@/components/loadingSpinner";
+import { userStore, setUserData } from "@/stores/userStore";
 import useCustomQuery from "@/utils/useCustomQuery";
 
 const CustomButton = styled(Button)({
@@ -40,9 +40,9 @@ const MenuItem = styled("div")({
 });
 
 const Item = styled(Paper)(() => ({
-  padding: '20px 0',
-  textAlign: 'center',
-  width: '200px',
+  padding: "20px 0",
+  textAlign: "center",
+  width: "200px",
 }));
 
 const PersonalMenu = () => {
@@ -63,9 +63,9 @@ const PersonalMenu = () => {
         if (type === 1) {
           const response = await axios.get(`/api/login/childrens?id=${id}`);
           let isOk = false;
-          
-          for(let i = 0; i < response.data.length && !isOk; i++) {
-            if(response.data[i].id == patientId){
+
+          for (let i = 0; i < response.data.length && !isOk; i++) {
+            if (response.data[i].id == patientId) {
               isOk = true;
             }
           }
@@ -77,7 +77,7 @@ const PersonalMenu = () => {
       } catch (error) {
         console.error("Error checking permission:", error);
       }
-    }    
+    }
 
     async function getPatientGender() {
       try {
@@ -101,8 +101,6 @@ const PersonalMenu = () => {
             `/api/suggestions/getByPatientId?patientId=${patientId}`
           );
 
-          console.log("🚀 ~ guideSuggestion:", guideSuggestion);
-          console.log("🚀 ~ guideSuggestion data:", guideSuggestion.data);
           const hasGuideSuggestions =
             guideSuggestion.data.patient_id == patientId;
           console.log("🚀 ~ hasGuideSuggestions:", hasGuideSuggestions);
@@ -159,7 +157,7 @@ const PersonalMenu = () => {
         "/api/lessonsSummaries/guideIdToName",
         { params: { id: guideSuggestion.data.guide_id } }
       );
-      
+
       router.push({
         pathname: "specialProgramSuggestion/specialProgramSuggestionView",
         query: {
@@ -167,6 +165,31 @@ const PersonalMenu = () => {
           patientName: patientInfo.data[0].name,
           date: guideSuggestion.data.date,
           guideName: guideName.name,
+        },
+      });
+    } catch (error) {
+      console.error("Error fetching guide suggestions:", error);
+    }
+  };
+
+
+
+  const handleNavigateToSpecialProgramSuggestion = async () => {
+    try {
+      const patientInfo = await axios.get("/api/patient/getPatient", {
+        params: { patient_id: patientId },
+      });
+
+      const guide_id = id;
+      const guideName = await getGuideName(guide_id); // Await here
+
+      router.push({
+        pathname: "specialProgramSuggestion/specialProgramSuggestion",
+        query: {
+          patientId: patientId,
+          patientName: patientInfo.data[0].name,
+          guideId: guide_id,
+          guideName: guideName, // Use the resolved value
         },
       });
     } catch (error) {
@@ -195,9 +218,7 @@ const PersonalMenu = () => {
               />
             </Item>
             <div>
-              <Link
-                href={`/introMeetingView?patientId=${query.patientId}`}
-              >
+              <Link href={`/introMeetingView?patientId=${query.patientId}`}>
                 <MenuItem>
                   <CustomButton>פרטים כללים והיכרות</CustomButton>
                 </MenuItem>
@@ -221,28 +242,43 @@ const PersonalMenu = () => {
                   <CustomButton>מטרות</CustomButton>
                 </MenuItem>
               </Link>
-              {hasGuideSuggestions && (
-                <MenuItem>
-                  <CustomButton
-                    onClick={handleNavigateToSpecialProgramSuggestionView}
-                  >
-                    הצעות לתכניות טיפול מיוחדות
-                  </CustomButton>
-                </MenuItem>
+              {type !== 1 && (
+                <>
+                  {hasGuideSuggestions ? (
+                    <MenuItem>
+                      <CustomButton
+                        onClick={handleNavigateToSpecialProgramSuggestionView}
+                      >
+                        צפיה בהצעה לתכנית טיפול מיוחדת
+                      </CustomButton>
+                    </MenuItem>
+                  ) : (
+                    <MenuItem>
+                      <CustomButton
+                        onClick={handleNavigateToSpecialProgramSuggestion}
+                      >
+                        יצירת הצעה לתכנית טיפול מיוחדת
+                      </CustomButton>
+                    </MenuItem>
+                  )}
+                </>
               )}
 
               {hasSpecialTreatmentPlans && (
                 <Link href={`/specialProgramView?patientId=${query.patientId}`}>
                   <MenuItem>
-                    <CustomButton>בתכניות טיפול מיוחדות</CustomButton>
+                    <CustomButton>צפייה בתכניות טיפול מיוחדות</CustomButton>
                   </MenuItem>
                 </Link>
               )}
             </div>
             {type === 1 && isOneChild && (
               <MenuItem>
-              <CustomButton onClick={handleSetMeeting}> פגישת היכרות לילד נוסף</CustomButton>
-            </MenuItem>
+                <CustomButton onClick={handleSetMeeting}>
+                  {" "}
+                  פגישת היכרות לילד נוסף
+                </CustomButton>
+              </MenuItem>
             )}
           </CenteredContainer>
         </>
