@@ -30,18 +30,18 @@ export default function SpecialProgramSuggestion() {
   };
 
   const formattedDate = () => {
-    const currentDate = new Date().toISOString(); // Rename variable to avoid conflict
+    const currentDate = new Date();
+    const options = {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false, 
+    };
 
-    if (currentDate) {
-      const [date, time] = currentDate.split("T");
-      const currentTime = time ? time.split(".")[0] : "";
-      const formattedDateString = `${date
-        .split("-")
-        .reverse()
-        .join("-")} ${currentTime.slice(0, -3)}`;
-      return formattedDateString;
-    }
-  };
+    return currentDate.toLocaleString("en-US", options).replace(",", ""); // Remove the comma between date and time
+};
 
   const handleSubmit = async (event) => {
     event.preventDefault();

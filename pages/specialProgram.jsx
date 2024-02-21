@@ -47,6 +47,13 @@ export default function SpecialProgram() {
   const handleClickSpecialProgram = async (e) => {
     e.preventDefault();
 
+    if (startDate < new Date()) {
+      setDialogTitle("שגיאה בתאריך התחלת התכנית");
+      setDialogContent("יש לבחור תאריך עתידי");
+      setDialogOpen(true);
+      return;
+    }
+
     try {
       const promises = [];
 

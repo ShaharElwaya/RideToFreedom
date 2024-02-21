@@ -44,6 +44,7 @@ export default function SuggestionRow({
     const {data:guideUser} = await axios.get('/api/users/getUserById', {params:{id:suggestion.guide_id}})
     const {data:patientUser} = await axios.get('/api/patient/getPatient', {params:{patient_id:suggestion.patient_id}})
     const {data:parentUser} = await axios.get('/api/users/getUserById', {params:{id:patientUser[0].parent_id}})
+    const {data:managerGuideUser} = await axios.get('/api/users/getUserByType', {params:{type:3}})
 
     try {
       const body = {
@@ -53,7 +54,8 @@ export default function SuggestionRow({
         description: suggestion.suggestion,
         users: [
           parentUser.email,
-          guideUser.email
+          guideUser.email,
+          managerGuideUser.email
         ],
       };
       const updatedSuggestion = {
@@ -79,12 +81,21 @@ export default function SuggestionRow({
 
   const formattedDate = (date) => {
     if (!date) return "";
-    const [datePart, timePart] = date.split("T");
-    if (!datePart || !timePart) return "";
-    const [year, month, day] = datePart.split("-");
-    const [hour, minute] = timePart.split(":");
-    return `${day}-${month}-${year} ${hour}:${minute}`;
-  };
+    
+    const options = {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+        timeZone: "Asia/Jerusalem"
+    };
+
+    const formattedDateTime = new Date(date).toLocaleString("en-IL", options);
+    return formattedDateTime.replace(",", ""); 
+};
+  
 
   return (
     <div
