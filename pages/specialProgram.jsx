@@ -10,12 +10,13 @@ import {
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import { useEffect, useState } from "react";
-import style from "../styles/loginRegisterPage.module.css";
+import style from "../styles/summariesPatientLessons.module.css";
 import { useRouter } from "next/router";
 import axios from "axios";
 import TextAreaComponent from "@/components/UI/textAreaComponent";
 import CustomizedDialogs from "@/components/dialog";
 import LoadingSpinner from "@/components/loadingSpinner";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 export default function SpecialProgram() {
   const [options, setOptions] = useState([]);
@@ -29,7 +30,7 @@ export default function SpecialProgram() {
   const [dialogTitle, setDialogTitle] = useState("");
   const [dialogContent, setDialogContent] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-
+  const isSmallScreen = useMediaQuery("(max-width: 600px)");
 
   const handleChange = (index, field, value) => {
     const newClasses = [...classes];
@@ -46,42 +47,41 @@ export default function SpecialProgram() {
   const handleClickSpecialProgram = async (e) => {
     e.preventDefault();
 
-    try{
-      const promises = []
+    try {
+      const promises = [];
 
       classes.forEach((cls) => {
         const { type, number, frequency } = cls;
         promises.push(
           axios.post("/api/specialProgram/create-booked-lesson", {
-            patientId:router.query.patientId,
+            patientId: router.query.patientId,
             type,
             number,
             frequency,
           })
         );
       });
-  
-      const resolvedPromises = await Promise.all(promises) 
-      const classIds = resolvedPromises.map((promise) => promise.data.id)
-  
+
+      const resolvedPromises = await Promise.all(promises);
+      const classIds = resolvedPromises.map((promise) => promise.data.id);
+
       const body = {
-        patientId:router.query.patientId,
+        patientId: router.query.patientId,
         startDate,
         impression,
-        bookedLessons:classIds
-      }
-  
-      await axios.post('/api/specialProgram/create',body)
-      alert('Created classes')
+        bookedLessons: classIds,
+      };
+
+      await axios.post("/api/specialProgram/create", body);
+      alert("Created classes");
 
       console.log("Suggestion ID:", router.query.suggestionId);
       await axios.post("/api/suggestions/update", {
         id: router.query.suggestionId,
         status: "הסתיים",
       });
-      alert('Update suggestion status')
+      alert("Update suggestion status");
 
-   
       setDialogTitle("התכנית נוצרה בהצלחה");
       setDialogContent("");
     } catch (error) {
@@ -92,7 +92,6 @@ export default function SpecialProgram() {
       setDialogOpen(true);
       setIsLoading(false);
     }
-    
   };
 
   const handleCloseDialog = () => {
@@ -119,28 +118,35 @@ export default function SpecialProgram() {
     fetchOptions();
   }, []);
 
+  const handleGoBack = () => {
+    router.back();
+  };
+
   return (
     <>
-    {isLoading && <LoadingSpinner />}
+      {isLoading && <LoadingSpinner />}
+      <div className={style.leftStyle}>
+        <Button onClick={handleGoBack}> חזור &gt;</Button>
+      </div>
+
       <div className={style.general}>
         <PicAndHeadlines
           pictureName="specialProgram"
           picturePath="../specialProgram.png"
-          isMain
           primaryHeadline="הגדרת תכנית טיפול מיוחדת"
           secondaryHeadline={router.query?.patientName || "אין שם זמין"}
         />
         <form onSubmit={handleClickSpecialProgram}>
           <div className={style.space}>
-            <div>
+            <div className={style.container}>
               <DatePicker
                 label="תאריך התחלת התכנית"
-                sx={{ width: 250 }}
+                sx={{ width: isSmallScreen ? "100%" : "250px" }}
                 value={startDate}
                 onChange={(v) => setStartDate(new Date(v))}
               />
             </div>
-            <div>
+            <div className={style.textArea}>
               <TextAreaComponent
                 type="text"
                 placeholderText="התרשמות *"
@@ -150,8 +156,8 @@ export default function SpecialProgram() {
               />
             </div>
             {classes.map((cls, index) => (
-              <div key={index} style={{ paddingRight: 62 }}>
-                <FormControl style={{ textAlign: "right" }}>
+              <div key={index} className={style.container}>
+                <FormControl className={style.rightStyleGoal}>
                   <InputLabel id="class-type-select-label">
                     סוג שיעור *
                   </InputLabel>
@@ -164,7 +170,7 @@ export default function SpecialProgram() {
                       handleChange(index, "type", e.target.value)
                     }
                     required
-                    style={{ width: 250 }}
+                    sx={{ width: isSmallScreen ? "93%" : "95%" }}
                   >
                     {options.map((option) => (
                       <MenuItem key={option.id} value={option.type}>
@@ -175,30 +181,31 @@ export default function SpecialProgram() {
                 </FormControl>
                 <TextField
                   type="number"
-                  label="מספר שיעורים"
+                  label="מס' שיעורים"
                   required
                   value={cls.number}
                   onChange={(e) =>
                     handleChange(index, "number", e.target.value)
                   }
-                  style={{ width: 250 }}
+                  style={{ width: isSmallScreen ? "78px" : "130px" }}
                 />
                 <TextField
                   type="number"
-                  label="תדירות שיעורים בשבוע"
+                  label="תדירות בשבוע"
                   required
                   value={cls.frequency}
                   onChange={(e) =>
                     handleChange(index, "frequency", e.target.value)
                   }
-                  style={{ width: 250 }}
+                  style={{ width: isSmallScreen ? "78px" : "130px" }}
                 />
+                {(index != 0) && (
                 <Button
-                  sx={{ visibility: index === 0 && "hidden" }}
                   onClick={() => handleRemove(index)}
                 >
                   הסר
                 </Button>
+                )}
               </div>
             ))}
             <Button
@@ -228,6 +235,6 @@ export default function SpecialProgram() {
           ]}
         />
       </div>
-       </>
+    </>
   );
 }

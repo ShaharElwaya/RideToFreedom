@@ -6,20 +6,23 @@ import TextAreaComponent from "@/components/UI/textAreaComponent";
 import axios from "axios";
 import { useRouter } from 'next/router';
 import { Button } from "@mui/material";
+import useCustomQuery from "@/utils/useCustomQuery";
+import { userStore } from "@/stores/userStore";
 
 export default function SpecialProgramSuggestion() {
   const [data, setData] = useState();
   const { query, push } = useRouter();
   const router = useRouter();
+  const { type } = userStore.getState();
 
-  
-  useEffect(() => {
+  useCustomQuery(() => {
     const fetchSuggestion = async () => {
       try {
         const res = await axios.post(`/api/suggestions/getById`, {
           id: query.suggestionId,
         });
         setData(res.data);
+        
       } catch (err) {
         console.log(err);
       }
@@ -31,27 +34,18 @@ export default function SpecialProgramSuggestion() {
     router.back();
   };
 
-  const handleCreateProgram = () => {
-    push({
-      pathname: "/specialProgram",
-      query: {
-        patientName: query.patientName,
-        patientId: query.patientId,
-      },
-    });
-  };
-
   const formattedDate = () => {
-    if (query.date) {
-      const [date, time] = query.date.split('T');
+    if (data?.date) {
+      const [date, time] = data?.date.split('T');
       const currentTime = time ? time.split('.')[0] : '';
       const formattedDateString = `${date.split("-").reverse().join("-")} ${currentTime.slice(0, -3)}`;
       return formattedDateString;
     }
   };
-  
 
-  if (!query.date || !query.guideName || !query.suggestionId || !query.patientName) return <div>Not valid!</div>;
+  const handleCreateProgram = () => {
+    router.push(`../specialProgram?patientId=${data?.patient_id}&&patientName=${data?.patient_name}&&suggestionId=${query.suggestionId}`);
+  };
 
   return (
     <>
@@ -64,27 +58,27 @@ export default function SpecialProgramSuggestion() {
           pictureName="specialProgramSuggestion"
           picturePath="../specialProgramSuggestion.png"
           primaryHeadline="הצעה לתכנית טיפול מיוחדת"
-          secondaryHeadline= {query.patientName}
+          secondaryHeadline= {data?.patient_name}
         />
 
         <PatientRow
           pictureName="GenderPic"
-          picturePath="../girlPic.png"
+          picturePath={`../${data?.patient_gender === 'F' ? 'girlPic' : 'boyPic'}.png`}
           date={formattedDate()}
-          name={query.guideName}
+          name={data?.guide_name}
           isCenter
         />
 
         <form>
           <div className={style.container}>
-            <TextAreaComponent value={data?.suggestion} required />
+            <TextAreaComponent value={data?.suggestion} readOnly={true} />
           </div>
         </form>
-        {/* {data?.status === "ממתין ליצירת תכנית" && (
+        {data?.status == "ממתין ליצירת תכנית" && type === 3 && (
           <Button variant="contained" onClick={handleCreateProgram}>
-            יצירת תכנית
+            יצירת תוכנית טיפול מיוחדת
           </Button>
-        )} */}
+        )}
       </div>
     </>
   );

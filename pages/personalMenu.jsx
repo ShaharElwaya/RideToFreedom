@@ -90,11 +90,13 @@ const PersonalMenu = () => {
           const data = await response.json();
 
           // Check if user has special treatment plans
-          const specialTreatmentPlans = await axios.get("/api/specialProgram");
-          const hasTreatmentPlans = specialTreatmentPlans.data.some(
-            (plan) => plan.patient_id == patientId
-          );
-          setHasSpecialTreatmentPlans(hasTreatmentPlans);
+          const specialTreatmentPlans = await axios.get("/api/specialProgram",
+          {
+            params: { patient_id: router.query.patientId },
+          } );
+          if(specialTreatmentPlans.data.length != 0) {
+            setHasSpecialTreatmentPlans(true);
+          }
 
           // Check if user has guide suggestions for patient
           const guideSuggestion = await axios.get(
@@ -150,21 +152,11 @@ const PersonalMenu = () => {
       const guideSuggestion = await axios.get(
         `/api/suggestions/getByPatientId?patientId=${patientId}`
       );
-      const patientInfo = await axios.get("/api/patient/getPatient", {
-        params: { patient_id: patientId },
-      });
-      const { data: guideName } = await axios.get(
-        "/api/lessonsSummaries/guideIdToName",
-        { params: { id: guideSuggestion.data.guide_id } }
-      );
-
+      
       router.push({
         pathname: "specialProgramSuggestion/specialProgramSuggestionView",
         query: {
-          suggestionId: guideSuggestion.data.id,
-          patientName: patientInfo.data[0].name,
-          date: guideSuggestion.data.date,
-          guideName: guideName.name,
+          suggestionId: guideSuggestion.data.id
         },
       });
     } catch (error) {
@@ -175,26 +167,11 @@ const PersonalMenu = () => {
 
 
   const handleNavigateToSpecialProgramSuggestion = async () => {
-    try {
-      const patientInfo = await axios.get("/api/patient/getPatient", {
-        params: { patient_id: patientId },
-      });
-
-      const guide_id = id;
-      const guideName = await getGuideName(guide_id); // Await here
-
       router.push({
-        pathname: "specialProgramSuggestion/specialProgramSuggestion",
+        pathname: "/specialProgramSuggestion/specialProgramSuggestion",
         query: {
-          patientId: patientId,
-          patientName: patientInfo.data[0].name,
-          guideId: guide_id,
-          guideName: guideName, // Use the resolved value
-        },
-      });
-    } catch (error) {
-      console.error("Error fetching guide suggestions:", error);
-    }
+           patientId
+        }})
   };
 
   return (
@@ -242,7 +219,7 @@ const PersonalMenu = () => {
                   <CustomButton>מטרות</CustomButton>
                 </MenuItem>
               </Link>
-              {type !== 1 && (
+              {type !== 1 && !hasSpecialTreatmentPlans && (
                 <>
                   {hasGuideSuggestions ? (
                     <MenuItem>
@@ -265,7 +242,7 @@ const PersonalMenu = () => {
               )}
 
               {hasSpecialTreatmentPlans && (
-                <Link href={`/specialProgramView?patientId=${query.patientId}`}>
+                <Link href={`/specialProgramWatch?patientId=${query.patientId}`}>
                   <MenuItem>
                     <CustomButton>צפייה בתכניות טיפול מיוחדות</CustomButton>
                   </MenuItem>

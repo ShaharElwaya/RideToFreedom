@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useRouter } from 'next/router';
+import { useRouter } from "next/router";
 import PicAndHeadlines from "@/components/UI/picAndheadline";
 import PatientRow from "@/components/UI/patientRow";
 import style from "../../styles/summariesPatientLessons.module.css";
@@ -8,6 +8,8 @@ import CustomizedDialogs from "@/components/dialog";
 import LoadingSpinner from "@/components/loadingSpinner";
 import { Button } from "@mui/material";
 import axios from "axios";
+import useCustomQuery from "@/utils/useCustomQuery";
+import { userStore } from "@/stores/userStore";
 
 export default function SpecialProgramSuggestion() {
   const [proposalText, setProposalText] = useState("");
@@ -17,7 +19,11 @@ export default function SpecialProgramSuggestion() {
   const [dialogTitle, setDialogTitle] = useState("");
   const [dialogContent, setDialogContent] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-
+  const [name, setName] = useState();
+  const [gender, setGender] = useState();
+  const [guidetName, setGuideName] = useState("");
+  const { type, id } = userStore.getState();
+  const [isOk, setIsOk] = useState(false);
 
   const handleProposalChange = (event) => {
     setProposalText(event.target.value);
@@ -44,14 +50,15 @@ export default function SpecialProgramSuggestion() {
     try {
       const body = {
         suggestion: proposalText,
-        patientId: query.patientId,
-        guideId: query.guideId,
+        patientId: router.query.patientId,
+        guideId: id,
       };
 
       await axios.post("/api/suggestions/saveSuggestion", body);
 
       setDialogTitle("ההצעה הוגשה בהצלחה");
       setDialogContent("");
+      setIsOk(true);
     } catch (error) {
       console.error("Error saving suggestion:", error.message);
       setDialogTitle("שגיאה בהגשת ההצעה");
@@ -62,51 +69,119 @@ export default function SpecialProgramSuggestion() {
     }
   };
 
-  const handleCloseDialog = () => {
+  const handleCloseDialog = async () => {
     setDialogOpen(false);
     setDialogTitle("");
     setDialogContent("");
 
-    if (!dialogContent) {
-      router.push("/customerFile");
+    if(isOk) {
+        router.push(`../personalMenu?patientId=${router.query.patientId}`);
     }
   };
 
+  useCustomQuery(() => {
+    if (type == 1) {
+      router.back();
+    }
+
+    async function fetchData() {
+      try {
+        const [patientData, guideData] = await Promise.all([
+          getPatientName(),
+          getGuideName(),
+        ]);
+
+        setName(patientData.name);
+        setGender(patientData.gender);
+        setGuideName(guideData.name);
+      } catch (error) {
+        console.error("Error fetching data:", error.message);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    async function getPatientName() {
+      try {
+        if (router.query.patientId) {
+          const response = await fetch(
+            `../api/lessonsSummaries/patientIdToName?patient_id=${encodeURIComponent(
+              router.query.patientId
+            )}`
+          );
+          const data = await response.json();
+          console.log("Patient Name Data:", data);
+          return data;
+        }
+      } catch (error) {
+        console.error("Error fetching patient name:", error);
+        throw error;
+      }
+    }
+
+    async function getGuideName() {
+      try {
+        const response = await axios.get(
+          "/api/lessonsSummaries/guideIdToName",
+          {
+            params: { id: id },
+          }
+        );
+        return response.data;
+      } catch (error) {
+        console.error("Error fetching parent name:", error);
+        throw error;
+      }
+    }
+
+    fetchData();
+  }, []);
+
+  const handleGoBack = () => {
+    router.back();
+  };
+
+  
   return (
     <>
-    {isLoading && <LoadingSpinner />}
-    <div>
-      <PicAndHeadlines
-        pictureName="specialProgramSuggestion"
-        picturePath="../specialProgramSuggestion.png"
-        primaryHeadline="הצעה לתכנית טיפול מיוחדת"
-        secondaryHeadline={query.patientName}
-      />
+      {isLoading && <LoadingSpinner />}
+      
+      <div className={style.leftStyle}>
+        <Button onClick={handleGoBack}> חזור &gt;</Button>
+      </div>
 
-      <PatientRow
-        pictureName="GenderPic"
-        picturePath={`../girlPic.png`}
-        date={formattedDate()}
-        name={query.guideName}
-        isCenter
-      />
+      <div>
+        <PicAndHeadlines
+          pictureName="specialProgramSuggestion"
+          picturePath="../specialProgramSuggestion.png"
+          primaryHeadline="הצעה לתכנית טיפול מיוחדת"
+          secondaryHeadline={name}
+        />
 
-      <form onSubmit={handleSubmit}>
-        <div className={style.container}>
-          <TextAreaComponent
-            placeholderText="* רשום את ההצעה לתכנית טיפול מיוחדת"
-            value={proposalText}
-            onChange={handleProposalChange}
-            required
-          />
-        </div>
-        <div className={style.submitButtonStyle}>
-          <Button variant="contained" type="submit">
-            הגש הצעה
-          </Button>
-        </div>
-      </form>
-      <CustomizedDialogs
+        <PatientRow
+          pictureName="GenderPic"
+          picturePath={`../${gender === "F" ? "girlPic" : "boyPic"}.png`}
+          date={formattedDate()}
+          name={guidetName}
+          isCenter
+        />
+
+        <form onSubmit={handleSubmit}>
+          <div className={style.container}>
+            <TextAreaComponent
+              placeholderText="* רשום את ההצעה לתכנית טיפול מיוחדת"
+              value={proposalText}
+              onChange={handleProposalChange}
+              required
+            />
+          </div>
+          <div className={style.submitButtonStyle}>
+            <Button variant="contained" type="submit">
+              הגש הצעה
+            </Button>
+          </div>
+        </form>
+        <CustomizedDialogs
           title={dialogTitle}
           text={dialogContent}
           open={dialogOpen}
@@ -118,6 +193,6 @@ export default function SpecialProgramSuggestion() {
           ]}
         />
       </div>
-       </>
+    </>
   );
 }
