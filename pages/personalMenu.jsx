@@ -244,7 +244,7 @@ const PersonalMenu = () => {
               {hasSpecialTreatmentPlans && (
                 <Link href={`/specialProgramWatch?patientId=${query.patientId}`}>
                   <MenuItem>
-                    <CustomButton>צפייה בתכניות טיפול מיוחדות</CustomButton>
+                    <CustomButton>צפייה בתכנית טיפול מיוחדת</CustomButton>
                   </MenuItem>
                 </Link>
               )}
