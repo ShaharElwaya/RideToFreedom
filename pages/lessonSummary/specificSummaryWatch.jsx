@@ -11,6 +11,7 @@ import { useRouter } from "next/router";
 import { userStore } from "@/stores/userStore";
 import useCustomQuery from "@/utils/useCustomQuery";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import Navigation from "@/components/nevigation";
 
 export default function SpecificSummaryWatch() {
   const [lessonDetails, setLessonDetails] = useState({});
@@ -33,6 +34,7 @@ export default function SpecificSummaryWatch() {
   const [editedComment, setEditedComment] = useState("");
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const [patientId, setPatientId] = useState("");
 
   const [isDialogEditOpen, setIsDialogEditOpen] = useState(false);
 
@@ -112,7 +114,7 @@ export default function SpecificSummaryWatch() {
       );
       setLessonDetails(response.data);
       setParentPermission(response.data.parent_permission);
-
+      setPatientId(response.data.patient_id);
       if (type == 1 && !response.data.parent_permission) {
         // Redirect to the desired route for unauthorized users
         router.push(
@@ -468,6 +470,7 @@ export default function SpecificSummaryWatch() {
           </Button>,
         ]}
       />
+      <Navigation patientId={patientId} screen="specificSummaryWatch" />
     </>
   );
 }

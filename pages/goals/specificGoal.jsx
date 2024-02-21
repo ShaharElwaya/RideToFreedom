@@ -60,6 +60,11 @@ export default function SpecificGoal() {
                 setDialogOpen(true);
                 return;
             }
+            else if (!destinationDate) {
+                setDialogError("יש לבחור תאריך יעד רצוי");
+                setDialogOpen(true);
+                return;
+            }
             else if (!fieldType) {
                 setDialogError("יש לבחור תחום למטרה");
                 setDialogOpen(true);
@@ -70,8 +75,8 @@ export default function SpecificGoal() {
                 setDialogOpen(true);
                 return;
             }
-            else if (!destinationDate) {
-                setDialogError("יש לבחור תאריך יעד רצוי");
+            else if(destinationDate < new Date() ) {
+                setDialogError("יש לבחור תאריך עתידי");
                 setDialogOpen(true);
                 return;
             }
