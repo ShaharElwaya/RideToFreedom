@@ -21,7 +21,7 @@ export default function SuggestionRow({
         patientName: suggestion.patientName,
         guideName: suggestion.guideName,
         patientId: suggestion.patient_id,
-        date:suggestion.date
+        date: suggestion.date,
       },
     });
   };
@@ -33,18 +33,26 @@ export default function SuggestionRow({
       query: {
         patientName: suggestion.patientName,
         patientId: suggestion.patient_id,
-        suggestionId: suggestion.id
+        suggestionId: suggestion.id,
       },
     });
   };
-  
 
   const handleSetMeeting = async (e) => {
     e.stopPropagation();
-    const {data:guideUser} = await axios.get('/api/users/getUserById', {params:{id:suggestion.guide_id}})
-    const {data:patientUser} = await axios.get('/api/patient/getPatient', {params:{patient_id:suggestion.patient_id}})
-    const {data:parentUser} = await axios.get('/api/users/getUserById', {params:{id:patientUser[0].parent_id}})
-    const {data:managerGuideUser} = await axios.get('/api/users/getUserByType', {params:{type:3}})
+    const { data: guideUser } = await axios.get("/api/users/getUserById", {
+      params: { id: suggestion.guide_id },
+    });
+    const { data: patientUser } = await axios.get("/api/patient/getPatient", {
+      params: { patient_id: suggestion.patient_id },
+    });
+    const { data: parentUser } = await axios.get("/api/users/getUserById", {
+      params: { id: patientUser[0].parent_id },
+    });
+    const { data: managerGuideUser } = await axios.get(
+      "/api/users/getUserByType",
+      { params: { type: 3 } }
+    );
 
     try {
       const body = {
@@ -52,11 +60,7 @@ export default function SuggestionRow({
         date: new Date(),
         location: "Israel",
         description: suggestion.suggestion,
-        users: [
-          parentUser.email,
-          guideUser.email,
-          managerGuideUser.email
-        ],
+        users: [parentUser.email, guideUser.email, managerGuideUser.email],
       };
       const updatedSuggestion = {
         ...suggestion,
@@ -81,54 +85,63 @@ export default function SuggestionRow({
 
   const formattedDate = (date) => {
     if (!date) return "";
-    
+
     const options = {
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: false,
-        timeZone: "Asia/Jerusalem"
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+      timeZone: "Asia/Jerusalem",
     };
 
     const formattedDateTime = new Date(date).toLocaleString("en-IL", options);
-    return formattedDateTime.replace(",", ""); 
-};
-  
+    return formattedDateTime.replace(",", "");
+  };
 
   return (
-    <div
-      className={`${isCenter ? style.containerCenter : style.container} ${
-        style.bottomBorder
-      }`}
-      onClick={onClick}
-    >
-      <img
-        src={`../${suggestion.gender === "F" ? "boyPic" : "girlPic"}.png`}
-        alt={suggestion.gender}
-        className={style.pic}
-      />
-      <div className={style.textContainer}>
+    <>
+      <td>
+        <img
+          src={`../${suggestion.gender === "F" ? "boyPic" : "girlPic"}.png`}
+          alt={suggestion.gender}
+          className={style.pic}
+        />
+      </td>
+      <td>
         <Typography className={style.txt}>
-          {suggestion.date && formattedDate(suggestion.date)} &nbsp;
-          {suggestion.patientName && <>&nbsp;{suggestion.patientName}&nbsp;</>}
-          {suggestion.guideName && <>&nbsp;{suggestion.guideName}&nbsp;</>}
-          {suggestion.status && <>&nbsp;{suggestion.status}</>}
+          {suggestion.date && formattedDate(suggestion.date)}
         </Typography>
-      </div>
-      { suggestion.status === "ממתין לקביעת פגישה" && (
+      </td>
+      <td>
+        <Typography className={style.txt}>
+          {suggestion.patientName && suggestion.patientName}
+        </Typography>
+      </td>
+      <td>
+        <Typography className={style.txt}>
+          {suggestion.guideName && suggestion.guideName}
+        </Typography>
+      </td>
+      <td>
+        <Typography className={style.txt}>
+          {suggestion.status && suggestion.status}
+        </Typography>
+      </td>
+      <td>
+        {suggestion.status === "ממתין לקביעת פגישה" ? (
           <Button variant="contained" onClick={handleSetMeeting}>
             קביעת פגישה
           </Button>
+        ) : (
+          suggestion.status === "ממתין ליצירת תכנית" && (
+            <Button variant="contained" onClick={handleCreateTreatmentPlan}>
+              צור תכנית טיפול
+            </Button>
+          )
         )}
-
-        { suggestion.status === "ממתין ליצירת תכנית" && (
-          <Button variant="contained" onClick={handleCreateTreatmentPlan}>
-            צור תכנית טיפול
-          </Button>
-        )}
-        
-    </div>
+      </td>
+    </>
   );
 }
