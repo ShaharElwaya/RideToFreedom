@@ -19,6 +19,7 @@ import LoadingSpinner from "@/components/loadingSpinner";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import useCustomQuery from "@/utils/useCustomQuery";
 import dayjs from "dayjs";
+import Nevigation from "@/components/nevigation";
 
 export default function SpecialProgram() {
   const [lessons, setLessons] = useState([]);
@@ -130,6 +131,7 @@ export default function SpecialProgram() {
           </div>
         </form>
       </div>
+      <Nevigation patientId={router.query.patientId} screen="specialProgramWatch" />
     </>
   );
 }

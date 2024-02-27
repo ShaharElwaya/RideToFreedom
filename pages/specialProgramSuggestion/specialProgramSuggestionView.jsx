@@ -8,6 +8,7 @@ import { useRouter } from 'next/router';
 import { Button } from "@mui/material";
 import useCustomQuery from "@/utils/useCustomQuery";
 import { userStore } from "@/stores/userStore";
+import Nevigation from "@/components/nevigation";
 
 export default function SpecialProgramSuggestion() {
   const [data, setData] = useState();
@@ -80,6 +81,7 @@ export default function SpecialProgramSuggestion() {
           </Button>
         )}
       </div>
+      <Nevigation patientId={data?.patient_id} screen="specialProgramSuggestionView" />
     </>
   );
 }

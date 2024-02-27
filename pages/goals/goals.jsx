@@ -8,7 +8,7 @@ import { useRouter } from "next/router";
 import LoadingSpinner from "@/components/loadingSpinner";
 import useCustomQuery from "@/utils/useCustomQuery";
 import { userStore } from "@/stores/userStore";
-import Navigation from "@/components/nevigation";
+import Nevigation from "@/components/nevigation";
 
 export default function Goals() {
   const router = useRouter();
@@ -146,7 +146,7 @@ export default function Goals() {
       ) : (
         <div style={{ textAlign: "center", marginTop: "20px" }}>אין מטרות</div>
       )}
-      <Navigation patientId={patientId} screen="goals" />
+      <Nevigation patientId={patientId} screen="goals" />
     </>
   );
 }

@@ -164,8 +164,6 @@ const PersonalMenu = () => {
     }
   };
 
-
-
   const handleNavigateToSpecialProgramSuggestion = async () => {
       router.push({
         pathname: "/specialProgramSuggestion/specialProgramSuggestion",

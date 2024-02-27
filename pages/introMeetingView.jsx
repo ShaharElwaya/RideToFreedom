@@ -10,7 +10,7 @@ import PicAndHeadlines from "@/components/UI/picAndheadline";
 import useCustomQuery from "@/utils/useCustomQuery";
 import { userStore } from "@/stores/userStore";
 import LoadingSpinner from "@/components/loadingSpinner";
-import Navigation from "@/components/nevigation";
+import Nevigation from "@/components/nevigation";
 
 export default function ViewForm() {
   const [formData, setFormData] = useState([]);
@@ -431,7 +431,7 @@ export default function ViewForm() {
           ]}
         />
       </div>
-      <Navigation patientId={patientId} screen="introMeetingView" />
+      <Nevigation patientId={patientId} screen="introMeetingView" />
     </>
   );
 }
