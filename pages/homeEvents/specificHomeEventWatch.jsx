@@ -12,7 +12,7 @@ import { useRouter } from 'next/router';
 import { userStore } from "@/stores/userStore";
 import LoadingSpinner from '@/components/loadingSpinner';
 import useCustomQuery from "@/utils/useCustomQuery";
-import Navigation from "@/components/nevigation";
+import Nevigation from "@/components/nevigation";
 
 export default function SpecificHomeEventWatch() {
   const [eventDetails, setEventDetails] = useState({});
@@ -161,7 +161,7 @@ export default function SpecificHomeEventWatch() {
           </Button>,
         ]}
       />
-      <Navigation patientId={patientId} screen="specificHomeEventWatch" />
+      <Nevigation patientId={patientId} screen="specificHomeEventWatch" />
     </>
   );
 }

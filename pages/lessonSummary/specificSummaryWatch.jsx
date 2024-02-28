@@ -11,7 +11,7 @@ import { useRouter } from "next/router";
 import { userStore } from "@/stores/userStore";
 import useCustomQuery from "@/utils/useCustomQuery";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import Navigation from "@/components/nevigation";
+import Nevigation from "@/components/nevigation";
 
 export default function SpecificSummaryWatch() {
   const [lessonDetails, setLessonDetails] = useState({});
@@ -470,7 +470,7 @@ export default function SpecificSummaryWatch() {
           </Button>,
         ]}
       />
-      <Navigation patientId={patientId} screen="specificSummaryWatch" />
+      <Nevigation patientId={patientId} screen="specificSummaryWatch" />
     </>
   );
 }

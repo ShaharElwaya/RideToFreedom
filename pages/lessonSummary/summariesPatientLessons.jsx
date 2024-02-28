@@ -23,7 +23,7 @@ import { userStore } from "@/stores/userStore";
 import useCustomQuery from "@/utils/useCustomQuery";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { isThenable } from "next/dist/client/components/router-reducer/router-reducer-types";
-import Navigation from "@/components/nevigation";
+import Nevigation from "@/components/nevigation";
 
 export default function SummariesPatientLessons() {
   const router = useRouter();
@@ -474,7 +474,7 @@ export default function SummariesPatientLessons() {
               אין סיכומי שיעורים
             </div>
           )}
-          <Navigation patientId={patientId} screen="summariesPatientLessons" />
+          <Nevigation patientId={patientId} screen="summariesPatientLessons" />
         </>
       )}
     </>

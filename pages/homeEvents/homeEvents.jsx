@@ -17,7 +17,7 @@ import LoadingSpinner from "@/components/loadingSpinner";
 import { userStore } from "@/stores/userStore";
 import useCustomQuery from "@/utils/useCustomQuery";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import Navigation from "@/components/nevigation";
+import Nevigation from "@/components/nevigation";
 
 export default function HomeEvents() {
   const router = useRouter();
@@ -409,7 +409,7 @@ export default function HomeEvents() {
           </>
         )}
       </div>
-      <Navigation patientId={patientId} screen="homeEvents" />
+      <Nevigation patientId={patientId} screen="homeEvents" />
     </>
   );
 }
