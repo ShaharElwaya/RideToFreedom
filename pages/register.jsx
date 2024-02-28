@@ -34,7 +34,7 @@ export default function register() {
     };
 
     useEffect(() => {
-        if (type == 1) {
+        if (type != 3) {
             router.back();
           }
 
