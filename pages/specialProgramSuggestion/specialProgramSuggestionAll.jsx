@@ -84,13 +84,13 @@ export default function specialProgramSuggestionAll() {
     if (filteredSuggestions.length === 0) return <div>לא נמצאו המלצות...</div>;
 
     return filteredSuggestions.map((suggestion) => (
-      <div key={suggestion.id}>
+      <tr key={suggestion.id}>
         <SuggestionRow
           suggestion={suggestion}
           setSuggestions={setSuggestions}
           suggestions={suggestions}
         />
-      </div>
+      </tr>
     ));
   };
 
@@ -109,7 +109,17 @@ export default function specialProgramSuggestionAll() {
         primaryHeadline="הצעות תכניות טיפול מיוחדות"
         secondaryHeadline="כל ההצעות"
       />
+      <table>
+        <tr>
+          <th>תמונת פרופיל</th>
+          <th>תאריך</th>
+          <th>שם</th>
+          <th>שם מדריך</th>
+          <th>סטטוס</th>
+          <th>פעולות</th>
+        </tr>
       {content()}
+      </table>
     </>
   );
 }
