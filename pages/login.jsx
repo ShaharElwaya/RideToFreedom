@@ -4,15 +4,23 @@ import CustomizedDialogs from "@/components/dialog";
 import { Button } from "@mui/material";
 import axios from "axios";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { setUserData } from "../stores/userStore";
 import style from "../styles/loginRegisterPage.module.css";
+import { userStore } from "@/stores/userStore";
 
 export default function login() {
   const router = useRouter();
   const [isSaving, setIsSaving] = useState(false);
   const [dialogError, setDialogError] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
+  const {is_logged_in} = userStore.getState();
+
+  useEffect(() => {
+    if(is_logged_in) {
+      router.push('/customerFile');
+    }
+  },[])
 
   const handleClickLogin = async (e) => {
     e.preventDefault();

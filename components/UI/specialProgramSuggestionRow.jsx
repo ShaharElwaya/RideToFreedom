@@ -1,8 +1,11 @@
 import React from "react";
 import style from "../../styles/patientRowCss.module.css";
-import { Typography, Button } from "@mui/material";
+import { Typography, Button, Tooltip, IconButton } from "@mui/material";
 import { useRouter } from "next/router";
 import axios from "axios";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import FolderSpecial from "@mui/icons-material/FolderSpecial";
+import Event from "@mui/icons-material/Event";
 
 export default function SuggestionRow({
   isCenter = false,
@@ -12,14 +15,15 @@ export default function SuggestionRow({
 }) {
   const router = useRouter();
   const query = useRouter();
+  const isSmallScreen = useMediaQuery("(max-width: 600px)");
 
   const onClick = () => {
     router.push({
       pathname: "/specialProgramSuggestion/specialProgramSuggestionView",
       query: {
         suggestionId: suggestion.id,
-        patientName: suggestion.patientName,
-        guideName: suggestion.guideName,
+        patientName: suggestion.patient_name,
+        guideName: suggestion.guide_name,
         patientId: suggestion.patient_id,
         date: suggestion.date,
       },
@@ -31,7 +35,7 @@ export default function SuggestionRow({
     router.push({
       pathname: "/specialProgram",
       query: {
-        patientName: suggestion.patientName,
+        patientName: suggestion.patient_name,
         patientId: suggestion.patient_id,
         suggestionId: suggestion.id,
       },
@@ -90,55 +94,83 @@ export default function SuggestionRow({
       year: "numeric",
       month: "2-digit",
       day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
       hour12: false,
       timeZone: "Asia/Jerusalem",
     };
 
     const formattedDateTime = new Date(date).toLocaleString("en-IL", options);
-    return formattedDateTime.replace(",", "");
+    
+    // Conditionally format the date based on the screen size
+    if (isSmallScreen) {
+      const [day, month] = formattedDateTime.split("/");
+      return `${day}/${month} `;
+    } else {
+      return formattedDateTime.replace(",", "");
+    }
   };
 
   return (
     <>
-      <td>
+       {!isSmallScreen && (<td style = {{width:'20px'}}>
         <img
           src={`../${suggestion.gender === "F" ? "boyPic" : "girlPic"}.png`}
           alt={suggestion.gender}
           className={style.pic}
         />
-      </td>
-      <td>
-        <Typography className={style.txt}>
+      </td>)}
+      <td style = {{width: isSmallScreen ? '60px' : '110px'}}>
+        <Typography className={style.txtSpecial}>
           {suggestion.date && formattedDate(suggestion.date)}
         </Typography>
       </td>
-      <td>
-        <Typography className={style.txt}>
-          {suggestion.patientName && suggestion.patientName}
-        </Typography>
+      <td style = {{width: isSmallScreen ? '60px' : '200px'}}>
+          <Tooltip title={suggestion.patient_name }>
+            <Typography className={style.txtSpecial} noWrap style={{width: isSmallScreen ? '80px' : '230px'}}>
+              {suggestion.patient_name}
+            </Typography>
+          </Tooltip>
+        
       </td>
-      <td>
-        <Typography className={style.txt}>
-          {suggestion.guideName && suggestion.guideName}
+      <td style = {{width: isSmallScreen ? '60px' : '150px'}}>
+      <Tooltip title={suggestion.guide_name}>
+            <Typography className={style.txtSpecial} noWrap style={{width: isSmallScreen ? '80px' : '150px'}}>
+          {suggestion.guide_name}
         </Typography>
+        </Tooltip>
       </td>
-      <td>
-        <Typography className={style.txt}>
+      <td style = {{width: isSmallScreen ? '90px' : '200px'}}>
+      <Tooltip title={suggestion.status && suggestion.status}>
+            <Typography className={style.txtSpecial} noWrap style={{width: isSmallScreen ? '80px' : '200px'}}>
           {suggestion.status && suggestion.status}
         </Typography>
+        </Tooltip>
       </td>
-      <td>
-        {suggestion.status === "ממתין לקביעת פגישה" ? (
-          <Button variant="contained" onClick={handleSetMeeting}>
-            קביעת פגישה
-          </Button>
+      <td style = {{width: isSmallScreen ? '0px' : '150px', textAlign: 'right'}}>
+      {suggestion.status === "ממתין לקביעת פגישה" ? (
+          isSmallScreen ? (
+            <Tooltip title="קביעת פגישה">
+              <IconButton onClick={handleSetMeeting}>
+                <Event />
+              </IconButton>
+            </Tooltip>
+          ) : (
+            <Button variant="contained" onClick={handleSetMeeting} style={{ width: '130px' }}>
+              קביעת פגישה
+            </Button>
+          )
         ) : (
           suggestion.status === "ממתין ליצירת תכנית" && (
-            <Button variant="contained" onClick={handleCreateTreatmentPlan}>
-              צור תכנית טיפול
-            </Button>
+            isSmallScreen ? (
+              <Tooltip title="צור תכנית טיפול">
+                <IconButton onClick={handleCreateTreatmentPlan}>
+                  <FolderSpecial />
+                </IconButton>
+              </Tooltip>
+            ) : (
+              <Button variant="contained" onClick={handleCreateTreatmentPlan} style={{ width: '130px' }}>
+                צור תכנית טיפול
+              </Button>
+            )
           )
         )}
       </td>
