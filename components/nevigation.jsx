@@ -8,6 +8,8 @@ import PersonIcon from "@mui/icons-material/Person";
 import HouseIcon from "@mui/icons-material/House";
 import CrisisAlertIcon from "@mui/icons-material/CrisisAlert";
 import MenuIcon from "@mui/icons-material/Menu";
+import FolderSpecial from "@mui/icons-material/FolderSpecial";
+import Insights from "@mui/icons-material/Insights";
 import SummarizeIcon from "@mui/icons-material/Summarize";
 import { useRouter } from "next/router";
 import { userStore } from "@/stores/userStore";
@@ -22,13 +24,13 @@ export default function Navigation({ patientId, screen }) {
 
   const actions = [
     {
-      icon: <CrisisAlertIcon />,
+      icon: <Insights />,
       name: "הצעה לתוכנית טיפול",
       link: "../specialProgramSuggestion/specialProgramSuggestionView",
       screen: "specialProgramSuggestionView",
     },
     {
-      icon: <CrisisAlertIcon />,
+      icon: <FolderSpecial />,
       name: "תוכנית טיפול",
       link: "../specialProgramWatch",
       screen: "specialProgramWatch",
@@ -105,12 +107,6 @@ export default function Navigation({ patientId, screen }) {
     }
   };
 
-  const topPosition =
-    screen && actions.some((action) => action.screen === screen)
-      ? window.innerHeight - 460
-      : window.innerHeight - 600;
-
-  
   const checkScreen = (nevigationScreen) => {
     if(nevigationScreen !== "specialProgramSuggestionView" && nevigationScreen !== "specialProgramWatch" && nevigationScreen !== screen) {
         return true;
@@ -128,8 +124,8 @@ export default function Navigation({ patientId, screen }) {
     <Box
       sx={{
         position: "fixed",
-        top: `${topPosition}px`,
-        right: "16px",
+        bottom: "4%", 
+        right: "2%", 
         zIndex: 1000,
       }}
     >
