@@ -105,3 +105,7 @@
   cursor: pointer;
   background-color: rgb(237, 235, 235);
 }
+
+.trStyle {
+  text-align: right;
+}

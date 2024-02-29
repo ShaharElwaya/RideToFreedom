@@ -31,6 +31,16 @@
     font-size: 12px; /* Specify the unit (e.g., px) for font-size */
   }
 
+  .txtSpecial {
+    font-size: 12px;
+    text-align: right;
+    width: 90%;
+  }
+
+  .tdStyle{
+    width: 17%;
+  }
+
   .bottomBorder  {
     border-top: 1px solid white; /* Add top border with a light gray color */
     border-bottom: 1px solid #ccc; /* Add top border with a light gray color */

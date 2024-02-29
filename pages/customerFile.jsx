@@ -106,7 +106,11 @@ const RowAndColumnSpacing = () => {
   };
 
   const handleSuggestionsAll = () => {
-    router.push("/specialProgramSuggestion/specialProgramSuggestionAll")
+    router.push("/specialProgramSuggestion/specialProgramSuggestionAll");
+  }
+
+  const handleRegister = () => {
+    router.push("/register");
   }
 
   return (
@@ -123,7 +127,10 @@ const RowAndColumnSpacing = () => {
           primaryHeadline={type === 1 ? "תיקי ילדים" : "תיקי לקוחות"}
         />
         {type === 3 && (
+          <div style={{margin:'0px'}}>
           <Button onClick={handleSuggestionsAll}> כל ההצעות לטיפול </Button>
+          <Button onClick={handleRegister}> הוספת משתמש </Button>
+          </div>
         )}
         
         <ContentContainer>
