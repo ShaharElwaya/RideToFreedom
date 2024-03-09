@@ -51,7 +51,7 @@ export default function PatientRow({ pictureName, picturePath, date, time, name,
 
   return (
     <div className={`${isCenter ? style.containerCenter : style.container} ${hasBottomBorder ? style.bottomBorder : ''}`}>
-      <img src={picturePath} alt={pictureName} className={style.pic}/>
+      {(picturePath && <img src={picturePath} alt={pictureName} className={style.pic} />)}
       <div className={style.textContainer}>
         <Typography className={style.txt}>
           {date}

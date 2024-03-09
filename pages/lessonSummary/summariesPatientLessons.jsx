@@ -22,7 +22,6 @@ import { useRouter } from "next/router";
 import { userStore } from "@/stores/userStore";
 import useCustomQuery from "@/utils/useCustomQuery";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { isThenable } from "next/dist/client/components/router-reducer/router-reducer-types";
 import Nevigation from "@/components/nevigation";
 
 export default function SummariesPatientLessons() {

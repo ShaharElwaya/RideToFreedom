@@ -10,6 +10,7 @@ import Link from "next/link";
 import LoadingSpinner from "@/components/loadingSpinner";
 import { userStore, setUserData } from "@/stores/userStore";
 import useCustomQuery from "@/utils/useCustomQuery";
+import Nevigation from "@/components/nevigation";
 
 const CustomButton = styled(Button)({
   "&:hover": {
@@ -256,6 +257,7 @@ const PersonalMenu = () => {
               </MenuItem>
             )}
           </CenteredContainer>
+          <Nevigation patientId={patientId} screen="summariesPatientLessons" />
         </>
       )}
     </>

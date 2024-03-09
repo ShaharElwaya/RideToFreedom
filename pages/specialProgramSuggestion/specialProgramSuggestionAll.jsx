@@ -7,6 +7,8 @@ import style from "../../styles/summariesPatientLessons.module.css";
 import { Button, CircularProgress } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import LoadingSpinner from "@/components/loadingSpinner";
+import useCustomQuery from "@/utils/useCustomQuery";
+import { userStore } from '@/stores/userStore';
 
 export default function specialProgramSuggestionAll() {
   const [data, setData] = useState([]);
@@ -15,8 +17,13 @@ export default function specialProgramSuggestionAll() {
   const [showLoader, setShowLoader] = useState(true);
   const router = useRouter();
   const isSmallScreen = useMediaQuery("(max-width: 600px)");
+  const { type, id } = userStore.getState(); 
 
-  useEffect(() => {
+  useCustomQuery(() => { 
+    if (type == 1) {
+      router.back();
+    }
+
     const fetchData = async () => {
       try {
         const { data } = await axios.get("/api/suggestions");

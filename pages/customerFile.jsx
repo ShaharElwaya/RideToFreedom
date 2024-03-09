@@ -70,7 +70,7 @@ const RowAndColumnSpacing = () => {
     return gender === "F" ? "girlPic" : "boyPic";
   };
 
-  const handleClick = (patientId ) => {
+  const handleClick = (patientId) => {
     router.push({
       pathname: "/personalMenu",
       query: { patientId },
@@ -107,11 +107,11 @@ const RowAndColumnSpacing = () => {
 
   const handleSuggestionsAll = () => {
     router.push("/specialProgramSuggestion/specialProgramSuggestionAll");
-  }
+  };
 
   const handleRegister = () => {
     router.push("/register");
-  }
+  };
 
   return (
     <>
@@ -127,13 +127,14 @@ const RowAndColumnSpacing = () => {
           primaryHeadline={type === 1 ? "תיקי ילדים" : "תיקי לקוחות"}
         />
         {type === 3 && (
-          <div style={{margin:'0px'}}>
-          <Button onClick={handleSuggestionsAll}> כל ההצעות לטיפול </Button>
-          <Button onClick={handleRegister}> הוספת משתמש </Button>
+          <div style={{ margin: "0px", padding: "0px" }}>
+            <Button onClick={handleSuggestionsAll}> הצעות לתוכנית טיפול </Button>
+            &nbsp; | &nbsp;
+            <Button onClick={handleRegister}> הוספת משתמש חדש </Button>
           </div>
         )}
-        
-        <ContentContainer>
+
+        <ContentContainer style={{ margin: "0px", padding: "0px" }}>
           {/* Search Input */}
           <TextField
             label="חיפוש"
@@ -151,17 +152,11 @@ const RowAndColumnSpacing = () => {
           />
           <Grid container spacing={2}>
             {filteredNames.length === 0 && type !== 1 ? (
-              <div className={style.noResults}>
-                אין תוצאות
-              </div>
+              <div className={style.noResults}>אין תוצאות</div>
             ) : (
               filteredNames.map((nameData) => (
                 <Grid item xs={6} key={nameData.id}>
-                  <Item
-                    onClick={() =>
-                      handleClick(nameData.id)
-                    }
-                  >
+                  <Item onClick={() => handleClick(nameData.id)}>
                     <PicAndText
                       pictureName={getPictureName(nameData.gender)}
                       name={nameData.name}

@@ -10,10 +10,21 @@ export default async function handler(req, res) {
 
             // Fetch data from the 'lessons' table for the specific patient
             const result = await sql`
-      SELECT * 
-      FROM public.goals 
-      WHERE patient_id = ${patient_id}
-      ORDER BY setting_date;
+      SELECT 
+      g.id AS id,
+      TO_CHAR(g.setting_date, 'DD-MM-YYYY') AS setting_date,
+      g.goal AS goal,
+      TO_CHAR(g.destination_date, 'DD-MM-YYYY') AS destination_date, 
+      g.patient_id AS patient_id, 
+      g.field_id AS field_id, 
+      g.status_id AS status_id,
+      gf.field AS field,
+      s.status AS status
+      FROM public.goals AS g
+      JOIN enums.statuses AS s ON g.status_id = s.id
+      JOIN enums.goals_fields AS gf ON g.field_id = gf.id
+      WHERE g.patient_id = ${patient_id}
+      ORDER BY g.setting_date;
       `;
 
             const goals = result.rows;

@@ -78,7 +78,7 @@ export default function HomeEvents() {
         });
         setEvents(data);
         isEventsLoaded = true;
-
+ 
         // Extract unique guide names and lesson types from the lessons array
         const uniqueParents = [
           ...new Set(data.map((lesson) => lesson.parent_name)),
@@ -273,6 +273,21 @@ export default function HomeEvents() {
     textAlign: "right",
   };
 
+  const formatDate = (date) => {
+    if (!date) {
+      return ""; // Handle the case when date is undefined or null
+    }
+
+    if (isSmallScreen) {
+      // Display date in "dd/mm" format for small screens
+      const [day, month] = date.split("-");
+      return `${day}-${month}`;
+    } else {
+      // Keep the original date format for larger screens
+      return date;
+    }
+  };
+
   return (
     <>
       {isLoading && <LoadingSpinner />} {/* Use LoadingSpinner component */}
@@ -395,9 +410,13 @@ export default function HomeEvents() {
                     picturePath={`../${
                       event.patient_gender === "F" ? "girlPic" : "boyPic"
                     }.png`}
-                    date={event.formatted_date}
+                    date={formatDate(event.formatted_date)}
                     time={event.formatted_time}
-                    name={event.parent_name}
+                    name={event.parent_name} 
+                    lesson={event.event_summary}
+                      {...(isSmallScreen && {
+                        maxTextLengthLesson: 7,
+                      })}
                   />
                 </div>
               ))
