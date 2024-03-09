@@ -196,7 +196,7 @@ export default function register() {
           <div>
             {formValues.userType === 2 || formValues.userType === 3 ? (
               <DatePicker
-                label="תאריך תחילת עבודה"
+                label="תאריך תחילת עבודה *"
                 value={formValues.employment_date}
                 onChange={(newDate) =>
                   handleInputChange("employment_date", newDate)
@@ -204,7 +204,7 @@ export default function register() {
                 required={
                   formValues.userType === 2 || formValues.userType === 3
                 }
-                width="238px"
+                sx={{ width: '265px', }}
               />
             ) : null}
           </div>
