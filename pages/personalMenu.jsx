@@ -257,7 +257,7 @@ const PersonalMenu = () => {
               </MenuItem>
             )}
           </CenteredContainer>
-          <Nevigation patientId={patientId} screen="summariesPatientLessons" />
+          <Nevigation patientId={patientId} screen="personalMenu" />
         </>
       )}
     </>
