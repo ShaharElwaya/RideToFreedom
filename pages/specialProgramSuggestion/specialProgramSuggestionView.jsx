@@ -17,6 +17,10 @@ export default function SpecialProgramSuggestion() {
   const { type } = userStore.getState();
 
   useCustomQuery(() => {
+    if (type == 1) {
+      router.back();
+    }
+    
     const fetchSuggestion = async () => {
       try {
         const res = await axios.post(`/api/suggestions/getById`, {

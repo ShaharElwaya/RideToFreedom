@@ -17,6 +17,8 @@ import TextAreaComponent from "@/components/UI/textAreaComponent";
 import CustomizedDialogs from "@/components/dialog";
 import LoadingSpinner from "@/components/loadingSpinner";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import useCustomQuery from "@/utils/useCustomQuery";
+import { userStore } from "@/stores/userStore";
 
 export default function SpecialProgram() {
   const [options, setOptions] = useState([]);
@@ -31,6 +33,7 @@ export default function SpecialProgram() {
   const [dialogContent, setDialogContent] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const isSmallScreen = useMediaQuery("(max-width: 600px)");
+  const { type } = userStore.getState();
 
   const handleChange = (index, field, value) => {
     const newClasses = [...classes];
@@ -111,7 +114,11 @@ export default function SpecialProgram() {
     }
   };
 
-  useEffect(() => {
+  useCustomQuery(() => {
+    if (type != 3) {
+      router.back();
+    }
+
     async function fetchOptions() {
       try {
         const response = await fetch("/api/lessons");

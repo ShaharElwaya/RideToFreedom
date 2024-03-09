@@ -9,6 +9,8 @@ import LoadingSpinner from "@/components/loadingSpinner";
 import useCustomQuery from "@/utils/useCustomQuery";
 import { userStore } from "@/stores/userStore";
 import Nevigation from "@/components/nevigation";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import PatientRow from "@/components/UI/patientRow";
 
 export default function Goals() {
   const router = useRouter();
@@ -17,6 +19,7 @@ export default function Goals() {
   const [isLoading, setIsLoading] = useState(true);
   const { patientId } = router.query;
   const { type, id } = userStore.getState();
+  const isSmallScreen = useMediaQuery("(max-width: 600px)");
 
   const handleAdd = () => {
     const currentDate = new Date().toLocaleDateString("en-US", {
@@ -118,6 +121,21 @@ export default function Goals() {
     );
   };
 
+  const formatDate = (date) => {
+    if (!date) {
+      return ""; // Handle the case when date is undefined or null
+    }
+
+    if (isSmallScreen) {
+      // Display date in "dd/mm" format for small screens
+      const [day, month] = date.split("-");
+      return `${day}-${month}`;
+    } else {
+      // Keep the original date format for larger screens
+      return date;
+    }
+  };
+
   return (
     <>
       {isLoading && <LoadingSpinner />} {/* Use LoadingSpinner component */}
@@ -140,7 +158,13 @@ export default function Goals() {
             className={style.rowWrapper}
             onClick={() => handleRowClick(goal.id, index)}
           >
-            <GoalRow goal={`מטרה ${index + 1}`} isCenter={false} />
+            <PatientRow
+                    date={`${index + 1}`}
+                    time={formatDate(goal.setting_date)}
+                    name={goal.field} 
+                    nameWidth={100}
+                    lesson={goal.status}
+                  />
           </div>
         ))
       ) : (

@@ -20,6 +20,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import useCustomQuery from "@/utils/useCustomQuery";
 import dayjs from "dayjs";
 import Nevigation from "@/components/nevigation";
+import { userStore } from "@/stores/userStore";
 
 export default function SpecialProgram() {
   const [lessons, setLessons] = useState([]);
@@ -29,6 +30,7 @@ export default function SpecialProgram() {
   const [impression, setImpression] =  useState(""); 
   const [start_date, setStart_date] =  useState("");
   const [name, setName] =  useState("");
+  const { id, type } = userStore.getState();
 
   useCustomQuery(() => {
     async function fetchProgram() {
@@ -54,6 +56,29 @@ export default function SpecialProgram() {
       }
     }
 
+    async function checkPremission() {
+      try {
+        if (type === 1) {
+          // Fetch comments for the specific lessonId
+          const response = await axios.get(`/api/login/childrens?id=${id}`);
+          let isOk = false;
+          
+          for(let i = 0; i < response.data.length && !isOk; i++) {
+            if(response.data[i].id == router.query.patientId){
+              isOk = true;
+            }
+          }
+
+          if (isOk == false) {
+            router.back(); // Use await to wait for the navigation to complete
+          }
+        }
+      } catch (error) {
+        console.error("Error checking permission:", error);
+      }
+    }    
+
+    checkPremission();
     fetchProgram();
   }, []);
 
@@ -72,7 +97,7 @@ export default function SpecialProgram() {
         <PicAndHeadlines
           pictureName="specialProgram"
           picturePath="../specialProgram.png"
-          primaryHeadline="הגדרת תכנית טיפול מיוחדת"
+          primaryHeadline="תכנית טיפול מיוחדת"
           secondaryHeadline={name}
         />
         <form>
