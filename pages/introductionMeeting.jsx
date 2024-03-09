@@ -94,7 +94,7 @@ export default function IntroductionMeeting() {
         date: meetingDate,
         location: "israel",
         description: reasonForRequest,
-        name: `פגישה לילד: ${patientName}`,
+        name: `פגישת היכרות: ${patientName}`,
       };
 
       await axios.post("/api/google", googleMeetingBody);
