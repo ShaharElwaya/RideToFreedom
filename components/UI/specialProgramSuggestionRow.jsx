@@ -60,7 +60,7 @@ export default function SuggestionRow({
 
     try {
       const body = {
-        name: "פגישה",
+        name: "פגישת יצירת תכנית טיפול",
         date: new Date(),
         location: "Israel",
         description: suggestion.suggestion,
