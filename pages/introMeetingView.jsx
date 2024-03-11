@@ -90,17 +90,35 @@ export default function ViewForm() {
 
         setParentName(parentData[0].name);
         setFormData(formData);
-
-        setIsLoading(false);
       } catch (error) {
         console.error("Error fetching form data:", error);
-        setIsLoading(false);
       }
     };
 
-    if (query.patientId) {
-      fetchData();
-    }
+    const fetchComments = async () => {
+      try {
+        // Fetch comments for the specific patient
+        const response = await axios.get(
+          `/api/introMeeting/getComments?patient_id=${query.patientId}`
+        );
+        setComments(response.data); // Set comments
+
+        if (response.data.length > 0) {
+          setShowComments(true); // Show comments section if there are comments
+        }
+      } catch (error) {
+        console.error("Error fetching comments:", error);
+      }
+    };
+
+    const fetchDataAndComments = async () => {
+      await Promise.all([fetchData(), fetchComments()]);
+      setIsLoading(false);
+  };
+
+  if (query.patientId) {
+      fetchDataAndComments();
+  }
   }, [query.patientId]);
 
   const handleOpenDialog = () => {
@@ -134,6 +152,7 @@ export default function ViewForm() {
         `/api/introMeeting/getComments?patient_id=${query.patientId}`
       );
       setComments(response.data);
+      setShowComments(true);
 
       // Close the comment dialog
       handleCloseDialog();
@@ -152,31 +171,6 @@ export default function ViewForm() {
       setIsSaving(false);
     }
   };
-
-  useEffect(() => {
-    const fetchComments = async () => {
-      try {
-        // Fetch comments for the specific patient
-        const response = await axios.get(
-          `/api/introMeeting/getComments?patient_id=${query.patientId}`
-        );
-        setComments(response.data); // Set comments
-
-        if (response.data.length > 0) {
-          setShowComments(true); // Show comments section if there are comments
-        }
-
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Error fetching comments:", error);
-        setIsLoading(false);
-      }
-    };
-
-    if (query.patientId) {
-      fetchComments(); // Fetch comments when component mounts
-    }
-  }, [query.patientId]);
 
   const handleGoBack = () => {
     router.back();
@@ -252,6 +246,10 @@ export default function ViewForm() {
         `/api/introMeeting/getComments?patient_id=${query.patientId}`
       );
       setComments(response.data);
+      
+      if (response.data.length == 0) {
+        setShowComments(false); 
+      }
 
       // Close the comment dialog
       handleCloseEditDialog();
@@ -274,7 +272,7 @@ export default function ViewForm() {
   return (
     <>
       {isLoading && <LoadingSpinner />}
-      <div style={{ height: "90vh" }}>
+      <div>
         <div className={style.leftStyle}>
           <Button onClick={handleGoBack}> חזור &gt;</Button>
         </div>
