@@ -28,6 +28,7 @@ export default function SpecialProgram() {
   const [startDate, setStartDate] = useState(null);
   const [impression, setImpression] = useState("");
   const router = useRouter();
+  const [isSaving, setIsSaving] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogTitle, setDialogTitle] = useState("");
   const [dialogContent, setDialogContent] = useState("");
@@ -50,6 +51,7 @@ export default function SpecialProgram() {
   const handleClickSpecialProgram = async (e) => {
     e.preventDefault();
 
+    
     if (startDate < new Date()) {
       setDialogTitle("שגיאה בתאריך התחלת התכנית");
       setDialogContent("יש לבחור תאריך עתידי");
@@ -231,7 +233,7 @@ export default function SpecialProgram() {
               עוד שיעור
             </Button>
           </div>
-          <Button type="submit" variant="contained">
+          <Button type="submit" variant="contained" disabled={isSaving}>
             צור תכנית טיפול
           </Button>
         </form>
