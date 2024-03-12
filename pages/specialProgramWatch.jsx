@@ -23,8 +23,11 @@ import Nevigation from "@/components/nevigation";
 import { userStore } from "@/stores/userStore";
 
 export default function SpecialProgram() {
+  const [options, setOptions] = useState([]);
   const [lessons, setLessons] = useState([]);
-  console.log("🚀 ~ SpecialProgram ~ lessons:", lessons);
+  console.log("🚀 ~ SpecialProgram ~ lessons:", lessons)
+  const [addedLessons, setAddedLessons] = useState([]);
+  console.log("🚀 ~ SpecialProgram ~ addedLessons:", addedLessons)
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const isSmallScreen = useMediaQuery("(max-width: 600px)");
@@ -47,13 +50,29 @@ export default function SpecialProgram() {
         setName(response.data.patient_name);
         setProgramId(response.data.id);
 
-        const responsLessons = await axios.get(
-          "/api/lessons/recommendedLessons",
-          {
-            params: { patient_id: router.query.patientId },
-          }
+        const { data: patientSpecialProgram } = await axios.get(
+          "/api/specialProgram/getByPatientId",
+          { params: { patientId: router.query.patientId } }
         );
-        setLessons(responsLessons.data);
+        console.log(
+          "🚀 ~ fetchProgram ~ patientSpecialProgram:",
+          patientSpecialProgram
+        );
+
+        const allPromises = [];
+        patientSpecialProgram[0].recommended_lessons?.forEach((lessonId) => {
+          allPromises.push(
+            axios.get("/api/lessons/getById", { params: { id: lessonId } })
+          );
+        });
+
+        const resolvedPromises = await Promise.all(allPromises);
+        const allLessons = resolvedPromises.map((lesson) => lesson.data);
+
+        setLessons(allLessons);
+
+        const optionsResponse = await axios.get("/api/lessons");
+        setOptions(optionsResponse.data);
       } catch (error) {
         console.error("Error fetching options:", error);
       }
@@ -90,15 +109,33 @@ export default function SpecialProgram() {
   };
 
   const handleUpdateForm = async () => {
+   
+
+    try {
+      const addedLessonsPromises = [];
+      addedLessons.forEach((cls) => {
+        const { lesson_name, lesson_count, frequency } = cls;
+        addedLessonsPromises.push(
+          axios.post("/api/specialProgram/create-booked-lesson", {
+            patientId: router.query.patientId,
+            type: lesson_name,
+            number: lesson_count,
+            frequency,
+          })
+        );
+      });
+
+    const resolvedPromises = await Promise.all(addedLessonsPromises);
+    const addedLessonsIds = resolvedPromises.map((promise) => promise.data.id)
     const body = {
       patientId: router.query.patientId,
       startDate: start_date,
       impression,
-      bookedLessons: lessons.map((lesson) => lesson.id),
+      bookedLessons: [...lessons.map((lesson) => lesson.id), ...addedLessonsIds],
       programId,
     };
 
-    try {
+
       const allPromises = [];
       lessons.forEach((lesson) => {
         const body = {
@@ -113,10 +150,10 @@ export default function SpecialProgram() {
         );
         allPromises.push(promise);
       });
-     const allRes =  await Promise.all(allPromises);
-     console.log("🚀 ~ handleUpdateForm ~ allRes:", allRes)
+      await Promise.all(allPromises);
 
-      // const res = await axios.put("/api/specialProgram/update", body);
+      const res = await axios.put("/api/specialProgram/update", body);
+      console.log("🚀 ~ handleUpdateForm ~ res:", res);
     } catch (err) {
       console.log(err);
     }
@@ -125,9 +162,16 @@ export default function SpecialProgram() {
 
   const handleChangeLesson = (i, newValue, field) => {
     const lessonsCopy = [...lessons];
-    lessonsCopy[i][field] = newValue
+    lessonsCopy[i][field] = newValue;
 
-    setLessons(lessonsCopy)
+    setLessons(lessonsCopy);
+  };
+
+  const handleChangeAddedLesson = (i, newValue, field) => {
+    const addedLessonsCopy = [...addedLessons];
+    addedLessonsCopy[i][field] = newValue;
+
+    setAddedLessons(addedLessonsCopy);
   };
 
   return (
@@ -180,9 +224,11 @@ export default function SpecialProgram() {
                     disabled={!editMode}
                     sx={{ width: isSmallScreen ? "93%" : "95%" }}
                   >
-                    <MenuItem value={lesson.lesson_name}>
-                      {lesson.lesson_name}
-                    </MenuItem>
+                    {options?.map((option) => (
+                      <MenuItem key={option.id} value={option.type}>
+                        {option.type}
+                      </MenuItem>
+                    ))}
                   </Select>
                 </FormControl>
                 <TextField
@@ -205,8 +251,94 @@ export default function SpecialProgram() {
                   }
                   style={{ width: isSmallScreen ? "78px" : "130px" }}
                 />
+                {editMode && index != 0 && (
+                  <Button
+                    onClick={() =>
+                      setLessons((prev) => prev.filter((_, i) => i !== index))
+                    }
+                  >
+                    הסר
+                  </Button>
+                )}
               </div>
             ))}
+            {addedLessons.map((lesson, index) => (
+              <div key={index} className={style.container}>
+                <FormControl className={style.rightStyleGoal}>
+                  <InputLabel id="class-type-select-label">
+                    סוג שיעור *
+                  </InputLabel>
+                  <Select
+                    labelId="class-type-select-label"
+                    id="class-type-select"
+                    label="סוג שיעור"
+                    value={lesson.lesson_name}
+                    onChange={(e) =>
+                      handleChangeAddedLesson(
+                        index,
+                        e.target.value,
+                        "lesson_name"
+                      )
+                    }
+                    disabled={!editMode}
+                    sx={{ width: isSmallScreen ? "93%" : "95%" }}
+                  >
+                    {options?.map((option) => (
+                      <MenuItem key={option.id} value={option.type}>
+                        {option.type}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+                <TextField
+                  type="number"
+                  label="מס' שיעורים"
+                  disabled={!editMode}
+                  value={lesson.lesson_count}
+                  onChange={(e) =>
+                    handleChangeAddedLesson(
+                      index,
+                      e.target.value,
+                      "lesson_count"
+                    )
+                  }
+                  style={{ width: isSmallScreen ? "78px" : "130px" }}
+                />
+                <TextField
+                  type="number"
+                  label="תדירות בשבוע"
+                  disabled={!editMode}
+                  value={lesson.frequency}
+                  onChange={(e) =>
+                    handleChangeAddedLesson(index, e.target.value, "frequency")
+                  }
+                  style={{ width: isSmallScreen ? "78px" : "130px" }}
+                />
+                {editMode && (
+                  <Button
+                    onClick={() => {
+                      setAddedLessons((prev) =>
+                        prev.filter((_, i) => i !== index)
+                      );
+                    }}
+                  >
+                    הסר
+                  </Button>
+                )}
+              </div>
+            ))}
+            {editMode && (
+              <Button
+                onClick={() =>
+                  setAddedLessons([
+                    ...addedLessons,
+                    { lesson_name: options[0].type, lesson_count: "", frequency: "" },
+                  ])
+                }
+              >
+                עוד שיעור
+              </Button>
+            )}
           </div>
         </form>
       </div>
