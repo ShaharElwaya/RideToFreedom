@@ -3,11 +3,11 @@ import { sql } from '@vercel/postgres';
 
 export default async function handler(req, res) {
     if (req.method === 'POST') {
-        const { parent_id, name, address, birthday, gender, child_real_id, reason_for_request } = req.body;
+        const { parent_id, name, address, birthday, gender, id, reason_for_request } = req.body;
         try {
             const options = await sql`
-                INSERT INTO public.patient (name, address, birthday, gender, parent_id, child_real_id, reason_for_request)
-                VALUES (${name}, ${address}, ${birthday}, ${gender}, ${parent_id}, ${child_real_id}, ${reason_for_request})
+                INSERT INTO public.patient (id, name, address, birthday, gender, parent_id, reason_for_request)
+                VALUES (${id}, ${name}, ${address}, ${birthday}, ${gender}, ${parent_id}, ${reason_for_request})
                 RETURNING *;`;
 
             res.status(200).json(options.rows);
