@@ -89,12 +89,15 @@ const PersonalMenu = () => {
             )}`
           );
           const data = await response.json();
+          setGender(data.gender);
+          setName(data.name);
 
           // Check if user has special treatment plans
           const specialTreatmentPlans = await axios.get("/api/specialProgram",
           {
-            params: { patient_id: router.query.patientId },
+            params: { patient_id: patientId },
           } );
+          
           if(specialTreatmentPlans.data.length != 0) {
             setHasSpecialTreatmentPlans(true);
           }
@@ -104,13 +107,10 @@ const PersonalMenu = () => {
             `/api/suggestions/getByPatientId?patientId=${patientId}`
           );
 
-          const hasGuideSuggestions =
-            guideSuggestion.data.patient_id == patientId;
-          console.log("🚀 ~ hasGuideSuggestions:", hasGuideSuggestions);
-          setHasGuideSuggestions(hasGuideSuggestions);
-
-          setGender(data.gender);
-          setName(data.name);
+          if(guideSuggestion.data.length != 0) {
+            setHasGuideSuggestions(true);
+          }
+          
           setIsLoading(false); // Set loading to false when data is fetched (success or error)
         }
 
