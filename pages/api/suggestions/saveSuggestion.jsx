@@ -2,11 +2,11 @@ import { sql } from '@vercel/postgres';
 
 export default async function handler(req, res) {
     if (req.method === 'POST') {
-        const { patientId, guideId, suggestion } = req.body; // Destructure necessary fields from req.body
+        const { patientId, guideId, suggestion, date } = req.body; // Destructure necessary fields from req.body
         try {
             const result = await sql`
                 INSERT INTO public.guide_suggestion_for_patient (patient_id, guide_id, suggestion, date, status)
-                VALUES (${patientId}, ${guideId}, ${suggestion}, ${new Date()}, 'ממתין לקביעת פגישה')
+                VALUES (${patientId}, ${guideId}, ${suggestion}, ${date}, 'ממתין לקביעת פגישה')
                 RETURNING *;
             `;
          

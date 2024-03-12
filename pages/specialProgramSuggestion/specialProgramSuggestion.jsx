@@ -15,6 +15,7 @@ export default function SpecialProgramSuggestion() {
   const [proposalText, setProposalText] = useState("");
   const router = useRouter();
   const { query } = router;
+  const { time, patientId } = router.query;
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogTitle, setDialogTitle] = useState("");
   const [dialogContent, setDialogContent] = useState("");
@@ -24,34 +25,55 @@ export default function SpecialProgramSuggestion() {
   const [guidetName, setGuideName] = useState("");
   const { type, id } = userStore.getState();
   const [isOk, setIsOk] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   const handleProposalChange = (event) => {
     setProposalText(event.target.value);
   };
 
-  const formattedDate = () => {
-    const currentDate = new Date();
-    const options = {
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: false, 
-    };
-
-    return currentDate.toLocaleString("en-US", options).replace(",", ""); // Remove the comma between date and time
-};
+  const parseDateString = (dateString) => {
+    const [datePart, timePart] = dateString.split(' ');
+    const [month, day, year] = datePart.split('/');
+    const [hour, minute] = timePart.split(':');
+  
+    let parsedDate = new Date(year, month - 1, day, hour, minute);
+  
+    // Set hours to 00 instead of 24
+    if (hour === '24') {
+      parsedDate.setHours(0);
+      parsedDate.setDate(parsedDate.getDate() - 1);
+    }
+  
+    return parsedDate;
+  };
+  
+  const parsedDate = time ? parseDateString(time) : null;
+  
+  const formattedDateTime = parsedDate
+  ? `${parsedDate.getFullYear()}-${(parsedDate.getMonth() + 1).toString().padStart(2, '0')}-${parsedDate.getDate().toString().padStart(2, '0')} ` +
+    `${parsedDate.getHours().toString().padStart(2, '0')}:${parsedDate.getMinutes().toString().padStart(2, '0')}:00`
+  : '';
+  
+  const date = parsedDate
+    ? `${parsedDate.getDate().toString().padStart(2, '0')}/${(parsedDate.getMonth() + 1).toString().padStart(2, '0')}/${parsedDate.getFullYear()}`
+    : '';
+  
+  const hours = parsedDate ? parsedDate.getHours().toString().padStart(2, '0') : '';
+  const minutes = parsedDate ? parsedDate.getMinutes().toString().padStart(2, '0') : '';
+  const timeOfDay = parsedDate ? `${hours}:${minutes}` : '';
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setIsLoading(true);
+    
+    setIsSaving(true); 
 
     try {
+      const date = formattedDateTime;
       const body = {
         suggestion: proposalText,
         patientId: router.query.patientId,
         guideId: id,
+        date,
       };
 
       await axios.post("/api/suggestions/saveSuggestion", body);
@@ -66,6 +88,7 @@ export default function SpecialProgramSuggestion() {
     } finally {
       setDialogOpen(true);
       setIsLoading(false);
+      setIsSaving(false);
     }
   };
 
@@ -161,7 +184,8 @@ export default function SpecialProgramSuggestion() {
         <PatientRow
           pictureName="GenderPic"
           picturePath={`../${gender === "F" ? "girlPic" : "boyPic"}.png`}
-          date={formattedDate()}
+          date={date}
+          time={timeOfDay}
           name={guidetName}
           isCenter
         />
@@ -176,7 +200,7 @@ export default function SpecialProgramSuggestion() {
             />
           </div>
           <div className={style.submitButtonStyle}>
-            <Button variant="contained" type="submit">
+            <Button variant="contained" type="submit" disabled={isSaving}>
               הגש הצעה
             </Button>
           </div>
