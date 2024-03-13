@@ -25,9 +25,7 @@ import { userStore } from "@/stores/userStore";
 export default function SpecialProgram() {
   const [options, setOptions] = useState([]);
   const [lessons, setLessons] = useState([]);
-  console.log("🚀 ~ SpecialProgram ~ lessons:", lessons)
   const [addedLessons, setAddedLessons] = useState([]);
-  console.log("🚀 ~ SpecialProgram ~ addedLessons:", addedLessons)
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const isSmallScreen = useMediaQuery("(max-width: 600px)");
@@ -54,10 +52,7 @@ export default function SpecialProgram() {
           "/api/specialProgram/getByPatientId",
           { params: { patientId: router.query.patientId } }
         );
-        console.log(
-          "🚀 ~ fetchProgram ~ patientSpecialProgram:",
-          patientSpecialProgram
-        );
+  
 
         const allPromises = [];
         patientSpecialProgram[0].recommended_lessons?.forEach((lessonId) => {

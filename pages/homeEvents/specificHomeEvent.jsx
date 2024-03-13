@@ -158,7 +158,6 @@ export default function SpecificHomeEvent() {
             )}`
           );
           const data = await response.json();
-          console.log("Patient Name Data:", data);
           setName(data.name);
           setGender(data.gender);
           isPatientNameLoaded = true;

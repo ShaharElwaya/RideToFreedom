@@ -3,7 +3,6 @@ import { sql } from "@vercel/postgres";
 export default async function handler(req, res) {
     if (req.method === 'GET') {
         const { patient_id } = req.query; // Change req.body to req.query
-        console.log("🚀 ~ handler ~ patient_id:", patient_id)
         try {
             const comments = await sql`SELECT * FROM public.personal_details_comments WHERE patient_id=${patient_id} ORDER BY id;`;
             

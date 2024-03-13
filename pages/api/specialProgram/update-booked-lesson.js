@@ -3,7 +3,6 @@ import { sql } from "@vercel/postgres";
 export default async function handler(req, res) {
   if (req.method === "PUT") {
     const { lessonId, type, count, frequency } = req.body;
-    console.log("🚀 ~ handler ~ req.body:", req.body)
     try {
       const options = await sql`UPDATE public.recommended_lessons
         SET lesson_name = ${type},

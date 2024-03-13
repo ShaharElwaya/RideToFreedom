@@ -160,7 +160,6 @@ export default function SummariesPatientLessons() {
         if (router.query.patientId) {
           const response = await fetch(`../api/lessonsSummaries/patientIdToName?patient_id=${encodeURIComponent(router.query.patientId)}`);
           const data = await response.json();
-          console.log('Patient Name Data:', data);
           return data;
         }
       } catch (error) {
