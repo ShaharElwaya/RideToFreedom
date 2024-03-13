@@ -73,7 +73,7 @@ export default function IntroductionMeeting() {
       }
       setIsLoading(true);
       const body = {
-        id: childRealId,
+        id: Number(childRealId),
         name: patientName,
         address: address,
         birthday: birthday,
