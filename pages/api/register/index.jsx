@@ -7,6 +7,10 @@ export default async function handler(req, res) {
     try {
       const { id, name, email, phone, userType, password, employment_date } = req.body;
 
+      if (id.length > 9){
+        return res.status(400).json({ error: 'Please provide a valid ID' });
+      }
+
       // Hash the password before storing it
       const hashedPassword = await bcrypt.hash(password, 10); // Use 10 rounds of hashing
 
