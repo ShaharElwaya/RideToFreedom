@@ -184,9 +184,7 @@ const PersonalMenu = () => {
     setAddTime(formattedDateTime);
 
     router.push(
-      `/specialProgramSuggestion/specialProgramSuggestion?time=${encodeURIComponent(
-        formattedDateTime
-      )}&patientId=${encodeURIComponent(patientId)}`
+      `/specialProgramSuggestion/specialProgramSuggestion?time=${encodeURIComponent(formattedDateTime)}&patientId=${encodeURIComponent(patientId)}`
     );
   };
 
