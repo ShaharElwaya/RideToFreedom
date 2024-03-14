@@ -3,7 +3,6 @@ import { sql } from "@vercel/postgres";
 export default async function handler(req, res) {
   if (req.method === "GET") {
     const { patientId } = req.query;
-    console.log("🚀 ~ handler ~ req.params:", req.params)
     try {
       if (!patientId)
         return res.status(404).json({ error: "Missing parameters!" });

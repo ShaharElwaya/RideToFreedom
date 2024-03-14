@@ -86,7 +86,6 @@ export default function SpecialProgram() {
 
       await axios.post("/api/specialProgram/create", body);
 
-      console.log("Suggestion ID:", router.query.suggestionId);
       await axios.post("/api/suggestions/update", {
         id: router.query.suggestionId,
         status: "הסתיים",

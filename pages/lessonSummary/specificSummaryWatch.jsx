@@ -15,7 +15,6 @@ import Nevigation from "@/components/nevigation";
 
 export default function SpecificSummaryWatch() {
   const [lessonDetails, setLessonDetails] = useState({});
-  console.log("🚀 ~ SpecificSummaryWatch ~ lessonDetails:", lessonDetails)
   const router = useRouter();
   const { lessonId } = router.query;
   const [parentPermission, setParentPermission] = useState(false);
@@ -104,7 +103,6 @@ export default function SpecificSummaryWatch() {
 
   // Fetch lesson details based on lessonId from the URL
   const fetchLessonDetails = async () => {
-    console.log(window.location);
     try {
       const response = await axios.get(
         "/api/lessonsSummaries/specificSummaryWatch",

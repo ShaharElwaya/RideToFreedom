@@ -110,7 +110,6 @@ export default function SpecialProgramSuggestion() {
             )}`
           );
           const data = await response.json();
-          console.log("Patient Name Data:", data);
           return data;
         }
       } catch (error) {

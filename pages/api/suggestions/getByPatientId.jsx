@@ -9,7 +9,6 @@ export default async function handler(req, res) {
 
         try {
             const options = await sql`SELECT * FROM public.guide_suggestion_for_patient WHERE patient_id = ${patientId};`; 
-            console.log("🚀 ~handler ~ options:", options);
             res.status(200).json(options.rows[0]);
         } catch (error) {
             console.error(error);

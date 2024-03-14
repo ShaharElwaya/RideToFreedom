@@ -6,7 +6,6 @@ export default async function handler(req, res) {
     if (!id) {
       return res.status(400).json({ error: "Missing id parameter" });
     }
-    console.log("id:", id);
     try {
       const options = await sql`
             SELECT 

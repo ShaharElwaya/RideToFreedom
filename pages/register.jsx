@@ -74,7 +74,7 @@ export default function register() {
 
       const { name, email, id, phone, userType, password, employment_date } =
         formValues;
-      const res = await axios.post("api/register", {
+      await axios.post("api/register", {
         name,
         email,
         id,
@@ -204,7 +204,7 @@ export default function register() {
                 required={
                   formValues.userType === 2 || formValues.userType === 3
                 }
-                sx={{ width: '265px', }}
+                sx={{ width: "265px" }}
               />
             ) : null}
           </div>
