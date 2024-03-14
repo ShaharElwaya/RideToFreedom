@@ -11,9 +11,11 @@ export default async function handler(req, res) {
             SELECT 
             s.id AS id,
             s.patient_id AS patient_id,
-            s.guide_id AS guide_id, 
+            s.guide_id AS guide_id,  
             s.suggestion AS suggestion, 
             s.date AS date,
+            TO_CHAR(s.date, 'DD-MM-YYYY') AS formatted_date,
+            TO_CHAR(s.date, 'HH24:MI') AS formatted_time,
             s.status AS status, 
             p.id AS patient_id,
             p.name AS patient_name,

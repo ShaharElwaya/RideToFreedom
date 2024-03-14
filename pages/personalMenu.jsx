@@ -54,8 +54,10 @@ const PersonalMenu = () => {
   const [name, setName] = useState();
   const [isLoading, setIsLoading] = useState(true);
   const [isOneChild, setIsOneChild] = useState(false);
+  const [addTime, setAddTime] = useState("");
   const [hasSpecialTreatmentPlans, setHasSpecialTreatmentPlans] = useState(false);
   const [hasGuideSuggestions, setHasGuideSuggestions] = useState(false);
+  const [guideSuggestions, setGuideSuggestions] = useState(false);
   const { id, type } = userStore.getState();
 
   useCustomQuery(() => {
@@ -109,6 +111,7 @@ const PersonalMenu = () => {
 
           if(guideSuggestion.data.length != 0) {
             setHasGuideSuggestions(true);
+            setGuideSuggestions(guideSuggestion.data);
           }
           
           setIsLoading(false); // Set loading to false when data is fetched (success or error)
@@ -149,15 +152,11 @@ const PersonalMenu = () => {
   };
 
   const handleNavigateToSpecialProgramSuggestionView = async () => {
-    try {
-      const guideSuggestion = await axios.get(
-        `/api/suggestions/getByPatientId?patientId=${patientId}`
-      );
-      
+    try {      
       router.push({
         pathname: "specialProgramSuggestion/specialProgramSuggestionView",
         query: {
-          suggestionId: guideSuggestion.data.id
+          suggestionId: guideSuggestions.id
         },
       });
     } catch (error) {
@@ -166,11 +165,29 @@ const PersonalMenu = () => {
   };
 
   const handleNavigateToSpecialProgramSuggestion = async () => {
-      router.push({
-        pathname: "/specialProgramSuggestion/specialProgramSuggestion",
-        query: {
-           patientId
-        }})
+    const currentDate = new Date().toLocaleDateString("en-US", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      timeZone: "Asia/Jerusalem", // Set the timezone to Israel
+    });
+
+    const currentTime = new Date().toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "numeric",
+      hour12: false,
+      timeZone: "UTC",
+      timeZone: "Asia/Jerusalem", // Set the timezone to Israel
+    });
+
+    const formattedDateTime = `${currentDate} ${currentTime}`;
+    setAddTime(formattedDateTime);
+
+    router.push(
+      `/specialProgramSuggestion/specialProgramSuggestion?time=${encodeURIComponent(
+        formattedDateTime
+      )}&patientId=${encodeURIComponent(patientId)}`
+    );
   };
 
   return (
@@ -240,12 +257,18 @@ const PersonalMenu = () => {
                 </>
               )}
 
-              {hasSpecialTreatmentPlans && (
+              {hasSpecialTreatmentPlans ? (
                 <Link href={`/specialProgramWatch?patientId=${query.patientId}`}>
                   <MenuItem>
                     <CustomButton>צפייה בתכנית טיפול מיוחדת</CustomButton>
                   </MenuItem>
                 </Link>
+              ) : (
+                type == 3 && (<Link href={`/specialProgram?patientId=${query.patientId}&&patientName=${name}&&suggestionId=${guideSuggestions.id}`}>
+                  <MenuItem>
+                    <CustomButton>יצירת תכנית טיפול מיוחדת</CustomButton>
+                  </MenuItem>
+                </Link>)
               )}
             </div>
             {type === 1 && isOneChild && (

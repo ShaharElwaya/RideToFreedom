@@ -34,7 +34,7 @@ export default function SpecialProgram() {
   const [dialogContent, setDialogContent] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const isSmallScreen = useMediaQuery("(max-width: 600px)");
-  const { type } = userStore.getState();
+  const { type } = userStore.getState(); 
 
   const handleChange = (index, field, value) => {
     const newClasses = [...classes];
@@ -50,7 +50,6 @@ export default function SpecialProgram() {
 
   const handleClickSpecialProgram = async (e) => {
     e.preventDefault();
-
     
     if (startDate < new Date()) {
       setDialogTitle("שגיאה בתאריך התחלת התכנית");
@@ -61,6 +60,8 @@ export default function SpecialProgram() {
 
     try {
       const promises = [];
+      
+      setIsSaving(true); 
 
       classes.forEach((cls) => {
         const { type, number, frequency } = cls;
@@ -100,6 +101,7 @@ export default function SpecialProgram() {
     } finally {
       setDialogOpen(true);
       setIsLoading(false);
+      setIsSaving(false);
     }
   };
 

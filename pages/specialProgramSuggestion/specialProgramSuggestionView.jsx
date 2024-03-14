@@ -36,16 +36,7 @@ export default function SpecialProgramSuggestion() {
   }, []);
 
   const handleGoBack = () => {
-    router.back();
-  };
-
-  const formattedDate = () => {
-    if (data?.date) {
-      const [date, time] = data?.date.split('T');
-      const currentTime = time ? time.split('.')[0] : '';
-      const formattedDateString = `${date.split("-").reverse().join("-")} ${currentTime.slice(0, -3)}`;
-      return formattedDateString;
-    }
+    router.back(); 
   };
 
   const handleCreateProgram = () => {
@@ -69,7 +60,8 @@ export default function SpecialProgramSuggestion() {
         <PatientRow
           pictureName="GenderPic"
           picturePath={`../${data?.patient_gender === 'F' ? 'girlPic' : 'boyPic'}.png`}
-          date={formattedDate()}
+          date={data?.formatted_date}
+          time={data?.formatted_time}
           name={data?.guide_name}
           isCenter
         />
