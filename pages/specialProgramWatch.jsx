@@ -35,6 +35,10 @@ export default function SpecialProgram() {
   const [editMode, setEditMode] = useState(false);
   const [programId, setProgramId] = useState();
   const { id, type } = userStore.getState();
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogTitle, setDialogTitle] = useState("");
+  const [dialogContent, setDialogContent] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
 
   useCustomQuery(() => {
     async function fetchProgram() {
@@ -52,7 +56,6 @@ export default function SpecialProgram() {
           "/api/specialProgram/getByPatientId",
           { params: { patientId: router.query.patientId } }
         );
-  
 
         const allPromises = [];
         patientSpecialProgram[0].recommended_lessons?.forEach((lessonId) => {
@@ -104,9 +107,23 @@ export default function SpecialProgram() {
   };
 
   const handleUpdateForm = async () => {
-   
+    if (
+      !start_date ||
+      !impression ||
+      lessons.some(
+        (lesson) =>
+          !lesson.lesson_name || !lesson.lesson_count || !lesson.frequency
+      )
+    ) {
+      setDialogTitle("שגיאה");
+      setDialogContent("יש למלא את כל השדות");
+      setDialogOpen(true);
+      return;
+    }
 
     try {
+      setIsSaving(true);
+
       const addedLessonsPromises = [];
       addedLessons.forEach((cls) => {
         const { lesson_name, lesson_count, frequency } = cls;
@@ -120,16 +137,20 @@ export default function SpecialProgram() {
         );
       });
 
-    const resolvedPromises = await Promise.all(addedLessonsPromises);
-    const addedLessonsIds = resolvedPromises.map((promise) => promise.data.id)
-    const body = {
-      patientId: router.query.patientId,
-      startDate: start_date,
-      impression,
-      bookedLessons: [...lessons.map((lesson) => lesson.id), ...addedLessonsIds],
-      programId,
-    };
-
+      const resolvedPromises = await Promise.all(addedLessonsPromises);
+      const addedLessonsIds = resolvedPromises.map(
+        (promise) => promise.data.id
+      );
+      const body = {
+        patientId: router.query.patientId,
+        startDate: start_date,
+        impression,
+        bookedLessons: [
+          ...lessons.map((lesson) => lesson.id),
+          ...addedLessonsIds,
+        ],
+        programId,
+      };
 
       const allPromises = [];
       lessons.forEach((lesson) => {
@@ -149,13 +170,35 @@ export default function SpecialProgram() {
 
       const res = await axios.put("/api/specialProgram/update", body);
       console.log("🚀 ~ handleUpdateForm ~ res:", res);
+      setDialogTitle("התכנית עודכנה בהצלחה");
+      setDialogContent("");
     } catch (err) {
-      console.log(err);
+      console.error("Error saving suggestion:", err.message);
+      setDialogTitle("שגיאה בעדכון התכנית");
+      setDialogContent("הייתה שגיאה בעת עדכון התכנית. נסה שוב מאוחר יותר.");
+    } finally {
+      setDialogOpen(true);
+      setIsLoading(false);
+      setIsSaving(false);
     }
     setEditMode(false);
   };
 
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+    setDialogTitle("");
+    setDialogContent("");
+
+    if (!dialogContent) {
+      <Nevigation
+        patientId={router.query.patientId}
+        screen="specialProgramWatch"
+      />;
+    }
+  };
+
   const handleChangeLesson = (i, newValue, field) => {
+    if (newValue < 1) return;
     const lessonsCopy = [...lessons];
     lessonsCopy[i][field] = newValue;
 
@@ -163,6 +206,8 @@ export default function SpecialProgram() {
   };
 
   const handleChangeAddedLesson = (i, newValue, field) => {
+    if (newValue < 1) return;
+
     const addedLessonsCopy = [...addedLessons];
     addedLessonsCopy[i][field] = newValue;
 
@@ -190,7 +235,7 @@ export default function SpecialProgram() {
                 label="תאריך התחלת התכנית"
                 sx={{ width: isSmallScreen ? "100%" : "250px" }}
                 value={dayjs(start_date)}
-                disabled={!editMode}
+                disabled={true}
               />
             </div>
             <div className={style.textArea}>
@@ -327,7 +372,11 @@ export default function SpecialProgram() {
                 onClick={() =>
                   setAddedLessons([
                     ...addedLessons,
-                    { lesson_name: options[0].type, lesson_count: "", frequency: "" },
+                    {
+                      lesson_name: options[0].type,
+                      lesson_count: 1,
+                      frequency: 1,
+                    },
                   ])
                 }
               >
@@ -337,16 +386,27 @@ export default function SpecialProgram() {
           </div>
         </form>
       </div>
-      <Button
-        variant="contained"
-        onClick={() => (editMode ? handleUpdateForm() : setEditMode(true))}
-        style={{ margin: "5px" }}
-      >
-        {editMode ? "עדכון התוכנית" : "עריכת תכנית טיפול"}
-      </Button>
-      <Nevigation
-        patientId={router.query.patientId}
-        screen="specialProgramWatch"
+      {type === 3 && (
+        <Button
+          variant="contained"
+          disabled={isSaving}
+          onClick={() => (editMode ? handleUpdateForm() : setEditMode(true))}
+          style={{ margin: "5px" }}
+        >
+          {editMode ? "עדכון התוכנית" : "עריכת תכנית טיפול"}
+        </Button>
+      )}
+
+      <CustomizedDialogs
+        title={dialogTitle}
+        text={dialogContent}
+        open={dialogOpen}
+        onClose={handleCloseDialog}
+        actions={[
+          <Button key="confirmButton" autoFocus onClick={handleCloseDialog}>
+            הבנתי
+          </Button>,
+        ]}
       />
     </>
   );

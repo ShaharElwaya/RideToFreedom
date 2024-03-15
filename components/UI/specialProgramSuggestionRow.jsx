@@ -7,6 +7,12 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import FolderSpecial from "@mui/icons-material/FolderSpecial";
 import Event from "@mui/icons-material/Event";
 import { DateTimePicker } from "@mui/x-date-pickers";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+} from "@mui/material";
 
 export default function SuggestionRow({
   isCenter = false,
@@ -18,6 +24,9 @@ export default function SuggestionRow({
   const query = useRouter();
   const isSmallScreen = useMediaQuery("(max-width: 600px)");
   const [timeForMeeting, setTimeForMeeting] = useState();
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogTitle, setDialogTitle] = useState("");
+  const [dialogContent, setDialogContent] = useState("");
 
   const onClick = () => {
     router.push({
@@ -42,6 +51,11 @@ export default function SuggestionRow({
         suggestionId: suggestion.id,
       },
     });
+  };
+
+  const handlePickDate = async (e) => {
+    e.stopPropagation();
+    setDialogOpen(true); // Open the dialog
   };
 
   const handleSetMeeting = async (e) => {
@@ -87,6 +101,12 @@ export default function SuggestionRow({
     } catch (error) {
       console.error("Error setting meeting:", error);
     }
+  };
+
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+    setDialogTitle("");
+    setDialogContent("");
   };
 
   const formattedDate = (date) => {
@@ -166,7 +186,7 @@ export default function SuggestionRow({
         {suggestion.status === "ממתין לקביעת פגישה" ? (
           isSmallScreen ? (
             <Tooltip title="קביעת פגישה">
-              <IconButton onClick={handleSetMeeting}>
+              <IconButton onClick={handlePickDate}>
                 <Event />
               </IconButton>
             </Tooltip>
@@ -176,24 +196,16 @@ export default function SuggestionRow({
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
-                margin:0
+                margin: 0,
               }}
             >
-              <DateTimePicker
-                required
-                label={"קבע תאריך לפגישה"}
-                value={timeForMeeting}
-                onChange={setTimeForMeeting}
-                sx={{width:250}}
-              />
               <Button
                 variant="contained"
-                onClick={handleSetMeeting}
-                sx={{width:125}}
+                onClick={handlePickDate}
+                sx={{ width: 125 }}
               >
                 קביעת פגישה
               </Button>
-              
             </div>
           )
         ) : (
@@ -215,6 +227,24 @@ export default function SuggestionRow({
           ))
         )}
       </td>
+
+      {/* Dialog for selecting meeting date */}
+      <Dialog open={dialogOpen} onClose={handleCloseDialog}>
+        <DialogTitle>בחירת תאריך לפגישה</DialogTitle>
+        <DialogContent>
+          <DateTimePicker
+            required
+            label={"בחר תאריך לפגישה"}
+            value={timeForMeeting}
+            onChange={setTimeForMeeting}
+            sx={{height:300}}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog}>ביטול</Button>
+          <Button onClick={handleSetMeeting}>אישור</Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }
