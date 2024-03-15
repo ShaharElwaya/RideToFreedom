@@ -1,17 +1,18 @@
-// userStore.js
-import { create } from 'zustand';
-import { devtools, persist } from 'zustand/middleware';
+// userStore.jsx
+
+import { create } from "zustand";
+import { devtools, persist } from "zustand/middleware";
 
 const userStore = create(
   persist(
     (set) => ({
       id: 0,
       type: 0,
-      email: '',
+      email: "",
       is_logged_in: false,
     }),
     {
-      name: 'user',
+      name: "user",
     }
   )
 );

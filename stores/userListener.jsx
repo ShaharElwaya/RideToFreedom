@@ -1,10 +1,9 @@
-// userListener.js
-import React, { useEffect } from 'react';
-import { userStore, setUserData } from './userStore';
-import { useRouter } from 'next/router';
+// userListener.jsx
+
+import React, { useEffect } from "react";
+import { userStore, setUserData } from "./userStore";
 
 export const UserListener = () => {
-  const router = useRouter();
   const { is_logged_in } = userStore.getState();
 
   useEffect(() => {

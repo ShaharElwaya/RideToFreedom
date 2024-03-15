@@ -1,25 +1,25 @@
+// specialProgramSuggestionAll.jsx
+
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
 import PicAndHeadlines from "@/components/UI/picAndheadline";
 import SuggestionRow from "@/components/UI/specialProgramSuggestionRow";
-import style from "../../styles/summariesPatientLessons.module.css";
-import { Button, CircularProgress } from "@mui/material";
+import style from "../../styles/generalStyle.module.css";
+import { Button } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import LoadingSpinner from "@/components/loadingSpinner";
 import useCustomQuery from "@/utils/useCustomQuery";
-import { userStore } from '@/stores/userStore';
+import { userStore } from "@/stores/userStore";
 
 export default function specialProgramSuggestionAll() {
-  const [data, setData] = useState([]);
   const [suggestions, setSuggestions] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [showLoader, setShowLoader] = useState(true);
   const router = useRouter();
   const isSmallScreen = useMediaQuery("(max-width: 600px)");
-  const { type, id } = userStore.getState(); 
+  const { type, id } = userStore.getState();
 
-  useCustomQuery(() => { 
+  useCustomQuery(() => {
     if (type == 1) {
       router.back();
     }
@@ -37,7 +37,6 @@ export default function specialProgramSuggestionAll() {
 
     fetchData();
   }, []);
-
 
   const content = () => {
     return suggestions.map((suggestion) => (

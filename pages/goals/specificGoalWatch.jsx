@@ -1,3 +1,5 @@
+// specificGoalWatch.jsx
+
 import React, { useState, useEffect } from "react";
 import dayjs from "dayjs";
 import axios from "axios";
@@ -13,7 +15,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers";
 import PicAndHeadlines from "@/components/UI/picAndheadline";
 import GoalRow from "@/components/UI/goalRow";
-import style from "../../styles/summariesPatientLessons.module.css";
+import style from "../../styles/generalStyle.module.css";
 import TextAreaComponent from "@/components/UI/textAreaComponent";
 import CustomizedDialogs from "@/components/dialog";
 import { useRouter } from "next/router";
@@ -65,15 +67,15 @@ export default function SpecificGoalWatch() {
           // Fetch comments for the specific lessonId
           const childrens = await axios.get(`/api/login/childrens?id=${id}`);
           let isOk = false;
-  
+
           for (let i = 0; i < childrens.data.length && !isOk; i++) {
             if (childrens.data[i].id == response.data.patient_id) {
               isOk = true;
             }
           }
-  
+
           if (isOk == false) {
-            router.back(); // Use await to wait for the navigation to complete
+            router.back(); 
           }
         }
       } catch (error) {
@@ -98,7 +100,7 @@ export default function SpecificGoalWatch() {
 
     try {
       const res = await axios.post("../api/goals/specificGoalDelete", {
-        goalId
+        goalId,
       });
       setDialogError("");
       setSaveSuccess(true);
@@ -122,9 +124,7 @@ export default function SpecificGoalWatch() {
     setDialogOpen(false);
 
     if (saveSuccess) {
-      router.push(
-        `/goals/goals?patientId=${encodeURIComponent(patientId)}`
-      );
+      router.push(`/goals/goals?patientId=${encodeURIComponent(patientId)}`);
     }
   };
 
@@ -203,11 +203,17 @@ export default function SpecificGoalWatch() {
           <Button
             variant="contained"
             onClick={() => handleClick(goalId, index)}
-            style={{ margin: '5px' }}
+            style={{ margin: "5px" }}
           >
             עריכת מטרה
           </Button>
-          <Button type="submit" disabled={isSaving} variant="contained" onClick={handleClickDelete} style={{ margin: '5px' }}>
+          <Button
+            type="submit"
+            disabled={isSaving}
+            variant="contained"
+            onClick={handleClickDelete}
+            style={{ margin: "5px" }}
+          >
             מחיקת מטרה
           </Button>
         </div>

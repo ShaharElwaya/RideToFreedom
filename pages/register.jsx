@@ -1,10 +1,11 @@
+// register.jsx
+
 import React from "react";
 import axios from "axios";
 import style from "../styles/loginRegisterPage.module.css";
 import TextFieldComponent from "@/components/UI/TextFiled";
 import { useState, useEffect } from "react";
 import {
-  Typography,
   Button,
   Select,
   MenuItem,
@@ -20,8 +21,8 @@ import { userStore } from "@/stores/userStore";
 export default function register() {
   const [options, setOptions] = useState([]);
   const [selectedOption, setSelectedOption] = useState("");
-  const [dialogError, setDialogError] = useState(""); // Add a state variable for error message
-  const [dialogOpen, setDialogOpen] = React.useState(false); // Initialize state
+  const [dialogError, setDialogError] = useState("");
+  const [dialogOpen, setDialogOpen] = React.useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const { type } = userStore.getState();
   const router = useRouter();

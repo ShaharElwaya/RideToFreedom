@@ -1,3 +1,5 @@
+// generalStyle.jsx
+
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import {
@@ -7,16 +9,11 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  Box,
-  Container,
-  Card,
-  CardContent,
-  Chip,
   Typography,
 } from "@mui/material";
 import PicAndHeadlines from "@/components/UI/picAndheadline";
 import PatientRow from "@/components/UI/patientRow";
-import style from "../../styles/summariesPatientLessons.module.css";
+import style from "../../styles/generalStyle.module.css";
 import LoadingSpinner from "@/components/loadingSpinner";
 import { useRouter } from "next/router";
 import { userStore } from "@/stores/userStore";
@@ -24,7 +21,7 @@ import useCustomQuery from "@/utils/useCustomQuery";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Nevigation from "@/components/nevigation";
 
-export default function SummariesPatientLessons() {
+export default function generalStyle() {
   const router = useRouter();
   const [lessons, setLessons] = useState([]);
   const [addTime, setAddTime] = useState("");
@@ -73,16 +70,14 @@ export default function SummariesPatientLessons() {
   };
 
   const handleGoBack = () => {
-    router.push(
-      `/personalMenu?patientId=${encodeURIComponent(patientId)}`
-    );
+    router.push(`/personalMenu?patientId=${encodeURIComponent(patientId)}`);
   };
 
   useCustomQuery(() => {
     async function fetchData() {
       try {
         const [lessonsData, patientNameData] = await Promise.all([
-          axios.get("/api/lessonsSummaries/summariesPatientLessons", {
+          axios.get("/api/lessonsSummaries/generalStyle", {
             params: { patient_id: patientId },
           }),
           getPatientName(),
@@ -473,7 +468,7 @@ export default function SummariesPatientLessons() {
               אין סיכומי שיעורים
             </div>
           )}
-          <Nevigation patientId={patientId} screen="summariesPatientLessons" />
+          <Nevigation patientId={patientId} screen="generalStyle" />
         </>
       )}
     </>

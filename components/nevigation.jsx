@@ -53,8 +53,8 @@ export default function Navigation({ patientId, screen }) {
     {
       icon: <SummarizeIcon />,
       name: "סיכומי שיעורים",
-      link: "../lessonSummary/summariesPatientLessons",
-      screen: "summariesPatientLessons",
+      link: "../lessonSummary/generalStyle",
+      screen: "generalStyle",
     },
     {
       icon: <PersonIcon />,

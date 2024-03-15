@@ -1,3 +1,5 @@
+// login.jsx
+
 import TextFieldComponent from "@/components/UI/TextFiled";
 import PicAndHeadlines from "@/components/UI/picAndheadline";
 import CustomizedDialogs from "@/components/dialog";
@@ -14,13 +16,13 @@ export default function login() {
   const [isSaving, setIsSaving] = useState(false);
   const [dialogError, setDialogError] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
-  const {is_logged_in} = userStore.getState();
+  const { is_logged_in } = userStore.getState();
 
   useEffect(() => {
-    if(is_logged_in) {
-      router.push('/customerFile');
+    if (is_logged_in) {
+      router.push("/customerFile");
     }
-  },[])
+  }, []);
 
   const handleClickLogin = async (e) => {
     e.preventDefault();
@@ -76,7 +78,7 @@ export default function login() {
 
   const handleCloseDialog = () => {
     setDialogOpen(false);
-    setDialogError(""); // Clear the error message when the dialog is closed
+    setDialogError(""); 
   };
 
   return (

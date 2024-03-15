@@ -1,3 +1,5 @@
+// homeEvents.jsx
+
 import { useState, useEffect } from "react";
 import axios from "axios";
 import {
@@ -11,7 +13,7 @@ import {
 } from "@mui/material";
 import PicAndHeadlines from "@/components/UI/picAndheadline";
 import PatientRow from "@/components/UI/patientRow";
-import style from "../../styles/summariesPatientLessons.module.css";
+import style from "../../styles/generalStyle.module.css";
 import { useRouter } from "next/router";
 import LoadingSpinner from "@/components/loadingSpinner";
 import { userStore } from "@/stores/userStore";
@@ -78,7 +80,7 @@ export default function HomeEvents() {
         });
         setEvents(data);
         isEventsLoaded = true;
- 
+
         // Extract unique guide names and lesson types from the lessons array
         const uniqueParents = [
           ...new Set(data.map((lesson) => lesson.parent_name)),
@@ -122,7 +124,7 @@ export default function HomeEvents() {
           }
 
           if (isOk == false) {
-            router.back(); // Use await to wait for the navigation to complete
+            router.back(); 
           }
         }
       } catch (error) {
@@ -154,9 +156,7 @@ export default function HomeEvents() {
   };
 
   const handleGoBack = () => {
-    router.push(
-      `/personalMenu?patientId=${encodeURIComponent(patientId)}`
-    );
+    router.push(`/personalMenu?patientId=${encodeURIComponent(patientId)}`);
   };
 
   const handleFilterChange = (filterName, value) => {
@@ -412,11 +412,11 @@ export default function HomeEvents() {
                     }.png`}
                     date={formatDate(event.formatted_date)}
                     time={event.formatted_time}
-                    name={event.parent_name} 
+                    name={event.parent_name}
                     lesson={event.event_summary}
-                      {...(isSmallScreen && {
-                        maxTextLengthLesson: 7,
-                      })}
+                    {...(isSmallScreen && {
+                      maxTextLengthLesson: 7,
+                    })}
                   />
                 </div>
               ))

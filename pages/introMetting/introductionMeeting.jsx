@@ -1,3 +1,5 @@
+// introductionMeeting.jsx
+
 import React, { useState, useEffect } from "react";
 import {
   Button,
@@ -5,14 +7,13 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
-  Typography,
 } from "@mui/material";
-import style from "../styles/loginRegisterPage.module.css";
+import style from "../../styles/loginRegisterPage.module.css";
 import PicAndHeadlines from "@/components/UI/picAndheadline";
 import TextFieldComponent from "@/components/UI/TextFiled";
 import { DatePicker } from "@mui/x-date-pickers";
 import axios from "axios";
-import { userStore } from "../stores/userStore";
+import { userStore } from "../../stores/userStore";
 import { useRouter } from "next/router";
 import TextAreaComponent from "@/components/UI/textAreaComponent";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -34,10 +35,6 @@ export default function IntroductionMeeting() {
   const router = useRouter();
   const isSmallScreen = useMediaQuery("(max-width: 600px)");
   const { type, id } = userStore.getState();
-  const [birthdayError, setBirthdayError] = useState(false);
-  const [meetingDateError, setMeetingDateError] = useState(false);
-  const [birthdayErrorPrevious, setBirthdayErrorPrevious] = useState(false);
-  const [meetingDateErrorPrevious, setMeetingDateErrorPrevious] = useState(false);
 
   const handleChange = (event) => {
     setGender(event.target.value);
@@ -59,18 +56,15 @@ export default function IntroductionMeeting() {
         setDialogError("תאריך לידה הינו שדה חובה");
         setDialogOpen(true);
         return;
-      } 
-      else if (birthday > new Date()) {
+      } else if (birthday > new Date()) {
         setDialogError("תאריך הלידה אינו יכול להיות עתידי");
         setDialogOpen(true);
         return;
-      }
-      else if (!meetingDate) {
+      } else if (!meetingDate) {
         setDialogError("תאריך לפגישה הינו שדה חובה");
         setDialogOpen(true);
         return;
-      }
-      else if (meetingDate < new Date()) {
+      } else if (meetingDate < new Date()) {
         setDialogError("יש לבחור תאריך עתידי לפגישה ");
         setDialogOpen(true);
         return;
@@ -190,13 +184,10 @@ export default function IntroductionMeeting() {
                 <DatePicker
                   label="תאריך לידה *"
                   required
-                  error={birthdayError}
                   sx={{ width: "100%" }}
                   value={birthday}
                   onChange={(v) => {
                     setBirthday(new Date(v));
-                    setBirthdayError(false);
-                    setBirthdayErrorPrevious(false);
                   }}
                 />
               </div>
@@ -205,13 +196,10 @@ export default function IntroductionMeeting() {
                 <DateTimePicker
                   required
                   label="תאריך לפגישה *"
-                  error={meetingDateError}
                   sx={{ width: "100%" }}
                   value={meetingDate}
                   onChange={(v) => {
                     setMeetingDate(new Date(v));
-                    setMeetingDateError(false);
-                    setMeetingDateErrorPrevious(false);
                   }}
                 />
               </div>

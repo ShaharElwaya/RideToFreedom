@@ -1,4 +1,4 @@
-// summariesPatientLessons.jsx
+// generalStyle.jsx
 
 import { sql } from "@vercel/postgres";
 

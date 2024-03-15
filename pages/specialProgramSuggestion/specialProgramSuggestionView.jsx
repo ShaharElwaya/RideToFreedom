@@ -1,10 +1,12 @@
+// specialProgramSuggestionView.jsx
+
 import React, { useState, useEffect } from "react";
 import PicAndHeadlines from "@/components/UI/picAndheadline";
 import PatientRow from "@/components/UI/patientRow";
-import style from "../../styles/summariesPatientLessons.module.css";
+import style from "../../styles/generalStyle.module.css";
 import TextAreaComponent from "@/components/UI/textAreaComponent";
 import axios from "axios";
-import { useRouter } from 'next/router';
+import { useRouter } from "next/router";
 import { Button } from "@mui/material";
 import useCustomQuery from "@/utils/useCustomQuery";
 import { userStore } from "@/stores/userStore";
@@ -20,14 +22,13 @@ export default function SpecialProgramSuggestion() {
     if (type == 1) {
       router.back();
     }
-    
+
     const fetchSuggestion = async () => {
       try {
         const res = await axios.post(`/api/suggestions/getById`, {
           id: query.suggestionId,
         });
         setData(res.data);
-        
       } catch (err) {
         console.log(err);
       }
@@ -36,11 +37,13 @@ export default function SpecialProgramSuggestion() {
   }, []);
 
   const handleGoBack = () => {
-    router.back(); 
+    router.back();
   };
 
   const handleCreateProgram = () => {
-    router.push(`../specialProgram?patientId=${data?.patient_id}&&patientName=${data?.patient_name}&&suggestionId=${query.suggestionId}`);
+    router.push(
+      `../specialProgram?patientId=${data?.patient_id}&&patientName=${data?.patient_name}&&suggestionId=${query.suggestionId}`
+    );
   };
 
   return (
@@ -54,12 +57,14 @@ export default function SpecialProgramSuggestion() {
           pictureName="specialProgramSuggestion"
           picturePath="../specialProgramSuggestion.png"
           primaryHeadline="הצעה לתכנית טיפול מיוחדת"
-          secondaryHeadline= {data?.patient_name}
+          secondaryHeadline={data?.patient_name}
         />
 
         <PatientRow
           pictureName="GenderPic"
-          picturePath={`../${data?.patient_gender === 'F' ? 'girlPic' : 'boyPic'}.png`}
+          picturePath={`../${
+            data?.patient_gender === "F" ? "girlPic" : "boyPic"
+          }.png`}
           date={data?.formatted_date}
           time={data?.formatted_time}
           name={data?.guide_name}
@@ -77,7 +82,10 @@ export default function SpecialProgramSuggestion() {
           </Button>
         )}
       </div>
-      <Nevigation patientId={data?.patient_id} screen="specialProgramSuggestionView" />
+      <Nevigation
+        patientId={data?.patient_id}
+        screen="specialProgramSuggestionView"
+      />
     </>
   );
 }

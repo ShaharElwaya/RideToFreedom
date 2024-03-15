@@ -1,8 +1,10 @@
+// specialProgramSuggestion.jsx
+
 import React, { useState } from "react";
 import { useRouter } from "next/router";
 import PicAndHeadlines from "@/components/UI/picAndheadline";
 import PatientRow from "@/components/UI/patientRow";
-import style from "../../styles/summariesPatientLessons.module.css";
+import style from "../../styles/generalStyle.module.css";
 import TextAreaComponent from "@/components/UI/textAreaComponent";
 import CustomizedDialogs from "@/components/dialog";
 import LoadingSpinner from "@/components/loadingSpinner";
@@ -32,40 +34,55 @@ export default function SpecialProgramSuggestion() {
   };
 
   const parseDateString = (dateString) => {
-    const [datePart, timePart] = dateString.split(' ');
-    const [month, day, year] = datePart.split('/');
-    const [hour, minute] = timePart.split(':');
-  
+    const [datePart, timePart] = dateString.split(" ");
+    const [month, day, year] = datePart.split("/");
+    const [hour, minute] = timePart.split(":");
+
     let parsedDate = new Date(year, month - 1, day, hour, minute);
-  
-    // Set hours to 00 instead of 24
-    if (hour === '24') {
+
+    if (hour === "24") {
       parsedDate.setHours(0);
       parsedDate.setDate(parsedDate.getDate() - 1);
     }
-  
+
     return parsedDate;
   };
-  
+
   const parsedDate = time ? parseDateString(time) : null;
-  
+
   const formattedDateTime = parsedDate
-  ? `${parsedDate.getFullYear()}-${(parsedDate.getMonth() + 1).toString().padStart(2, '0')}-${parsedDate.getDate().toString().padStart(2, '0')} ` +
-    `${parsedDate.getHours().toString().padStart(2, '0')}:${parsedDate.getMinutes().toString().padStart(2, '0')}:00`
-  : '';
-  
+    ? `${parsedDate.getFullYear()}-${(parsedDate.getMonth() + 1)
+        .toString()
+        .padStart(2, "0")}-${parsedDate
+        .getDate()
+        .toString()
+        .padStart(2, "0")} ` +
+      `${parsedDate.getHours().toString().padStart(2, "0")}:${parsedDate
+        .getMinutes()
+        .toString()
+        .padStart(2, "0")}:00`
+    : "";
+
   const date = parsedDate
-    ? `${parsedDate.getDate().toString().padStart(2, '0')}/${(parsedDate.getMonth() + 1).toString().padStart(2, '0')}/${parsedDate.getFullYear()}`
-    : '';
-  
-  const hours = parsedDate ? parsedDate.getHours().toString().padStart(2, '0') : '';
-  const minutes = parsedDate ? parsedDate.getMinutes().toString().padStart(2, '0') : '';
-  const timeOfDay = parsedDate ? `${hours}:${minutes}` : '';
+    ? `${parsedDate.getDate().toString().padStart(2, "0")}/${(
+        parsedDate.getMonth() + 1
+      )
+        .toString()
+        .padStart(2, "0")}/${parsedDate.getFullYear()}`
+    : "";
+
+  const hours = parsedDate
+    ? parsedDate.getHours().toString().padStart(2, "0")
+    : "";
+  const minutes = parsedDate
+    ? parsedDate.getMinutes().toString().padStart(2, "0")
+    : "";
+  const timeOfDay = parsedDate ? `${hours}:${minutes}` : "";
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    
-    setIsSaving(true); 
+
+    setIsSaving(true);
 
     try {
       const date = formattedDateTime;
@@ -97,8 +114,8 @@ export default function SpecialProgramSuggestion() {
     setDialogTitle("");
     setDialogContent("");
 
-    if(isOk) {
-        router.push(`../personalMenu?patientId=${router.query.patientId}`);
+    if (isOk) {
+      router.push(`../personalMenu?patientId=${router.query.patientId}`);
     }
   };
 
@@ -163,11 +180,10 @@ export default function SpecialProgramSuggestion() {
     router.back();
   };
 
-  
   return (
     <>
       {isLoading && <LoadingSpinner />}
-      
+
       <div className={style.leftStyle}>
         <Button onClick={handleGoBack}> חזור &gt;</Button>
       </div>

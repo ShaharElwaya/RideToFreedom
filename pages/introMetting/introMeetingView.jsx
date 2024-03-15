@@ -1,3 +1,5 @@
+// introMeetingView.jsx
+
 import React, { useState, useEffect } from "react";
 import { Paper, Typography, Button } from "@mui/material";
 import { useRouter } from "next/router";
@@ -5,7 +7,7 @@ import axios from "axios";
 import CustomizedDialogs from "@/components/dialog";
 import TextAreaComponent from "@/components/UI/textAreaComponent";
 import PatientRow from "@/components/UI/patientRow";
-import style from "../styles/summariesPatientLessons.module.css";
+import style from "../../styles/generalStyle.module.css";
 import PicAndHeadlines from "@/components/UI/picAndheadline";
 import useCustomQuery from "@/utils/useCustomQuery";
 import { userStore } from "@/stores/userStore";
@@ -30,8 +32,6 @@ export default function ViewForm() {
   const { patientId } = router.query;
   const [commentBeingEdited, setCommentBeingEdited] = useState(null);
   const [editedComment, setEditedComment] = useState("");
-  const [dialogOpen, setDialogOpen] = React.useState(false);
-  const [saveSuccess, setSaveSuccess] = useState(false);
 
   const [isDialogEditOpen, setIsDialogEditOpen] = useState(false);
 
@@ -114,11 +114,11 @@ export default function ViewForm() {
     const fetchDataAndComments = async () => {
       await Promise.all([fetchData(), fetchComments()]);
       setIsLoading(false);
-  };
+    };
 
-  if (query.patientId) {
+    if (query.patientId) {
       fetchDataAndComments();
-  }
+    }
   }, [query.patientId]);
 
   const handleOpenDialog = () => {
@@ -246,9 +246,9 @@ export default function ViewForm() {
         `/api/introMeeting/getComments?patient_id=${query.patientId}`
       );
       setComments(response.data);
-      
+
       if (response.data.length == 0) {
-        setShowComments(false); 
+        setShowComments(false);
       }
 
       // Close the comment dialog
