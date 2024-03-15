@@ -1,3 +1,5 @@
+// dialog.jsx
+
 import React from "react";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -9,7 +11,6 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 export default function CustomizedDialogs({
   title,
   text,
-  closeText,
   open,
   onClose,
   actions,

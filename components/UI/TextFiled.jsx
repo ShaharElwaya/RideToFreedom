@@ -1,3 +1,5 @@
+// TextField.jsx
+
 import React, { useState } from "react";
 import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
@@ -19,7 +21,7 @@ export default function TextFieldComponent({
   };
 
   const textFieldStyle = {
-    width: "265px", // Set a fixed width for both text fields
+    width: "265px",
   };
 
   const iconStyle = {

@@ -1,8 +1,16 @@
-import React from 'react';
-import style from "../../styles/picAndHeadlinesStyle.module.css";
-import { Typography } from '@mui/material';
+// picAndheadline.jsx
 
-export default function PicAndHeadlines({ pictureName, picturePath, isMain = false, primaryHeadline, secondaryHeadline }) {
+import React from "react";
+import style from "../../styles/picAndHeadlinesStyle.module.css";
+import { Typography } from "@mui/material";
+
+export default function PicAndHeadlines({
+  pictureName,
+  picturePath,
+  isMain = false,
+  primaryHeadline,
+  secondaryHeadline,
+}) {
   return (
     <div>
       {picturePath && (
@@ -13,12 +21,10 @@ export default function PicAndHeadlines({ pictureName, picturePath, isMain = fal
         />
       )}
       <div className={style.space}>
-        <Typography variant='h4' className={style.bold}>
+        <Typography variant="h4" className={style.bold}>
           {primaryHeadline}
         </Typography>
-        <Typography>
-          {secondaryHeadline}
-        </Typography>
+        <Typography>{secondaryHeadline}</Typography>
       </div>
     </div>
   );

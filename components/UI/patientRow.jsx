@@ -1,12 +1,26 @@
 // PatientRow.jsx
 
-import React from 'react';
+import React from "react";
 import style from "../../styles/patientRowCss.module.css";
-import { Typography, Tooltip } from '@mui/material';
+import { Typography, Tooltip } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import EditIcon from "@mui/icons-material/Edit";
 
-export default function PatientRow({ pictureName, picturePath, date, time, name, lesson, isCenter = false, hasBottomBorder = false, maxTextLengthName, maxTextLengthLesson, nameWidth, lessonWidth, canEdit }) {
+export default function PatientRow({
+  pictureName,
+  picturePath,
+  date,
+  time,
+  name,
+  lesson,
+  isCenter = false,
+  hasBottomBorder = false,
+  maxTextLengthName,
+  maxTextLengthLesson,
+  nameWidth,
+  lessonWidth,
+  canEdit,
+}) {
   let needTooltipName = false;
   let needTooltipLesson = false;
 
@@ -28,21 +42,34 @@ export default function PatientRow({ pictureName, picturePath, date, time, name,
 
   const renderTooltip = (text, variableName, width) => {
     if (!text) {
-      return null; // If the variable is not provided, don't render spaces or tooltips
+      return null; 
     }
 
     let formattedText = "";
 
-    if(variableName === 'name'){
+    if (variableName === "name") {
       formattedText = getFormattedName(text);
-    }
-    else {
+    } else {
       formattedText = getFormattedLesson(text);
     }
 
     return (
-      <Tooltip title={(variableName === 'name' && needTooltipName) || (variableName === 'lesson' && needTooltipLesson) ? text : ""} key={variableName}>
-        <div style={{ width: `${width}px`, display:'inline-block', textAlign:'right'}}>
+      <Tooltip
+        title={
+          (variableName === "name" && needTooltipName) ||
+          (variableName === "lesson" && needTooltipLesson)
+            ? text
+            : ""
+        }
+        key={variableName}
+      >
+        <div
+          style={{
+            width: `${width}px`,
+            display: "inline-block",
+            textAlign: "right",
+          }}
+        >
           {formattedText}
         </div>
       </Tooltip>
@@ -50,21 +77,27 @@ export default function PatientRow({ pictureName, picturePath, date, time, name,
   };
 
   return (
-    <div className={`${isCenter ? style.containerCenter : style.container} ${hasBottomBorder ? style.bottomBorder : ''}`}>
-      {(picturePath && <img src={picturePath} alt={pictureName} className={style.pic} />)}
+    <div
+      className={`${isCenter ? style.containerCenter : style.container} ${
+        hasBottomBorder ? style.bottomBorder : ""
+      }`}
+    >
+      {picturePath && (
+        <img src={picturePath} alt={pictureName} className={style.pic} />
+      )}
       <div className={style.textContainer}>
         <Typography className={style.txt}>
           {date}
           {date && <> &nbsp;</>}
           {time}
           {time && <> &nbsp;</>}
-          {renderTooltip(name, 'name', nameWidth)}{/* Set the desired width, e.g., 150px */}
+          {renderTooltip(name, "name", nameWidth)}
           {name && <>&nbsp;</>}
-          {renderTooltip(lesson, 'lesson', lessonWidth)}{/* Set the desired width, e.g., 150px */}
+          {renderTooltip(lesson, "lesson", lessonWidth)}
         </Typography>
         {canEdit && (
-          <IconButton style={{ fontSize: '12px', padding: '2px' }}>
-            <EditIcon style={{ fontSize: '12px' }}/>
+          <IconButton style={{ fontSize: "12px", padding: "2px" }}>
+            <EditIcon style={{ fontSize: "12px" }} />
           </IconButton>
         )}
       </div>
