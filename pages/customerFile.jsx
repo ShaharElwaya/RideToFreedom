@@ -19,7 +19,7 @@ const RowAndColumnSpacing = () => {
   const router = useRouter();
   const { type, id } = userStore.getState();
   const isSmallScreen = useMediaQuery("(max-width: 600px)");
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true); // Set initial loading state to true
 
   const Item = styled(Paper)(() => ({
     padding: "20px 0",
@@ -45,9 +45,9 @@ const RowAndColumnSpacing = () => {
         const data = await fetchNamesFromDatabase(type, id);
         setNames(data);
         setFilteredNames(data);
-        setIsLoading(false);
       } catch (error) {
         console.error("Error fetching names:", error);
+      } finally {
         setIsLoading(false);
       }
     };
@@ -63,7 +63,6 @@ const RowAndColumnSpacing = () => {
     }
     const data = await response.json();
     return data;
-    setIsLoading(false);
   };
 
   const getPictureName = (gender) => {
@@ -115,7 +114,7 @@ const RowAndColumnSpacing = () => {
 
   return (
     <>
-      {isLoading && <LoadingSpinner />}
+      {isLoading && <LoadingSpinner />} {/* Show loading spinner while data is loading */}
       <div className={style.leftStyle}>
         <Button onClick={handleLogOut}> התנתק </Button>
       </div>

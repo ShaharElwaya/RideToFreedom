@@ -56,19 +56,23 @@ export default function IntroductionMeeting() {
     try {
       // Validate date pickers
       if (!birthday) {
-        setBirthdayError(true);
+        setDialogError("תאריך לידה הינו שדה חובה");
+        setDialogOpen(true);
         return;
       } 
       else if (birthday > new Date()) {
-        setBirthdayErrorPrevious(true);
+        setDialogError("תאריך הלידה אינו יכול להיות עתידי");
+        setDialogOpen(true);
         return;
       }
       else if (!meetingDate) {
-        setMeetingDateError(true);
+        setDialogError("תאריך לפגישה הינו שדה חובה");
+        setDialogOpen(true);
         return;
       }
       else if (meetingDate < new Date()) {
-        setMeetingDateErrorPrevious(true);
+        setDialogError("יש לבחור תאריך עתידי לפגישה ");
+        setDialogOpen(true);
         return;
       }
       setIsLoading(true);
@@ -212,28 +216,6 @@ export default function IntroductionMeeting() {
                 />
               </div>
             </div>
-          </div>
-          <div className={style.container}>
-            {birthdayError && (
-              <Typography style={{ color: "red", marginRight: "10px" }}>
-                תאריך לידה הינו שדה חובה
-              </Typography>
-            )}
-            {meetingDateError && (
-              <Typography style={{ color: "red", marginRight: "270px" }}>
-                תאריך לפגישה הינו שדה חובה
-              </Typography>
-            )}
-            {birthdayErrorPrevious && (
-              <Typography style={{ color: "red", marginRight: "10px" }}>
-                תאריך הלידה אינו יכול להיות עתידי
-              </Typography>
-            )}
-            {meetingDateErrorPrevious && (
-              <Typography style={{ color: "red", marginRight: "270px" }}>
-                יש לבחור תאריך עתידי לפגישה 
-              </Typography>
-            )}
           </div>
           <div>
             <TextAreaComponent
