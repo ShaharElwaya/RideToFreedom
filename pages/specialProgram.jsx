@@ -67,7 +67,7 @@ export default function SpecialProgram() {
       classes.forEach((cls) => {
         const { type, number, frequency } = cls;
         promises.push(
-          axios.post("/api/specialProgram/create-booked-lesson", {
+          axios.post("/api/specialProgram/createBookedLesson", {
             patientId: router.query.patientId,
             type,
             number,

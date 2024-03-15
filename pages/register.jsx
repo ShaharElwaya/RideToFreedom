@@ -47,7 +47,7 @@ export default function register() {
 
     async function fetchOptions() {
       try {
-        const response = await fetch("/api/register/user_types_options");
+        const response = await fetch("/api/register/userTypesOptions");
         const data = await response.json();
         setOptions(data);
       } catch (error) {

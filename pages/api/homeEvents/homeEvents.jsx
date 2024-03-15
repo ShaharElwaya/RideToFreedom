@@ -1,15 +1,13 @@
+// homeEvents.jsx
 
-
-import { sql } from '@vercel/postgres';
+import { sql } from "@vercel/postgres";
 
 export default async function handler(req, res) {
-    if (req.method === 'GET') {
-        try {
-            // Get the patient_id from the query parameters
-            const { patient_id } = req.query;
-            
-            // Fetch data from the 'lessons' table for the specific patient
-            const result = await sql`
+  if (req.method === "GET") {
+    try {
+      const { patient_id } = req.query;
+
+      const result = await sql`
       SELECT 
       h.id AS event_id,
       h.event AS event_summary,
@@ -27,14 +25,14 @@ export default async function handler(req, res) {
     ORDER BY h.event_date DESC;
       `;
 
-            const events = result.rows;
+      const events = result.rows;
 
-            res.status(200).json(events);
-        } catch (error) {
-            console.error('Error executing SQL query:', error);
-            res.status(500).json({ error: 'Internal Server Error' });
-        }
-    } else {
-        res.status(405).json({ error: 'Method Not Allowed' });
+      res.status(200).json(events);
+    } catch (error) {
+      console.error("Error executing SQL query:", error);
+      res.status(500).json({ error: "Internal Server Error" });
     }
+  } else {
+    res.status(405).json({ error: "Method Not Allowed" });
+  }
 }

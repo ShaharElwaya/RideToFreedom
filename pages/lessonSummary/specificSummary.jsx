@@ -146,7 +146,7 @@ export default function SummariesPatientLessons() {
 
     async function fetchOptions() {
       try {
-        const response = await fetch('../api/lessonsSummaries/lesson_types_options');
+        const response = await fetch('../api/lessonsSummaries/lessonTypesOptions'); 
         const data = await response.json();
         return data;
       } catch (error) {

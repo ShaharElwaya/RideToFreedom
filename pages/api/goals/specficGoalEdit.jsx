@@ -1,10 +1,18 @@
-import { sql } from '@vercel/postgres';
+// specficGoalEdit.jsx
 
-// Handler
+import { sql } from "@vercel/postgres";
+
 export default async function handler(req, res) {
-  const { goalId, summary, date, fieldType, destinationDateFormat, statusType } = req.body;
+  const {
+    goalId,
+    summary,
+    date,
+    fieldType,
+    destinationDateFormat,
+    statusType,
+  } = req.body;
 
-  if (req.method === 'POST') {
+  if (req.method === "POST") {
     try {
       const result = await sql`
       UPDATE public.goals
@@ -16,7 +24,7 @@ export default async function handler(req, res) {
 
       res.status(200).json({ goal: newGoal });
     } catch (error) {
-      console.error('Error executing SQL query:', error);
+      console.error("Error executing SQL query:", error);
       res.status(500).json({ error: error.message });
     }
   } else {

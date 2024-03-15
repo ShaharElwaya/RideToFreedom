@@ -1,7 +1,9 @@
-import { sql } from '@vercel/postgres';
+// addComment.jsx
+
+import { sql } from "@vercel/postgres";
 
 export default async function handler(req, res) {
-  if (req.method === 'POST') {
+  if (req.method === "POST") {
     try {
       const { comment, patient_id, guide_id } = req.body;
 
@@ -11,14 +13,13 @@ export default async function handler(req, res) {
       VALUES (${comment}, ${patient_id}, ${guide_id})
       RETURNING *;
     `;
-    
 
       res.status(200).json({ success: true, data: result.rows[0] });
     } catch (error) {
-      console.error('Error inserting comment:', error);
-      res.status(500).json({ success: false, error: 'Internal server error' });
+      console.error("Error inserting comment:", error);
+      res.status(500).json({ success: false, error: "Internal server error" });
     }
   } else {
-    res.status(405).json({ success: false, error: 'Method Not Allowed' });
+    res.status(405).json({ success: false, error: "Method Not Allowed" });
   }
 }

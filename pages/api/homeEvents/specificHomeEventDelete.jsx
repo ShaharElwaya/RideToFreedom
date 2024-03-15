@@ -1,10 +1,11 @@
-import { sql } from '@vercel/postgres';
+// specificHomeEventDelete.jsx
 
-// Handler
+import { sql } from "@vercel/postgres";
+
 export default async function handler(req, res) {
   const { eventId } = req.body;
 
-  if (req.method === 'POST') {
+  if (req.method === "POST") {
     try {
       const result = await sql`
         DELETE FROM public.home_events
@@ -15,7 +16,7 @@ export default async function handler(req, res) {
 
       res.status(200).json({ event: newEvent });
     } catch (error) {
-      console.error('Error executing SQL query:', error);
+      console.error("Error executing SQL query:", error);
       res.status(500).json({ error: error.message });
     }
   } else {

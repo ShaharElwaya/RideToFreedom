@@ -1,15 +1,15 @@
+// goals.jsx
 
-
-import { sql } from '@vercel/postgres';
+import { sql } from "@vercel/postgres";
 
 export default async function handler(req, res) {
-    if (req.method === 'GET') {
-        try {
-            // Get the patient_id from the query parameters
-            const { patient_id } = req.query;
+  if (req.method === "GET") {
+    try {
+      // Get the patient_id from the query parameters
+      const { patient_id } = req.query;
 
-            // Fetch data from the 'lessons' table for the specific patient
-            const result = await sql`
+      // Fetch data from the 'lessons' table for the specific patient
+      const result = await sql`
       SELECT 
       g.id AS id,
       TO_CHAR(g.setting_date, 'DD-MM-YYYY') AS setting_date,
@@ -27,14 +27,14 @@ export default async function handler(req, res) {
       ORDER BY g.setting_date;
       `;
 
-            const goals = result.rows;
+      const goals = result.rows;
 
-            res.status(200).json(goals);
-        } catch (error) {
-            console.error('Error executing SQL query:', error);
-            res.status(500).json({ error: 'Internal Server Error' });
-        }
-    } else {
-        res.status(405).json({ error: 'Method Not Allowed' });
+      res.status(200).json(goals);
+    } catch (error) {
+      console.error("Error executing SQL query:", error);
+      res.status(500).json({ error: "Internal Server Error" });
     }
+  } else {
+    res.status(405).json({ error: "Method Not Allowed" });
+  }
 }

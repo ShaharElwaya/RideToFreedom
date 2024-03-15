@@ -1,10 +1,11 @@
-// pages/api/options.js
-import { sql } from '@vercel/postgres';
+// suggestions/index.jsx
+
+import { sql } from "@vercel/postgres";
 
 export default async function handler(req, res) {
-    if (req.method === 'GET') {
-        try {
-            const options = await sql`SELECT 
+  if (req.method === "GET") {
+    try {
+      const options = await sql`SELECT 
             s.id AS id,
             s.patient_id AS patient_id,
             s.guide_id AS guide_id,
@@ -18,12 +19,12 @@ export default async function handler(req, res) {
             JOIN public.patient AS p ON p.id=s.patient_id
             WHERE s.status != 'הסתיים' 
             ORDER BY s.date;`;
-            res.status(200).json(options.rows);
-        } catch (error) {
-            console.error(error);
-            res.status(500).json({ error: 'Internal server error' });
-        }
-    } else {
-        res.status(405).end();
+      res.status(200).json(options.rows);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Internal server error" });
     }
+  } else {
+    res.status(405).end();
+  }
 }

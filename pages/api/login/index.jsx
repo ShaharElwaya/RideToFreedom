@@ -1,7 +1,8 @@
-import { sql } from "@vercel/postgres";
-import bcrypt from 'bcrypt';
+// login/index.jsx
 
-// Handler
+import { sql } from "@vercel/postgres";
+import bcrypt from "bcrypt";
+
 export default async function handler(req, res) {
   const { email, password } = req.body;
 
@@ -14,7 +15,7 @@ export default async function handler(req, res) {
       const passwordMatch = await bcrypt.compare(password, actual_password);
 
       if (!passwordMatch) {
-        res.status(401).json("Not authorized"); // Return 401 Unauthorized if passwords don't match
+        res.status(401).json("Not authorized");
         return;
       }
 

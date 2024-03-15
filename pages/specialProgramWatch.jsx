@@ -128,7 +128,7 @@ export default function SpecialProgram() {
       addedLessons.forEach((cls) => {
         const { lesson_name, lesson_count, frequency } = cls;
         addedLessonsPromises.push(
-          axios.post("/api/specialProgram/create-booked-lesson", {
+          axios.post("/api/specialProgram/createBookedLesson", {
             patientId: router.query.patientId,
             type: lesson_name,
             number: lesson_count,
@@ -161,7 +161,7 @@ export default function SpecialProgram() {
           frequency: Number(lesson.frequency),
         };
         const promise = axios.put(
-          "/api/specialProgram/update-booked-lesson",
+          "/api/specialProgram/updateBookedLesson",
           body
         );
         allPromises.push(promise);

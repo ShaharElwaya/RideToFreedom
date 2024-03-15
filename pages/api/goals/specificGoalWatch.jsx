@@ -1,11 +1,12 @@
-import { sql } from '@vercel/postgres';
+// specificGoalWatch.jsx
+
+import { sql } from "@vercel/postgres";
 
 export default async function handler(req, res) {
-    if (req.method === 'GET') {
-        try {
-            // Get the patient_id from the query parameters
-            const { goal_id } = req.query;
-            const result = await sql`SELECT 
+  if (req.method === "GET") {
+    try {
+      const { goal_id } = req.query;
+      const result = await sql`SELECT 
             p.id AS patient_id,
             g.setting_date AS setting_date,
             g.goal AS summary,
@@ -22,12 +23,12 @@ export default async function handler(req, res) {
         WHERE g.id = ${goal_id};
         `;
 
-            res.status(200).json(result.rows[0]);
-        } catch (error) {
-            console.error(error);
-            res.status(500).json({ error: 'Internal server error' });
-        }
-    } else {
-        res.status(405).end();
-    }    
+      res.status(200).json(result.rows[0]);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  } else {
+    res.status(405).end();
+  }
 }

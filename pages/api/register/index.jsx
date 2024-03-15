@@ -1,28 +1,31 @@
-import { sql } from '@vercel/postgres';
-import bcrypt from 'bcrypt';
+// register/index.jsx
 
-// Handler
+import { sql } from "@vercel/postgres";
+import bcrypt from "bcrypt";
+
 export default async function handler(req, res) {
-  if (req.method === 'POST') {
+  if (req.method === "POST") {
     try {
-      const { id, name, email, phone, userType, password, employment_date } = req.body;
+      const { id, name, email, phone, userType, password, employment_date } =
+        req.body;
 
-      if (id.length > 9){
-        return res.status(400).json({ error: 'Please provide a valid ID' });
+      if (id.length > 9) {
+        return res.status(400).json({ error: "Please provide a valid ID" });
       }
 
       // Hash the password before storing it
       const hashedPassword = await bcrypt.hash(password, 10); // Use 10 rounds of hashing
 
       // Check if a user with the given email already exists
-      const existingUser = await sql`SELECT * FROM users WHERE email = ${email};`;
+      const existingUser =
+        await sql`SELECT * FROM users WHERE email = ${email};`;
 
       if (existingUser.error) {
-        console.error('Error checking existing user:', existingUser.error);
-        res.status(500).json({ error: 'Internal server error' });
+        console.error("Error checking existing user:", existingUser.error);
+        res.status(500).json({ error: "Internal server error" });
         return;
       } else if (existingUser.rows.length > 0) {
-        res.status(400).json({ error: 'User with this email already exists.' });
+        res.status(400).json({ error: "User with this email already exists." });
         return;
       }
 
@@ -54,14 +57,14 @@ export default async function handler(req, res) {
         newUser = result.rows[0];
       } else {
         // Invalid user type
-        res.status(400).json({ error: 'Invalid user type.' });
+        res.status(400).json({ error: "Invalid user type." });
         return;
       }
 
       res.status(200).json({ user: newUser });
     } catch (error) {
-      console.error('Error inserting user:', error);
-      res.status(500).json({ error: 'Internal server error' });
+      console.error("Error inserting user:", error);
+      res.status(500).json({ error: "Internal server error" });
     }
   } else {
     res.status(405).end();
