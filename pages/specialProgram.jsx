@@ -34,9 +34,10 @@ export default function SpecialProgram() {
   const [dialogContent, setDialogContent] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const isSmallScreen = useMediaQuery("(max-width: 600px)");
-  const { type } = userStore.getState(); 
+  const { type } = userStore.getState();
 
   const handleChange = (index, field, value) => {
+    if (value < 1) return;
     const newClasses = [...classes];
     newClasses[index][field] = value;
     setClasses(newClasses);
@@ -50,7 +51,7 @@ export default function SpecialProgram() {
 
   const handleClickSpecialProgram = async (e) => {
     e.preventDefault();
-    
+
     if (startDate < new Date()) {
       setDialogTitle("שגיאה בתאריך התחלת התכנית");
       setDialogContent("יש לבחור תאריך עתידי");
@@ -60,8 +61,8 @@ export default function SpecialProgram() {
 
     try {
       const promises = [];
-      
-      setIsSaving(true); 
+
+      setIsSaving(true);
 
       classes.forEach((cls) => {
         const { type, number, frequency } = cls;
@@ -124,6 +125,7 @@ export default function SpecialProgram() {
       try {
         const response = await fetch("/api/lessons");
         const data = await response.json();
+        setClasses([{ type: data[0].type, number: 1, frequency: 1 }]);
         setOptions(data);
       } catch (error) {
         console.error("Error fetching options:", error);
@@ -214,12 +216,8 @@ export default function SpecialProgram() {
                   }
                   style={{ width: isSmallScreen ? "78px" : "130px" }}
                 />
-                {(index != 0) && (
-                <Button
-                  onClick={() => handleRemove(index)}
-                >
-                  הסר
-                </Button>
+                {index != 0 && (
+                  <Button onClick={() => handleRemove(index)}>הסר</Button>
                 )}
               </div>
             ))}
@@ -227,7 +225,7 @@ export default function SpecialProgram() {
               onClick={() =>
                 setClasses([
                   ...classes,
-                  { type: "", number: "", frequency: "" },
+                  { type: options[0].type, number: 1, frequency: 1 },
                 ])
               }
             >
