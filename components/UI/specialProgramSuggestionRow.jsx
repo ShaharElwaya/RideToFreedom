@@ -100,6 +100,10 @@ export default function SuggestionRow({
     } catch (error) {
       console.error("Error setting meeting:", error);
     }
+    finally{
+      handleCloseDialog();
+    }
+
   };
 
   const handleCloseDialog = () => {
