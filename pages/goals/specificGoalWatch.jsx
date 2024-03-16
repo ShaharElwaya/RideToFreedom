@@ -149,7 +149,7 @@ export default function SpecificGoalWatch() {
           <TextAreaComponent
             placeholderText=" מה המטרה שתרצה להגדיר? *"
             value={goalsDetails.summary}
-            readOnly={true}
+            disabled
           />
         </div>
         <div className={style.container}>

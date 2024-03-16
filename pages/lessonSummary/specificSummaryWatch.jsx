@@ -332,7 +332,7 @@ export default function SpecificSummaryWatch() {
           placeholderText=" ספר איך היה השיעור *"
           value={lessonDetails.summary}
           required
-          readOnly={true}
+          disabled
         />
         {type !== 1 && (
           <div>
@@ -365,7 +365,7 @@ export default function SpecificSummaryWatch() {
                     maxTextLengthLesson={
                       isSmallScreen
                         ? window.innerWidth / 9 - 28
-                        : 46 - maxLettersGuideName
+                        : 40 - maxLettersGuideName
                     }
                     canEdit={comment.user_id === id}
                   />
