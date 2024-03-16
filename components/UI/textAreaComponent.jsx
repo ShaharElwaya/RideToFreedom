@@ -23,7 +23,7 @@ export default function TextAreaComponent({
       pointerEvents: "none",
       backgroundColor: "white",
       border: "1px solid #00000061",
-      color: "gray",
+      color: isLargeScreen ? "gray" : "black",
     }),
   };
 
