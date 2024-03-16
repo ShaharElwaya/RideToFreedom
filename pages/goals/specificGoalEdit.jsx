@@ -128,6 +128,10 @@ export default function SpecificGoalWatch() {
   };
 
   useCustomQuery(() => {
+    if (type == 1) {
+      router.back();
+    }
+    
     // Fetch lesson details based on lessonId from the URL
     const fetchGoalsDetails = async () => {
       try {

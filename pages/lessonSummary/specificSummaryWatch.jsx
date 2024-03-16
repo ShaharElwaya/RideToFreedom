@@ -343,6 +343,7 @@ export default function SpecificSummaryWatch() {
         {comments.length > 0 && (
           <div>
             <h4>תגובות:</h4>
+            <h6>תגובות אישיות בעלות סימן עריכה, ניתן לערוך בלחיצה עליהן</h6>
             {isLoading ? (
               <p>Loading comments...</p>
             ) : (

@@ -284,7 +284,7 @@ export default function SpecialProgram() {
                 />
                 <TextField
                   type="number"
-                  label="תדירות בשבוע"
+                  label="כל כמה שבועות"
                   disabled={!editMode}
                   value={lesson.frequency}
                   onChange={(e) =>
@@ -409,6 +409,7 @@ export default function SpecialProgram() {
           </Button>,
         ]}
       />
+      <Nevigation patientId={router.query.patientId} screen="specialProgramWatch" />
     </>
   );
 }

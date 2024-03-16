@@ -209,7 +209,7 @@ export default function SpecialProgram() {
                 />
                 <TextField
                   type="number"
-                  label="תדירות בשבוע"
+                  label="כל כמה שבועות"
                   required
                   value={cls.frequency}
                   onChange={(e) =>

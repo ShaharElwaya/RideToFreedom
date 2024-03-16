@@ -96,8 +96,8 @@ export default function PatientRow({
           {renderTooltip(lesson, "lesson", lessonWidth)}
         </Typography>
         {canEdit && (
-          <IconButton style={{ fontSize: "12px", padding: "2px" }}>
-            <EditIcon style={{ fontSize: "12px" }} />
+          <IconButton style={{ fontSize: "16px", padding: "2px" }}>
+            <EditIcon style={{ fontSize: "16px" }} />
           </IconButton>
         )}
       </div>
