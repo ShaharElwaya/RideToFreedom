@@ -29,13 +29,13 @@ export default function Navigation({ patientId, screen }) {
     {
       icon: <Insights />,
       name: "הצעה לתוכנית טיפול",
-      link: "../specialProgramSuggestion/specialProgramSuggestionView",
+      link: "/specialProgramSuggestion/specialProgramSuggestionView",
       screen: "specialProgramSuggestionView",
     },
     {
       icon: <FolderSpecial />,
       name: "תוכנית טיפול",
-      link: "specialProgram/specialProgramWatch",
+      link: "/specialProgram/specialProgramWatch",
       screen: "specialProgramWatch",
     },
     {

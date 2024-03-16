@@ -22,8 +22,8 @@ export default function TextAreaComponent({
     ...(readOnly && {
       pointerEvents: "none",
       backgroundColor: "white",
-      border: "1px solid #BDBDBD",
-      color: "#BDBDBD",
+      border: "1px solid #00000061",
+      color: "#00000061",
     }),
   };
 

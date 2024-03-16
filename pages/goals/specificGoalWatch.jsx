@@ -75,7 +75,7 @@ export default function SpecificGoalWatch() {
           }
 
           if (isOk == false) {
-            router.back(); 
+            router.back();
           }
         }
       } catch (error) {
@@ -199,24 +199,26 @@ export default function SpecificGoalWatch() {
             </Select>
           </FormControl>
         </div>
-        <div className={style.centerStyle}>
-          <Button
-            variant="contained"
-            onClick={() => handleClick(goalId, index)}
-            style={{ margin: "5px" }}
-          >
-            עריכת מטרה
-          </Button>
-          <Button
-            type="submit"
-            disabled={isSaving}
-            variant="contained"
-            onClick={handleClickDelete}
-            style={{ margin: "5px" }}
-          >
-            מחיקת מטרה
-          </Button>
-        </div>
+        {type !== 1 && (
+          <div className={style.centerStyle}>
+            <Button
+              variant="contained"
+              onClick={() => handleClick(goalId, index)}
+              style={{ margin: "5px" }}
+            >
+              עריכת מטרה
+            </Button>
+            <Button
+              type="submit"
+              disabled={isSaving}
+              variant="contained"
+              onClick={handleClickDelete}
+              style={{ margin: "5px" }}
+            >
+              מחיקת מטרה
+            </Button>
+          </div>
+        )}
       </form>
       <CustomizedDialogs
         title={dialogError ? "מחיקת המטרה נכשלה" : "מחיקת המטרה הושלמה"}
