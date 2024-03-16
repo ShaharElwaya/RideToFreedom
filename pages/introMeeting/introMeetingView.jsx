@@ -311,7 +311,7 @@ export default function ViewForm() {
         {showComments && ( // Render comments section only if there are comments
           <div className={style.container}>
             <h4>תגובות:</h4>
-            <h6>תגובות אישיות בעלות סימן עריכה, ניתן לערוך בלחיצה עליהן</h6>
+            {type !== 1 && <h6>תגובות אישיות בעלות סימן עריכה, ניתן לערוך בלחיצה עליהן</h6>}
             {isLoading ? (
               <p>Loading comments...</p>
             ) : (
