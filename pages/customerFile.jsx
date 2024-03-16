@@ -1,3 +1,5 @@
+// customerFile.jsx
+
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { styled } from "@mui/material/styles";
@@ -9,7 +11,7 @@ import PicAndHeadlines from "@/components/UI/picAndheadline";
 import { PicAndText } from "@/components/UI/PicAndName";
 import LoadingSpinner from "@/components/loadingSpinner";
 import { setUserData, userStore } from "@/stores/userStore";
-import style from "../styles/summariesPatientLessons.module.css";
+import style from "../styles/generalStyle.module.css";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
 const RowAndColumnSpacing = () => {
@@ -19,7 +21,7 @@ const RowAndColumnSpacing = () => {
   const router = useRouter();
   const { type, id } = userStore.getState();
   const isSmallScreen = useMediaQuery("(max-width: 600px)");
-  const [isLoading, setIsLoading] = useState(true); // Set initial loading state to true
+  const [isLoading, setIsLoading] = useState(true); 
 
   const Item = styled(Paper)(() => ({
     padding: "20px 0",
@@ -114,11 +116,11 @@ const RowAndColumnSpacing = () => {
 
   return (
     <>
-      {isLoading && <LoadingSpinner />} {/* Show loading spinner while data is loading */}
+      {isLoading && <LoadingSpinner />}{" "}
+      {/* Show loading spinner while data is loading */}
       <div className={style.leftStyle}>
         <Button onClick={handleLogOut}> התנתק </Button>
       </div>
-
       <CenteredContainer>
         <PicAndHeadlines
           pictureName="customerFile"
@@ -127,7 +129,10 @@ const RowAndColumnSpacing = () => {
         />
         {type === 3 && (
           <div style={{ margin: "0px", padding: "0px" }}>
-            <Button onClick={handleSuggestionsAll}> הצעות לתוכנית טיפול </Button>
+            <Button onClick={handleSuggestionsAll}>
+              {" "}
+              הצעות לתוכנית טיפול{" "}
+            </Button>
             &nbsp; | &nbsp;
             <Button onClick={handleRegister}> הוספת משתמש חדש </Button>
           </div>

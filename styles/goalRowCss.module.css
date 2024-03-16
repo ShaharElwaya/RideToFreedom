@@ -1,24 +1,23 @@
 /* patientRowCss.module.css */
 
 .container {
-    display: flex;
-    justify-content: center;
-    align-items: center; /* Align items vertically in the center */
-    border-top: 1px solid #ccc; /* Add top border with a light gray color */
-    border-bottom: 1px solid #ccc; /* Add bottom border with a light gray color */
-    margin: 0;   
-    padding: 13px; 
-  }
+  display: flex;
+  justify-content: center;
+  align-items: center; /* Align items vertically in the center */
+  border-top: 1px solid #ccc; /* Add top border with a light gray color */
+  border-bottom: 1px solid #ccc; /* Add bottom border with a light gray color */
+  margin: 0;
+  padding: 13px;
+}
 
-  .containerCenter{
-    justify-content: center;
-    display: flex;
-    align-items: center; /* Align items vertically in the center */
-    border-top: 1px solid #ccc; /* Add top border with a light gray color */
-    padding: 13px; 
-  }
-  
-  .txt {
-    font-size: 12px; /* Specify the unit (e.g., px) for font-size */
-  }
-  
+.containerCenter {
+  justify-content: center;
+  display: flex;
+  align-items: center; /* Align items vertically in the center */
+  border-top: 1px solid #ccc; /* Add top border with a light gray color */
+  padding: 13px;
+}
+
+.txt {
+  font-size: 12px; /* Specify the unit (e.g., px) for font-size */
+}

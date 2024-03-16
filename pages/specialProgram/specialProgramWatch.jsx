@@ -1,4 +1,5 @@
-import TextFieldComponent from "@/components/UI/TextFiled";
+// specialProgramWatch.jsx
+
 import PicAndHeadlines from "@/components/UI/picAndheadline";
 import {
   Button,
@@ -10,7 +11,7 @@ import {
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import { useEffect, useState } from "react";
-import style from "../styles/summariesPatientLessons.module.css";
+import style from "../../styles/generalStyle.module.css";
 import { useRouter } from "next/router";
 import axios from "axios";
 import TextAreaComponent from "@/components/UI/textAreaComponent";
@@ -90,7 +91,7 @@ export default function SpecialProgram() {
           }
 
           if (isOk == false) {
-            router.back(); // Use await to wait for the navigation to complete
+            router.back();
           }
         }
       } catch (error) {
@@ -128,7 +129,7 @@ export default function SpecialProgram() {
       addedLessons.forEach((cls) => {
         const { lesson_name, lesson_count, frequency } = cls;
         addedLessonsPromises.push(
-          axios.post("/api/specialProgram/create-booked-lesson", {
+          axios.post("/api/specialProgram/createBookedLesson", {
             patientId: router.query.patientId,
             type: lesson_name,
             number: lesson_count,
@@ -161,7 +162,7 @@ export default function SpecialProgram() {
           frequency: Number(lesson.frequency),
         };
         const promise = axios.put(
-          "/api/specialProgram/update-booked-lesson",
+          "/api/specialProgram/updateBookedLesson",
           body
         );
         allPromises.push(promise);

@@ -1,22 +1,22 @@
-// pages/lessonSummary/specificSummaryWatch.js
+// specificSummaryWatch.js
 
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { Button, Checkbox, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
-import PicAndHeadlines from '@/components/UI/picAndheadline';
-import PatientRow from '@/components/UI/patientRow';
-import style from '../../styles/summariesPatientLessons.module.css';
-import TextAreaComponent from '@/components/UI/textAreaComponent';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { Button } from "@mui/material";
+import PicAndHeadlines from "@/components/UI/picAndheadline";
+import PatientRow from "@/components/UI/patientRow";
+import style from "../../styles/generalStyle.module.css";
+import TextAreaComponent from "@/components/UI/textAreaComponent";
 import CustomizedDialogs from "@/components/dialog";
-import { useRouter } from 'next/router';
+import { useRouter } from "next/router";
 import { userStore } from "@/stores/userStore";
-import LoadingSpinner from '@/components/loadingSpinner';
+import LoadingSpinner from "@/components/loadingSpinner";
 import useCustomQuery from "@/utils/useCustomQuery";
 import Nevigation from "@/components/nevigation";
 
 export default function SpecificHomeEventWatch() {
   const [eventDetails, setEventDetails] = useState({});
-  const [isLoading, setIsLoading] = useState(true); 
+  const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
   const { eventId } = router.query;
   const { type, id } = userStore.getState();
@@ -32,33 +32,36 @@ export default function SpecificHomeEventWatch() {
 
   useCustomQuery(() => {
     // Fetch lesson details based on lessonId from the URL
-    const fetchLessonDetails = async () => {;
+    const fetchLessonDetails = async () => {
       try {
-        const response = await axios.get("/api/homeEvents/specificHomeEventWatch", {
-            params: { event_id: eventId }, 
-        });        
+        const response = await axios.get(
+          "/api/homeEvents/specificHomeEventWatch",
+          {
+            params: { event_id: eventId },
+          }
+        );
         setEventDetails(response.data);
         setPatientId(response.data.patient_id);
-        setIsLoading(false); // Set loading to false when patient data is fetched
+        setIsLoading(false); 
 
         if (type === 1) {
           // Fetch comments for the specific lessonId
           const childrens = await axios.get(`/api/login/childrens?id=${id}`);
           let isOk = false;
-  
+
           for (let i = 0; i < childrens.data.length && !isOk; i++) {
             if (childrens.data[i].id == response.data.patient_id) {
               isOk = true;
             }
           }
-  
+
           if (isOk == false) {
-            router.back(); // Use await to wait for the navigation to complete
+            router.back(); 
           }
         }
       } catch (error) {
-        console.error('Error fetching lesson details:', error);
-        setIsLoading(false); // Set loading to false when patient data is fetched
+        console.error("Error fetching lesson details:", error);
+        setIsLoading(false); 
       }
     };
 
@@ -71,14 +74,16 @@ export default function SpecificHomeEventWatch() {
     );
   };
 
-
   const handleClickDelete = async (e) => {
     e.preventDefault();
 
     try {
-      const res = await axios.post("../api/homeEvents/specificHomeEventDelete", {
-        eventId
-      });
+      const res = await axios.post(
+        "../api/homeEvents/specificHomeEventDelete",
+        {
+          eventId,
+        }
+      );
       setDialogError("");
       setSaveSuccess(true);
       setDialogOpen(true);
@@ -110,20 +115,22 @@ export default function SpecificHomeEventWatch() {
   return (
     <>
       {isLoading && <LoadingSpinner />} {/* Use LoadingSpinner component */}
-
       <div className={style.leftStyle}>
         <Button onClick={handleGoBack}> חזור &gt;</Button>
       </div>
-
       <PicAndHeadlines
         pictureName="homeEvents"
         picturePath="../homeEvents.png"
         primaryHeadline="דיווח אירוע"
-        secondaryHeadline={eventDetails.patient_name ? eventDetails.patient_name : 'No Name Data'}
+        secondaryHeadline={
+          eventDetails.patient_name ? eventDetails.patient_name : "No Name Data"
+        }
       />
       <PatientRow
         pictureName="GenderPic"
-        picturePath={`../${eventDetails.patient_gender === 'F' ? 'girlPic' : 'boyPic'}.png`}
+        picturePath={`../${
+          eventDetails.patient_gender === "F" ? "girlPic" : "boyPic"
+        }.png`}
         date={eventDetails.formatted_date}
         time={eventDetails.formatted_time}
         name={eventDetails.parent_name}
@@ -138,19 +145,27 @@ export default function SpecificHomeEventWatch() {
           />
         </div>
       </form>
-        {type == 1 && (<div className={style.centerStyle}>
+      {type == 1 && (
+        <div className={style.centerStyle}>
           <Button
             variant="contained"
             onClick={() => handleClick(eventId)}
-            style={{ margin: '5px' }}
+            style={{ margin: "5px" }}
           >
             עריכת דיווח
           </Button>
-          <Button type="submit" disabled={isSaving} variant="contained" onClick={handleClickDelete} style={{ margin: '5px' }}>
+          <Button
+            type="submit"
+            disabled={isSaving}
+            variant="contained"
+            onClick={handleClickDelete}
+            style={{ margin: "5px" }}
+          >
             מחק דיווח
           </Button>
-        </div>)}
-        <CustomizedDialogs
+        </div>
+      )}
+      <CustomizedDialogs
         title={dialogError ? "מחיקת הדיווח נכשל" : "מחיקת הדיווח הושלם"}
         text={dialogError ? dialogError : ""}
         open={dialogOpen}

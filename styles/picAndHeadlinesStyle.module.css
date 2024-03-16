@@ -1,19 +1,21 @@
-.main_pic{
-    height: 150px;
-    width: 190px;
-    margin: 15px;
+/* picAndHeadlinesStyle.module.css */
+
+.main_pic {
+  height: 150px;
+  width: 190px;
+  margin: 15px;
 }
 
-.pic{
-    height: 60px;
-    width: 65px;
-    margin: 15px;
+.pic {
+  height: 60px;
+  width: 65px;
+  margin: 15px;
 }
 
 .bold {
-    font-weight: 500;
+  font-weight: 500;
 }
 
-.space{
-    margin-bottom: 30px;
+.space {
+  margin-bottom: 30px;
 }

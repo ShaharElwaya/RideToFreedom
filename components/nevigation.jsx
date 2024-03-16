@@ -1,3 +1,5 @@
+// nevigation.jsx
+
 import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import SpeedDial from "@mui/material/SpeedDial";
@@ -17,7 +19,8 @@ import axios from "axios";
 
 export default function Navigation({ patientId, screen }) {
   const router = useRouter();
-  const [hasSpecialTreatmentPlans, setHasSpecialTreatmentPlans] = useState(false);
+  const [hasSpecialTreatmentPlans, setHasSpecialTreatmentPlans] =
+    useState(false);
   const [hasGuideSuggestions, setHasGuideSuggestions] = useState(false);
   const [suggestionId, setSuggestionId] = useState(null);
   const { type } = userStore.getState();
@@ -50,8 +53,8 @@ export default function Navigation({ patientId, screen }) {
     {
       icon: <SummarizeIcon />,
       name: "סיכומי שיעורים",
-      link: "../lessonSummary/summariesPatientLessons",
-      screen: "summariesPatientLessons",
+      link: "../lessonSummary/generalStyle",
+      screen: "generalStyle",
     },
     {
       icon: <PersonIcon />,
@@ -67,7 +70,7 @@ export default function Navigation({ patientId, screen }) {
     },
   ];
 
-  useEffect(() =>  {
+  useEffect(() => {
     const fetchData = async () => {
       try {
         // Check if user has special treatment plans
@@ -82,57 +85,67 @@ export default function Navigation({ patientId, screen }) {
         const guideSuggestion = await axios.get(
           `/api/suggestions/getByPatientId?patientId=${patientId}`
         );
-       
-        if(guideSuggestion.data.length !== 0) {
+
+        if (guideSuggestion.data.length !== 0) {
           setHasGuideSuggestions(true);
           setSuggestionId(guideSuggestion.data.id);
         }
-
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
 
     fetchData();
-  }, [patientId, router.query.patientId]); // Include dependencies in the dependency array
+  }, [patientId, router.query.patientId]);
 
   const handleActionClick = (link, screen) => {
-    if(screen == "specialProgramSuggestionView") {
+    if (screen == "specialProgramSuggestionView") {
       const urlWithPatientId = `${link}?suggestionId=${suggestionId}`;
       router.push(urlWithPatientId);
-    }
-    else {
+    } else {
       const urlWithPatientId = `${link}?patientId=${patientId}`;
       router.push(urlWithPatientId);
     }
   };
 
   const checkScreen = (nevigationScreen) => {
-    if(nevigationScreen !== "specialProgramSuggestionView" && nevigationScreen !== "specialProgramWatch" && nevigationScreen !== screen) {
-        return true;
-    }
-    else if(nevigationScreen == "specialProgramSuggestionView" && !hasSpecialTreatmentPlans && hasGuideSuggestions && type != 1 && nevigationScreen !== screen) {
+    if (
+      nevigationScreen !== "specialProgramSuggestionView" &&
+      nevigationScreen !== "specialProgramWatch" &&
+      nevigationScreen !== screen
+    ) {
       return true;
-    }
-    else if(nevigationScreen == "specialProgramWatch" && hasSpecialTreatmentPlans && nevigationScreen !== screen) {
+    } else if (
+      nevigationScreen == "specialProgramSuggestionView" &&
+      !hasSpecialTreatmentPlans &&
+      hasGuideSuggestions &&
+      type != 1 &&
+      nevigationScreen !== screen
+    ) {
+      return true;
+    } else if (
+      nevigationScreen == "specialProgramWatch" &&
+      hasSpecialTreatmentPlans &&
+      nevigationScreen !== screen
+    ) {
       return true;
     }
     return false;
-  }
-  
+  };
+
   return (
     <Box
       sx={{
         position: "fixed",
-        bottom: "4%", 
-        right: "2%", 
+        bottom: "4%",
+        right: "2%",
         zIndex: 1000,
       }}
     >
       <SpeedDial ariaLabel="SpeedDial basic example" icon={<LayersIcon />}>
         {actions.map(
           (action) =>
-          (checkScreen(action.screen)) && (
+            checkScreen(action.screen) && (
               <SpeedDialAction
                 key={action.name}
                 icon={action.icon}

@@ -1,9 +1,10 @@
+// goals.jsx
+
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { Button } from "@mui/material";
 import PicAndHeadlines from "@/components/UI/picAndheadline";
-import GoalRow from "@/components/UI/goalRow";
-import style from "../../styles/summariesPatientLessons.module.css";
+import style from "../../styles/generalStyle.module.css";
 import { useRouter } from "next/router";
 import LoadingSpinner from "@/components/loadingSpinner";
 import useCustomQuery from "@/utils/useCustomQuery";
@@ -26,7 +27,7 @@ export default function Goals() {
       day: "2-digit",
       month: "2-digit",
       year: "numeric",
-      timeZone: "Asia/Jerusalem", // Set the timezone to Israel
+      timeZone: "Asia/Jerusalem",
     });
 
     router.push(
@@ -44,7 +45,7 @@ export default function Goals() {
     const fetchData = async () => {
       try {
         const { data } = await axios.get("/api/goals/goals", {
-          params: { patient_id: patientId }, // Send patient_id as a query parameter
+          params: { patient_id: patientId },
         });
         setGoals(data);
         isGoalsLoaded = true;
@@ -84,7 +85,7 @@ export default function Goals() {
           }
 
           if (isOk == false) {
-            router.back(); // Use await to wait for the navigation to complete
+            router.back();
           }
         }
       } catch (error) {
@@ -116,14 +117,12 @@ export default function Goals() {
   };
 
   const handleGoBack = () => {
-    router.push(
-      `/personalMenu?patientId=${encodeURIComponent(patientId)}`
-    );
+    router.push(`/personalMenu?patientId=${encodeURIComponent(patientId)}`);
   };
 
   const formatDate = (date) => {
     if (!date) {
-      return ""; // Handle the case when date is undefined or null
+      return "";
     }
 
     if (isSmallScreen) {
@@ -159,12 +158,12 @@ export default function Goals() {
             onClick={() => handleRowClick(goal.id, index)}
           >
             <PatientRow
-                    date={`${index + 1}`}
-                    time={formatDate(goal.setting_date)}
-                    name={goal.field} 
-                    nameWidth={100}
-                    lesson={goal.status}
-                  />
+              date={`${index + 1}`}
+              time={formatDate(goal.setting_date)}
+              name={goal.field}
+              nameWidth={100}
+              lesson={goal.status}
+            />
           </div>
         ))
       ) : (

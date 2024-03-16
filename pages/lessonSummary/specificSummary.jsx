@@ -1,72 +1,100 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { Typography, Button, Checkbox, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
-import PicAndHeadlines from '@/components/UI/picAndheadline';
-import PatientRow from '@/components/UI/patientRow';
-import style from '../../styles/summariesPatientLessons.module.css';
-import TextAreaComponent from '@/components/UI/textAreaComponent';
-import CustomizedDialogs from '@/components/dialog';
-import LoadingSpinner from '@/components/loadingSpinner';
-import { useRouter } from 'next/router';
-import { userStore } from '@/stores/userStore';
-import useCustomQuery from "@/utils/useCustomQuery";
-import useMediaQuery from '@mui/material/useMediaQuery';    
+// specificSummary.jsx
 
-export default function SummariesPatientLessons() {
-  const [summary, setSummary] = useState('');
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import {
+  Button,
+  Checkbox,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+} from "@mui/material";
+import PicAndHeadlines from "@/components/UI/picAndheadline";
+import PatientRow from "@/components/UI/patientRow";
+import style from "../../styles/generalStyle.module.css";
+import TextAreaComponent from "@/components/UI/textAreaComponent";
+import CustomizedDialogs from "@/components/dialog";
+import LoadingSpinner from "@/components/loadingSpinner";
+import { useRouter } from "next/router";
+import { userStore } from "@/stores/userStore";
+import useCustomQuery from "@/utils/useCustomQuery";
+import useMediaQuery from "@mui/material/useMediaQuery";
+
+export default function generalStyle() {
+  const [summary, setSummary] = useState("");
   const [parentPermission, setParentPermission] = useState(false);
   const [dialogError, setDialogError] = useState("");
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
-  const [lessonType, setUserType] = useState('');
+  const [lessonType, setUserType] = useState("");
   const [options, setOptions] = useState([]);
   const [name, setName] = useState();
   const [gender, setGender] = useState();
-  const [guidetName, setGuideName] = useState('');
-  const [selectedOption, setSelectedOption] = useState('');
+  const [guidetName, setGuideName] = useState("");
+  const [selectedOption, setSelectedOption] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
   const { time, patientId } = router.query;
-  const { type, id } = userStore.getState(); 
-  const [isSaving, setIsSaving] = useState(false); 
-  const isSmallScreen = useMediaQuery('(max-width: 600px)');
+  const { type, id } = userStore.getState();
+  const [isSaving, setIsSaving] = useState(false);
+  const isSmallScreen = useMediaQuery("(max-width: 600px)");
 
   const parseDateString = (dateString) => {
-    const [datePart, timePart] = dateString.split(' ');
-    const [month, day, year] = datePart.split('/');
-    const [hour, minute] = timePart.split(':');
-  
+    const [datePart, timePart] = dateString.split(" ");
+    const [month, day, year] = datePart.split("/");
+    const [hour, minute] = timePart.split(":");
+
     let parsedDate = new Date(year, month - 1, day, hour, minute);
-  
-    // Set hours to 00 instead of 24
-    if (hour === '24') {
+
+    if (hour === "24") {
       parsedDate.setHours(0);
       parsedDate.setDate(parsedDate.getDate() - 1);
     }
-  
+
     return parsedDate;
   };
-  
+
   const parsedDate = time ? parseDateString(time) : null;
-  
+
   const formattedDateTime = parsedDate
-  ? `${parsedDate.getFullYear()}-${(parsedDate.getMonth() + 1).toString().padStart(2, '0')}-${parsedDate.getDate().toString().padStart(2, '0')} ` +
-    `${parsedDate.getHours().toString().padStart(2, '0')}:${parsedDate.getMinutes().toString().padStart(2, '0')}:00`
-  : '';
-  
+    ? `${parsedDate.getFullYear()}-${(parsedDate.getMonth() + 1)
+        .toString()
+        .padStart(2, "0")}-${parsedDate
+        .getDate()
+        .toString()
+        .padStart(2, "0")} ` +
+      `${parsedDate.getHours().toString().padStart(2, "0")}:${parsedDate
+        .getMinutes()
+        .toString()
+        .padStart(2, "0")}:00`
+    : "";
+
   const date = parsedDate
-    ? `${parsedDate.getDate().toString().padStart(2, '0')}/${(parsedDate.getMonth() + 1).toString().padStart(2, '0')}/${parsedDate.getFullYear()}`
-    : '';
-  
-  const hours = parsedDate ? parsedDate.getHours().toString().padStart(2, '0') : '';
-  const minutes = parsedDate ? parsedDate.getMinutes().toString().padStart(2, '0') : '';
-  const timeOfDay = parsedDate ? `${hours}:${minutes}` : '';  
-  
+    ? `${parsedDate.getDate().toString().padStart(2, "0")}/${(
+        parsedDate.getMonth() + 1
+      )
+        .toString()
+        .padStart(2, "0")}/${parsedDate.getFullYear()}`
+    : "";
+
+  const hours = parsedDate
+    ? parsedDate.getHours().toString().padStart(2, "0")
+    : "";
+  const minutes = parsedDate
+    ? parsedDate.getMinutes().toString().padStart(2, "0")
+    : "";
+  const timeOfDay = parsedDate ? `${hours}:${minutes}` : "";
+
   const handleCloseDialog = () => {
     setDialogOpen(false);
 
     if (saveSuccess) {
-      router.push(`/lessonSummary/summariesPatientLessons?patientId=${encodeURIComponent(patientId)}`);
+      router.push(
+        `/lessonSummary/generalStyle?patientId=${encodeURIComponent(
+          patientId
+        )}`
+      );
     }
   };
 
@@ -79,14 +107,16 @@ export default function SummariesPatientLessons() {
 
     try {
       if (!summary.trim()) {
-        setDialogError("סיכום השיעור אינו יכול להיות ריק, אל תחסוך עלינו סיפורים..");
+        setDialogError(
+          "סיכום השיעור אינו יכול להיות ריק, אל תחסוך עלינו סיפורים.."
+        );
         setDialogOpen(true);
         return;
       }
 
       const date = formattedDateTime;
 
-      setIsSaving(true); 
+      setIsSaving(true);
 
       const res = await axios.post("../api/lessonsSummaries/specificSummary", {
         date,
@@ -94,9 +124,9 @@ export default function SummariesPatientLessons() {
         patientId,
         id,
         parentPermission,
-        lessonType
+        lessonType,
       });
-      setDialogError('');
+      setDialogError("");
       setSaveSuccess(true);
       setDialogOpen(true);
     } catch (err) {
@@ -115,10 +145,9 @@ export default function SummariesPatientLessons() {
   };
 
   const selectStyle = {
-    width: isSmallScreen ? '100%' : '240px',
-    textAlign: 'right',
+    width: isSmallScreen ? "100%" : "240px",
+    textAlign: "right",
   };
-  
 
   useCustomQuery(() => {
     if (type == 1) {
@@ -138,7 +167,7 @@ export default function SummariesPatientLessons() {
         setGender(patientData.gender);
         setGuideName(guideData.name);
       } catch (error) {
-        console.error('Error fetching data:', error.message);
+        console.error("Error fetching data:", error.message);
       } finally {
         setIsLoading(false);
       }
@@ -146,11 +175,13 @@ export default function SummariesPatientLessons() {
 
     async function fetchOptions() {
       try {
-        const response = await fetch('../api/lessonsSummaries/lesson_types_options');
+        const response = await fetch(
+          "../api/lessonsSummaries/lessonTypesOptions"
+        );
         const data = await response.json();
         return data;
       } catch (error) {
-        console.error('Error fetching options:', error);
+        console.error("Error fetching options:", error);
         throw error;
       }
     }
@@ -158,24 +189,31 @@ export default function SummariesPatientLessons() {
     async function getPatientName() {
       try {
         if (router.query.patientId) {
-          const response = await fetch(`../api/lessonsSummaries/patientIdToName?patient_id=${encodeURIComponent(router.query.patientId)}`);
+          const response = await fetch(
+            `../api/lessonsSummaries/patientIdToName?patient_id=${encodeURIComponent(
+              router.query.patientId
+            )}`
+          );
           const data = await response.json();
           return data;
         }
       } catch (error) {
-        console.error('Error fetching patient name:', error);
+        console.error("Error fetching patient name:", error);
         throw error;
       }
     }
 
     async function getGuideName() {
       try {
-        const response = await axios.get('/api/lessonsSummaries/guideIdToName', {
-          params: { id: id },
-        });
+        const response = await axios.get(
+          "/api/lessonsSummaries/guideIdToName",
+          {
+            params: { id: id },
+          }
+        );
         return response.data;
       } catch (error) {
-        console.error('Error fetching parent name:', error);
+        console.error("Error fetching parent name:", error);
         throw error;
       }
     }
@@ -200,11 +238,11 @@ export default function SummariesPatientLessons() {
         pictureName="lessonSummary"
         picturePath="../lessonSummary.png"
         primaryHeadline="סיכומי שיעורים"
-        secondaryHeadline={name ? name : 'No Name Data'}
+        secondaryHeadline={name ? name : "No Name Data"}
       />
       <PatientRow
         pictureName="GenderPic"
-        picturePath={`../${gender === 'F' ? 'girlPic' : 'boyPic'}.png`}
+        picturePath={`../${gender === "F" ? "girlPic" : "boyPic"}.png`}
         date={date}
         time={timeOfDay}
         name={guidetName}
@@ -223,7 +261,7 @@ export default function SummariesPatientLessons() {
               required
               style={selectStyle}
             >
-              {options.map(option => (
+              {options.map((option) => (
                 <MenuItem key={option.id} value={option.id}>
                   {option.type}
                 </MenuItem>
@@ -239,10 +277,18 @@ export default function SummariesPatientLessons() {
           <Checkbox
             checked={parentPermission}
             onChange={(e) => setParentPermission(e.target.checked)}
-          /> האם לאפשר להורה לצפות בשיעור?
+          />{" "}
+          האם לאפשר להורה לצפות בשיעור?
         </div>
         <div className={style.submitButtonStyle}>
-          <Button type='submit' disabled={isSaving} variant="contained" onClick={handleClickSubmit}>הגש סיכום</Button>
+          <Button
+            type="submit"
+            disabled={isSaving}
+            variant="contained"
+            onClick={handleClickSubmit}
+          >
+            הגש סיכום
+          </Button>
         </div>
       </form>
 

@@ -1,3 +1,5 @@
+// getByPatientId.jsx
+
 import { sql } from "@vercel/postgres";
 
 export default async function handler(req, res) {
@@ -7,7 +9,8 @@ export default async function handler(req, res) {
       if (!patientId)
         return res.status(404).json({ error: "Missing parameters!" });
 
-      const options = await sql`SELECT * FROM public.special_treatment_plan WHERE patient_id = ${patientId}`;
+      const options =
+        await sql`SELECT * FROM public.special_treatment_plan WHERE patient_id = ${patientId}`;
 
       return res.status(200).json(options.rows);
     } catch (error) {

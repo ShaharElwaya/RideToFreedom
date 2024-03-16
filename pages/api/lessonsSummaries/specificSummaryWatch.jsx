@@ -1,11 +1,12 @@
-import { sql } from '@vercel/postgres';
+// specificSummaryWatch.jsx
+
+import { sql } from "@vercel/postgres";
 
 export default async function handler(req, res) {
-    if (req.method === 'GET') {
-        try {
-            // Get the patient_id from the query parameters
-            const { lesson_id } = req.query;
-            const result = await sql`SELECT 
+  if (req.method === "GET") {
+    try {
+      const { lesson_id } = req.query;
+      const result = await sql`SELECT 
             l.type AS lesson_type_id,
             lt.type AS lesson_type_name, 
             l.summary,
@@ -23,12 +24,12 @@ export default async function handler(req, res) {
           JOIN enums.lessons_types AS lt ON l.type = lt.id
             WHERE l.id=${lesson_id};`;
 
-            res.status(200).json(result.rows[0]);
-        } catch (error) {
-            console.error(error);
-            res.status(500).json({ error: 'Internal server error' });
-        }
-    } else {
-        res.status(405).end();
-    }    
+      res.status(200).json(result.rows[0]);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  } else {
+    res.status(405).end();
+  }
 }

@@ -1,10 +1,10 @@
-// Import necessary modules
+// getUserByType.jsx
+
 import { sql } from "@vercel/postgres";
 
-// Define the API handler
 export default async function handler(req, res) {
   if (req.method === "GET") {
-    const {type} = req.query
+    const { type } = req.query;
     try {
       const result = await sql`SELECT * FROM public.users WHERE Type=${type}`;
 
@@ -18,6 +18,6 @@ export default async function handler(req, res) {
       res.status(500).json({ error: "Internal server error" });
     }
   } else {
-    res.status(405).end(); // Method Not Allowed
+    res.status(405).end();
   }
 }

@@ -1,4 +1,5 @@
-import TextFieldComponent from "@/components/UI/TextFiled";
+// specialProgram.jsx
+
 import PicAndHeadlines from "@/components/UI/picAndheadline";
 import {
   Button,
@@ -10,7 +11,7 @@ import {
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import { useEffect, useState } from "react";
-import style from "../styles/summariesPatientLessons.module.css";
+import style from "../../styles/generalStyle.module.css";
 import { useRouter } from "next/router";
 import axios from "axios";
 import TextAreaComponent from "@/components/UI/textAreaComponent";
@@ -67,7 +68,7 @@ export default function SpecialProgram() {
       classes.forEach((cls) => {
         const { type, number, frequency } = cls;
         promises.push(
-          axios.post("/api/specialProgram/create-booked-lesson", {
+          axios.post("/api/specialProgram/createBookedLesson", {
             patientId: router.query.patientId,
             type,
             number,

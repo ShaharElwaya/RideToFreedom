@@ -1,17 +1,11 @@
+// specificHomeEvent.jsx
+
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import {
-  Typography,
-  Button,
-  Checkbox,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-} from "@mui/material";
+import { Button } from "@mui/material";
 import PicAndHeadlines from "@/components/UI/picAndheadline";
 import PatientRow from "@/components/UI/patientRow";
-import style from "../../styles/summariesPatientLessons.module.css";
+import style from "../../styles/generalStyle.module.css";
 import TextAreaComponent from "@/components/UI/textAreaComponent";
 import CustomizedDialogs from "@/components/dialog";
 import { useRouter } from "next/router";
@@ -27,43 +21,59 @@ export default function SpecificHomeEvent() {
   const [name, setName] = useState();
   const [gender, setGender] = useState();
   const [parentName, setParentName] = useState("");
-  const [isLoading, setIsLoading] = useState(true); // Add loading state
+  const [isLoading, setIsLoading] = useState(true); 
   const router = useRouter();
   const { time, patientId } = router.query;
   const { type, id } = userStore.getState();
   const [isSaving, setIsSaving] = useState(false);
 
   const parseDateString = (dateString) => {
-    const [datePart, timePart] = dateString.split(' ');
-    const [month, day, year] = datePart.split('/');
-    const [hour, minute] = timePart.split(':');
-  
+    const [datePart, timePart] = dateString.split(" ");
+    const [month, day, year] = datePart.split("/");
+    const [hour, minute] = timePart.split(":");
+
     let parsedDate = new Date(year, month - 1, day, hour, minute);
-  
+
     // Set hours to 00 instead of 24
-    if (hour === '24') {
+    if (hour === "24") {
       parsedDate.setHours(0);
       parsedDate.setDate(parsedDate.getDate() - 1);
     }
-  
+
     return parsedDate;
   };
-  
+
   const parsedDate = time ? parseDateString(time) : null;
-  
+
   const formattedDateTime = parsedDate
-  ? `${parsedDate.getFullYear()}-${(parsedDate.getMonth() + 1).toString().padStart(2, '0')}-${parsedDate.getDate().toString().padStart(2, '0')} ` +
-    `${parsedDate.getHours().toString().padStart(2, '0')}:${parsedDate.getMinutes().toString().padStart(2, '0')}:00`
-  : '';
-  
+    ? `${parsedDate.getFullYear()}-${(parsedDate.getMonth() + 1)
+        .toString()
+        .padStart(2, "0")}-${parsedDate
+        .getDate()
+        .toString()
+        .padStart(2, "0")} ` +
+      `${parsedDate.getHours().toString().padStart(2, "0")}:${parsedDate
+        .getMinutes()
+        .toString()
+        .padStart(2, "0")}:00`
+    : "";
+
   const date = parsedDate
-    ? `${parsedDate.getDate().toString().padStart(2, '0')}/${(parsedDate.getMonth() + 1).toString().padStart(2, '0')}/${parsedDate.getFullYear()}`
-    : '';
-  
-  const hours = parsedDate ? parsedDate.getHours().toString().padStart(2, '0') : '';
-  const minutes = parsedDate ? parsedDate.getMinutes().toString().padStart(2, '0') : '';
-  const timeOfDay = parsedDate ? `${hours}:${minutes}` : '';
-  
+    ? `${parsedDate.getDate().toString().padStart(2, "0")}/${(
+        parsedDate.getMonth() + 1
+      )
+        .toString()
+        .padStart(2, "0")}/${parsedDate.getFullYear()}`
+    : "";
+
+  const hours = parsedDate
+    ? parsedDate.getHours().toString().padStart(2, "0")
+    : "";
+  const minutes = parsedDate
+    ? parsedDate.getMinutes().toString().padStart(2, "0")
+    : "";
+  const timeOfDay = parsedDate ? `${hours}:${minutes}` : "";
+
   const handleCloseDialog = () => {
     setDialogOpen(false);
 
@@ -90,7 +100,7 @@ export default function SpecificHomeEvent() {
 
       const date = formattedDateTime;
 
-      setIsSaving(true); 
+      setIsSaving(true);
 
       const res = await axios.post("../api/homeEvents/specificHomeEvent", {
         date,
@@ -127,9 +137,9 @@ export default function SpecificHomeEvent() {
           // Fetch comments for the specific lessonId
           const response = await axios.get(`/api/login/childrens?id=${id}`);
           let isOk = false;
-          
-          for(let i = 0; i < response.data.length && !isOk; i++) {
-            if(response.data[i].id == patientId){
+
+          for (let i = 0; i < response.data.length && !isOk; i++) {
+            if (response.data[i].id == patientId) {
               isOk = true;
             }
           }
@@ -141,7 +151,7 @@ export default function SpecificHomeEvent() {
       } catch (error) {
         console.error("Error checking permission:", error);
       }
-    }    
+    }
 
     checkPremission();
 
@@ -221,7 +231,12 @@ export default function SpecificHomeEvent() {
           />
         </div>
         <div className={style.submitButtonStyle}>
-          <Button type="submit" disabled={isSaving} variant="contained" onClick={handleClickSubmit}>
+          <Button
+            type="submit"
+            disabled={isSaving}
+            variant="contained"
+            onClick={handleClickSubmit}
+          >
             הגש דיווח
           </Button>
         </div>

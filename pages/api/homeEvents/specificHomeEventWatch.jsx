@@ -1,11 +1,13 @@
-import { sql } from '@vercel/postgres';
+// specificHomeEventWatch.jsx
+
+import { sql } from "@vercel/postgres";
 
 export default async function handler(req, res) {
-    if (req.method === 'GET') {
-        try {
-            // Get the patient_id from the query parameters
-            const { event_id } = req.query;
-            const result = await sql`SELECT 
+  if (req.method === "GET") {
+    try {
+      const { event_id } = req.query;
+      
+      const result = await sql`SELECT 
             h.event AS event_summary,
             h.parent_id AS parent_id,
             h.event_date AS event_date,
@@ -20,12 +22,12 @@ export default async function handler(req, res) {
           JOIN public.parent AS pr ON h.parent_id = pr.id
           WHERE h.id = ${event_id};`;
 
-            res.status(200).json(result.rows[0]);
-        } catch (error) {
-            console.error(error);
-            res.status(500).json({ error: 'Internal server error' });
-        }
-    } else {
-        res.status(405).end();
-    }    
+      res.status(200).json(result.rows[0]);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  } else {
+    res.status(405).end();
+  }
 }

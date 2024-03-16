@@ -1,11 +1,12 @@
+// getComments.jsx
+
 import { sql } from "@vercel/postgres";
 
 export default async function handler(req, res) {
   if (req.method === "GET") {
     try {
       const { lesson_id, type } = req.query;
-      // Perform database operations (using PostgreSQL in this example)
-      
+
       const result = await sql`
       SELECT c.id, c.user_type, c.user_id, c.comment, c.summary_id, 
              CASE
@@ -18,8 +19,7 @@ export default async function handler(req, res) {
       WHERE summary_id = ${lesson_id}
       ORDER BY c.id;`;
 
-    res.status(200).json(result.rows);
-      
+      res.status(200).json(result.rows);
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: "Internal server error" });

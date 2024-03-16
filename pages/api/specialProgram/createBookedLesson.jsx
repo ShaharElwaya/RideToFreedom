@@ -1,3 +1,5 @@
+// createBookedLesson.jsx
+
 import { sql } from "@vercel/postgres";
 
 export default async function handler(req, res) {
@@ -8,7 +10,7 @@ export default async function handler(req, res) {
         await sql`INSERT INTO public.recommended_lessons (patient_id, lesson_name, lesson_count, frequency)
         VALUES (${patientId}, ${type}, ${number}, ${frequency})
         RETURNING id;`;
-        
+
       res.status(200).json(options.rows[0]);
     } catch (error) {
       console.error(error);

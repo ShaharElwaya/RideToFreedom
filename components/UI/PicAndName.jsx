@@ -1,3 +1,5 @@
+// PicAndName.jsx
+
 import React, { useRef, useEffect, useState } from "react";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
@@ -8,7 +10,7 @@ export const PicAndText = ({ pictureName, name, containerWidth }) => {
   const textRef = useRef(null);
 
   useEffect(() => {
-    const maxChars = Math.floor(containerWidth / 8); // Assuming an average character width of 8px
+    const maxChars = Math.floor(containerWidth / 8);
     if (displayText.length > maxChars) {
       setDisplayText(displayText.substring(0, maxChars) + "...");
       setNameLength(maxChars);
@@ -28,7 +30,7 @@ export const PicAndText = ({ pictureName, name, containerWidth }) => {
           alignItems: "center",
           margin: "0px",
           padding: "0px",
-          width: "100%", // Adjusted width to 100%
+          width: "100%",
           overflow: "hidden",
           textOverflow: "ellipsis",
           whiteSpace: "nowrap",

@@ -1,3 +1,5 @@
+// specificGoalEdit.jsx
+
 import React, { useState, useEffect } from "react";
 import dayjs from "dayjs";
 import axios from "axios";
@@ -13,7 +15,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers";
 import PicAndHeadlines from "@/components/UI/picAndheadline";
 import GoalRow from "@/components/UI/goalRow";
-import style from "../../styles/summariesPatientLessons.module.css";
+import style from "../../styles/generalStyle.module.css";
 import TextAreaComponent from "@/components/UI/textAreaComponent";
 import CustomizedDialogs from "@/components/dialog";
 import { useRouter } from "next/router";

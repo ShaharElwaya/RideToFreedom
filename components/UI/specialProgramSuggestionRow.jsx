@@ -1,3 +1,5 @@
+// specialProgramSuggestionRow.jsx
+
 import React, { useState } from "react";
 import style from "../../styles/patientRowCss.module.css";
 import { Typography, Button, Tooltip, IconButton } from "@mui/material";
@@ -15,7 +17,6 @@ import {
 } from "@mui/material";
 
 export default function SuggestionRow({
-  isCenter = false,
   suggestion,
   suggestions,
   setSuggestions,
@@ -25,21 +26,19 @@ export default function SuggestionRow({
   const isSmallScreen = useMediaQuery("(max-width: 600px)");
   const [timeForMeeting, setTimeForMeeting] = useState();
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [dialogTitle, setDialogTitle] = useState("");
-  const [dialogContent, setDialogContent] = useState("");
 
-  const onClick = () => {
-    router.push({
-      pathname: "/specialProgramSuggestion/specialProgramSuggestionView",
-      query: {
-        suggestionId: suggestion.id,
-        patientName: suggestion.patient_name,
-        guideName: suggestion.guide_name,
-        patientId: suggestion.patient_id,
-        date: suggestion.date,
-      },
-    });
-  };
+  // const onClick = () => {
+  //   router.push({
+  //     pathname: "/specialProgramSuggestion/specialProgramSuggestionView",
+  //     query: {
+  //       suggestionId: suggestion.id,
+  //       patientName: suggestion.patient_name,
+  //       guideName: suggestion.guide_name,
+  //       patientId: suggestion.patient_id,
+  //       date: suggestion.date,
+  //     },
+  //   });
+  // };
 
   const handleCreateTreatmentPlan = async (e) => {
     e.stopPropagation();
@@ -55,7 +54,7 @@ export default function SuggestionRow({
 
   const handlePickDate = async (e) => {
     e.stopPropagation();
-    setDialogOpen(true); // Open the dialog
+    setDialogOpen(true); 
   };
 
   const handleSetMeeting = async (e) => {
@@ -105,8 +104,6 @@ export default function SuggestionRow({
 
   const handleCloseDialog = () => {
     setDialogOpen(false);
-    setDialogTitle("");
-    setDialogContent("");
   };
 
   const formattedDate = (date) => {
@@ -237,7 +234,7 @@ export default function SuggestionRow({
             label={"בחר תאריך לפגישה"}
             value={timeForMeeting}
             onChange={setTimeForMeeting}
-            sx={{height:300}}
+            sx={{ height: 300 }}
           />
         </DialogContent>
         <DialogActions>

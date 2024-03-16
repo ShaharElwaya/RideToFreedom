@@ -1,9 +1,11 @@
+// specificSummaryWatch.jsx
+
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Button, Checkbox, Typography } from "@mui/material";
 import PicAndHeadlines from "@/components/UI/picAndheadline";
 import PatientRow from "@/components/UI/patientRow";
-import style from "../../styles/summariesPatientLessons.module.css";
+import style from "../../styles/generalStyle.module.css";
 import TextAreaComponent from "@/components/UI/textAreaComponent";
 import CustomizedDialogs from "@/components/dialog";
 import LoadingSpinner from "@/components/loadingSpinner";
@@ -31,8 +33,6 @@ export default function SpecificSummaryWatch() {
   const [maxLettersGuideName, setMaxLettersGuideName] = useState(0);
   const [commentBeingEdited, setCommentBeingEdited] = useState(null);
   const [editedComment, setEditedComment] = useState("");
-  const [dialogOpen, setDialogOpen] = React.useState(false);
-  const [saveSuccess, setSaveSuccess] = useState(false);
   const [patientId, setPatientId] = useState("");
 
   const [isDialogEditOpen, setIsDialogEditOpen] = useState(false);
@@ -116,7 +116,7 @@ export default function SpecificSummaryWatch() {
       if (type == 1 && !response.data.parent_permission) {
         // Redirect to the desired route for unauthorized users
         router.push(
-          `/lessonSummary/summariesPatientLessons?patientId=${response.data.patient_id}`
+          `/lessonSummary/generalStyle?patientId=${response.data.patient_id}`
         );
       }
 
@@ -132,7 +132,7 @@ export default function SpecificSummaryWatch() {
         }
 
         if (isOk == false) {
-          router.back(); // Use await to wait for the navigation to complete
+          router.back(); 
         }
       }
       setIsLoading(false);
@@ -173,7 +173,7 @@ export default function SpecificSummaryWatch() {
 
   const formatDate = (date) => {
     if (!date) {
-      return ""; // Handle the case when date is undefined or null
+      return ""; 
     }
 
     if (isSmallScreen) {
@@ -215,7 +215,7 @@ export default function SpecificSummaryWatch() {
       // Save the comment to the database
       await axios.post("/api/lessonsSummaries/updateComment", {
         id: commentBeingEdited.id,
-        comment: editedComment
+        comment: editedComment,
       });
 
       // Fetch updated comments after saving the comment
@@ -347,8 +347,10 @@ export default function SpecificSummaryWatch() {
               <p>Loading comments...</p>
             ) : (
               comments.map((comment) => (
-                <p onClick={() => handleEditClick(comment)}
-                title={comment.user_id === id ? 'Click to edit' : ''} >
+                <p
+                  onClick={() => handleEditClick(comment)}
+                  title={comment.user_id === id ? "Click to edit" : ""}
+                >
                   <PatientRow
                     pictureName="commentPic"
                     picturePath={
@@ -365,7 +367,7 @@ export default function SpecificSummaryWatch() {
                         : 46 - maxLettersGuideName
                     }
                     canEdit={comment.user_id === id}
-                  /> 
+                  />
                 </p>
               ))
             )}
@@ -451,10 +453,7 @@ export default function SpecificSummaryWatch() {
         open={isDialogEditOpen}
         onClose={handleCloseEditDialog}
         actions={[
-          <Button
-            key="cancelButton"
-            onClick={() => handleDeleteComment()}
-          >
+          <Button key="cancelButton" onClick={() => handleDeleteComment()}>
             מחיקה
           </Button>,
           <Button

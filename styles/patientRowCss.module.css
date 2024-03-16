@@ -2,17 +2,17 @@
 
 .container {
     display: flex;
-    align-items: center; /* Align items vertically in the center */
-    border-top: 1px solid #ccc; /* Add top border with a light gray color */
-    border-bottom: 1px solid #ccc; /* Add bottom border with a light gray color */
+    align-items: center; 
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc; 
     margin: 0;    
   }
 
   .containerCenter{
     justify-content: center;
     display: flex;
-    align-items: center; /* Align items vertically in the center */
-    border-top: 1px solid #ccc; /* Add top border with a light gray color */
+    align-items: center; 
+    border-top: 1px solid #ccc; 
   }
 
   .textContainer{
@@ -24,11 +24,11 @@
   .pic {
     height: 40px;
     width: 40px;
-    margin-left: 15px; /* Adjust margin as needed */
+    margin-left: 15px; 
   }
   
   .txt {
-    font-size: 12px; /* Specify the unit (e.g., px) for font-size */
+    font-size: 12px; 
   }
 
   .txtSpecial {
@@ -42,7 +42,7 @@
   }
 
   .bottomBorder  {
-    border-top: 1px solid white; /* Add top border with a light gray color */
-    border-bottom: 1px solid #ccc; /* Add top border with a light gray color */
+    border-top: 1px solid white; 
+    border-bottom: 1px solid #ccc; 
   }
   

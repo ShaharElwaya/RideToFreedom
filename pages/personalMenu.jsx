@@ -1,3 +1,5 @@
+// personalMenu.jsx
+
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
@@ -5,7 +7,7 @@ import { styled } from "@mui/system";
 import { Button } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import { PicAndText } from "@/components/UI/PicAndName";
-import style from "../styles/summariesPatientLessons.module.css";
+import style from "../styles/generalStyle.module.css";
 import Link from "next/link";
 import LoadingSpinner from "@/components/loadingSpinner";
 import { userStore, setUserData } from "@/stores/userStore";
@@ -55,7 +57,8 @@ const PersonalMenu = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isOneChild, setIsOneChild] = useState(false);
   const [addTime, setAddTime] = useState("");
-  const [hasSpecialTreatmentPlans, setHasSpecialTreatmentPlans] = useState(false);
+  const [hasSpecialTreatmentPlans, setHasSpecialTreatmentPlans] =
+    useState(false);
   const [hasGuideSuggestions, setHasGuideSuggestions] = useState(false);
   const [guideSuggestions, setGuideSuggestions] = useState(false);
   const { id, type } = userStore.getState();
@@ -95,12 +98,11 @@ const PersonalMenu = () => {
           setName(data.name);
 
           // Check if user has special treatment plans
-          const specialTreatmentPlans = await axios.get("/api/specialProgram",
-          {
+          const specialTreatmentPlans = await axios.get("/api/specialProgram", {
             params: { patient_id: patientId },
-          } );
-          
-          if(specialTreatmentPlans.data.length != 0) {
+          });
+
+          if (specialTreatmentPlans.data.length != 0) {
             setHasSpecialTreatmentPlans(true);
           }
 
@@ -109,11 +111,11 @@ const PersonalMenu = () => {
             `/api/suggestions/getByPatientId?patientId=${patientId}`
           );
 
-          if(guideSuggestion.data.length != 0) {
+          if (guideSuggestion.data.length != 0) {
             setHasGuideSuggestions(true);
             setGuideSuggestions(guideSuggestion.data);
           }
-          
+
           setIsLoading(false); // Set loading to false when data is fetched (success or error)
         }
 
@@ -152,11 +154,11 @@ const PersonalMenu = () => {
   };
 
   const handleNavigateToSpecialProgramSuggestionView = async () => {
-    try {      
+    try {
       router.push({
         pathname: "specialProgramSuggestion/specialProgramSuggestionView",
         query: {
-          suggestionId: guideSuggestions.id
+          suggestionId: guideSuggestions.id,
         },
       });
     } catch (error) {
@@ -169,7 +171,7 @@ const PersonalMenu = () => {
       day: "2-digit",
       month: "2-digit",
       year: "numeric",
-      timeZone: "Asia/Jerusalem", // Set the timezone to Israel
+      timeZone: "Asia/Jerusalem", 
     });
 
     const currentTime = new Date().toLocaleTimeString("en-US", {
@@ -177,14 +179,16 @@ const PersonalMenu = () => {
       minute: "numeric",
       hour12: false,
       timeZone: "UTC",
-      timeZone: "Asia/Jerusalem", // Set the timezone to Israel
+      timeZone: "Asia/Jerusalem", 
     });
 
     const formattedDateTime = `${currentDate} ${currentTime}`;
     setAddTime(formattedDateTime);
 
     router.push(
-      `/specialProgramSuggestion/specialProgramSuggestion?time=${encodeURIComponent(formattedDateTime)}&patientId=${encodeURIComponent(patientId)}`
+      `/specialProgramSuggestion/specialProgramSuggestion?time=${encodeURIComponent(
+        formattedDateTime
+      )}&patientId=${encodeURIComponent(patientId)}`
     );
   };
 
@@ -215,7 +219,7 @@ const PersonalMenu = () => {
                 </MenuItem>
               </Link>
               <Link
-                href={`/lessonSummary/summariesPatientLessons?patientId=${query.patientId}`}
+                href={`/lessonSummary/generalStyle?patientId=${query.patientId}`}
               >
                 <MenuItem>
                   <CustomButton>סיכומי שיעורים</CustomButton>
@@ -256,17 +260,23 @@ const PersonalMenu = () => {
               )}
 
               {hasSpecialTreatmentPlans ? (
-                <Link href={`/specialProgramWatch?patientId=${query.patientId}`}>
+                <Link
+                  href={`/specialProgramWatch?patientId=${query.patientId}`}
+                >
                   <MenuItem>
                     <CustomButton>צפייה בתכנית טיפול מיוחדת</CustomButton>
                   </MenuItem>
                 </Link>
               ) : (
-                type == 3 && (<Link href={`/specialProgram?patientId=${query.patientId}&&patientName=${name}&&suggestionId=${guideSuggestions.id}`}>
-                  <MenuItem>
-                    <CustomButton>יצירת תכנית טיפול מיוחדת</CustomButton>
-                  </MenuItem>
-                </Link>)
+                type == 3 && (
+                  <Link
+                    href={`/specialProgram?patientId=${query.patientId}&&patientName=${name}&&suggestionId=${guideSuggestions.id}`}
+                  >
+                    <MenuItem>
+                      <CustomButton>יצירת תכנית טיפול מיוחדת</CustomButton>
+                    </MenuItem>
+                  </Link>
+                )
               )}
             </div>
             {type === 1 && isOneChild && (
