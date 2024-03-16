@@ -53,7 +53,7 @@ export default function login() {
             query: { patientId },
           });
         } else if (numberOfChildren === 0) {
-          await router.push(`/introductionMeeting`);
+          await router.push(`/introMeeting/introductionMeeting`);
         } else {
           await router.push(`/customerFile`);
         }

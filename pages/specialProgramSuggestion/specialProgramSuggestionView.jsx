@@ -42,7 +42,7 @@ export default function SpecialProgramSuggestion() {
 
   const handleCreateProgram = () => {
     router.push(
-      `../specialProgram?patientId=${data?.patient_id}&&patientName=${data?.patient_name}&&suggestionId=${query.suggestionId}`
+      `/specialProgram/specialProgram?patientId=${data?.patient_id}&&patientName=${data?.patient_name}&&suggestionId=${query.suggestionId}`
     );
   };
 

@@ -35,7 +35,7 @@ export default function Navigation({ patientId, screen }) {
     {
       icon: <FolderSpecial />,
       name: "תוכנית טיפול",
-      link: "../specialProgramWatch",
+      link: "specialProgram/specialProgramWatch",
       screen: "specialProgramWatch",
     },
     {
@@ -53,13 +53,13 @@ export default function Navigation({ patientId, screen }) {
     {
       icon: <SummarizeIcon />,
       name: "סיכומי שיעורים",
-      link: "../lessonSummary/generalStyle",
-      screen: "generalStyle",
+      link: "../lessonSummary/summariesPatientLessons",
+      screen: "summariesPatientLessons",
     },
     {
       icon: <PersonIcon />,
       name: "פרטי אישיים והכרות",
-      link: "../introMeetingView",
+      link: "/introMeeting/introMeetingView",
       screen: "introMeetingView",
     },
     {

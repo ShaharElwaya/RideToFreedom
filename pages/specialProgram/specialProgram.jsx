@@ -113,7 +113,7 @@ export default function SpecialProgram() {
     setDialogContent("");
 
     if (!dialogContent) {
-      router.push("/customerFile");
+      router.push(`/personalMenu?patientId=${encodeURIComponent(router.query.patientId)}`);
     }
   };
 
