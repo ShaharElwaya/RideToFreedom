@@ -9,6 +9,7 @@ export default function TextAreaComponent({
   value,
   onChange,
   required,
+  disabled,
   readOnly = false,
 }) {
   const isLargeScreen = useMediaQuery("(min-width: 601px)");
@@ -19,12 +20,14 @@ export default function TextAreaComponent({
     fontFamily: "Heebo, sans-serif",
     margin: 0,
     width: isLargeScreen ? "500px" : "100%", 
-    ...(readOnly && {
-      pointerEvents: "none",
-      backgroundColor: "white",
-      border: "1px solid #00000061",
-      color: isLargeScreen ? "gray" : "black",
-    }),
+    backgroundColor: "white",
+    // ...(readOnly && {
+    //   pointerEvents: "none",
+    //   backgroundColor: "white",
+    //   border: "1px solid #00000061",
+    //   //color: isLargeScreen ? "gray" : "black",
+    //   color: "red",
+    // }),
   };
 
   return (
@@ -35,7 +38,7 @@ export default function TextAreaComponent({
         value={value}
         onChange={onChange}
         required={required}
-        disabled={readOnly}
+        disabled = {disabled}
       />
     </div>
   );
