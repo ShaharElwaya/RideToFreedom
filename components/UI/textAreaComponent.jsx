@@ -9,8 +9,8 @@ export default function TextAreaComponent({
   value,
   onChange,
   required,
-  disabled,
-  readOnly = false,
+  disabled = false,
+  //readOnly = false,
 }) {
   const isLargeScreen = useMediaQuery("(min-width: 601px)");
 

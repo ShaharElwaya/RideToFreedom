@@ -243,7 +243,7 @@ export default function SpecialProgram() {
               <TextAreaComponent
                 type="text"
                 placeholderText="התרשמות *"
-                readOnly={!editMode}
+                disabled={!editMode}
                 onChange={(e) => setImpression(e.target.value)}
                 value={impression}
               />

@@ -73,7 +73,7 @@ export default function SpecialProgramSuggestion() {
 
         <form>
           <div className={style.container}>
-            <TextAreaComponent value={data?.suggestion} readOnly={true} />
+            <TextAreaComponent value={data?.suggestion} disabled />
           </div>
         </form>
         {data?.status == "ממתין ליצירת תכנית" && type === 3 && (

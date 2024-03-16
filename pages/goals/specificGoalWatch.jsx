@@ -150,7 +150,6 @@ export default function SpecificGoalWatch() {
             placeholderText=" מה המטרה שתרצה להגדיר? *"
             value={goalsDetails.summary}
             disabled
-            //readOnly={true}
           />
         </div>
         <div className={style.container}>
