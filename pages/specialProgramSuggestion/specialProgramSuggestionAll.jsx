@@ -20,7 +20,7 @@ export default function specialProgramSuggestionAll() {
   const { type, id } = userStore.getState();
 
   useCustomQuery(() => {
-    if (type == 1) {
+    if (type != 3) {
       router.back();
     }
 
