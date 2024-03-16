@@ -10,7 +10,6 @@ export default function TextAreaComponent({
   onChange,
   required,
   disabled = false,
-  //readOnly = false,
 }) {
   const isLargeScreen = useMediaQuery("(min-width: 601px)");
 
@@ -21,13 +20,6 @@ export default function TextAreaComponent({
     margin: 0,
     width: isLargeScreen ? "500px" : "100%", 
     backgroundColor: "white",
-    // ...(readOnly && {
-    //   pointerEvents: "none",
-    //   backgroundColor: "white",
-    //   border: "1px solid #00000061",
-    //   //color: isLargeScreen ? "gray" : "black",
-    //   color: "red",
-    // }),
   };
 
   return (
