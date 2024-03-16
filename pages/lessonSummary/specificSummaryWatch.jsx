@@ -116,7 +116,7 @@ export default function SpecificSummaryWatch() {
       if (type == 1 && !response.data.parent_permission) {
         // Redirect to the desired route for unauthorized users
         router.push(
-          `/lessonSummary/generalStyle?patientId=${response.data.patient_id}`
+          `/lessonSummary/summariesPatientLessons?patientId=${response.data.patient_id}`
         );
       }
 
@@ -360,7 +360,7 @@ export default function SpecificSummaryWatch() {
                     lesson={comment.comment}
                     hasBottomBorder={true}
                     maxTextLengthName={isSmallScreen ? 7 : maxLettersGuideName}
-                    nameWidth={isSmallScreen ? 70 : maxLettersGuideName * 9}
+                    nameWidth={isSmallScreen ? 75 : maxLettersGuideName * 9}
                     maxTextLengthLesson={
                       isSmallScreen
                         ? window.innerWidth / 9 - 28

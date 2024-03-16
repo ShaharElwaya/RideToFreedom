@@ -1,4 +1,4 @@
-// generalStyle.jsx
+// summariesPatientLessons.jsx
 
 import React, { useState, useEffect } from "react";
 import axios from "axios";
@@ -21,7 +21,7 @@ import useCustomQuery from "@/utils/useCustomQuery";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Nevigation from "@/components/nevigation";
 
-export default function generalStyle() {
+export default function summariesPatientLessons() {
   const router = useRouter();
   const [lessons, setLessons] = useState([]);
   const [addTime, setAddTime] = useState("");
@@ -77,7 +77,7 @@ export default function generalStyle() {
     async function fetchData() {
       try {
         const [lessonsData, patientNameData] = await Promise.all([
-          axios.get("/api/lessonsSummaries/generalStyle", {
+          axios.get("/api/lessonsSummaries/summariesPatientLessons", {
             params: { patient_id: patientId },
           }),
           getPatientName(),
@@ -468,7 +468,7 @@ export default function generalStyle() {
               אין סיכומי שיעורים
             </div>
           )}
-          <Nevigation patientId={patientId} screen="generalStyle" />
+          <Nevigation patientId={patientId} screen="summariesPatientLessons" />
         </>
       )}
     </>

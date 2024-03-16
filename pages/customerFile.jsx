@@ -103,7 +103,7 @@ const RowAndColumnSpacing = () => {
   };
 
   const handleSetMeeting = () => {
-    router.push("/introductionMeeting");
+    router.push("/introMeeting/introductionMeeting");
   };
 
   const handleSuggestionsAll = () => {

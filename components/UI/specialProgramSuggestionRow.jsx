@@ -27,23 +27,10 @@ export default function SuggestionRow({
   const [timeForMeeting, setTimeForMeeting] = useState();
   const [dialogOpen, setDialogOpen] = useState(false);
 
-  // const onClick = () => {
-  //   router.push({
-  //     pathname: "/specialProgramSuggestion/specialProgramSuggestionView",
-  //     query: {
-  //       suggestionId: suggestion.id,
-  //       patientName: suggestion.patient_name,
-  //       guideName: suggestion.guide_name,
-  //       patientId: suggestion.patient_id,
-  //       date: suggestion.date,
-  //     },
-  //   });
-  // };
-
   const handleCreateTreatmentPlan = async (e) => {
     e.stopPropagation();
     router.push({
-      pathname: "/specialProgram",
+      pathname: "/specialProgram/specialProgram",
       query: {
         patientName: suggestion.patient_name,
         patientId: suggestion.patient_id,

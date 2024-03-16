@@ -21,7 +21,7 @@ import { userStore } from "@/stores/userStore";
 import useCustomQuery from "@/utils/useCustomQuery";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
-export default function generalStyle() {
+export default function specificSummary() {
   const [summary, setSummary] = useState("");
   const [parentPermission, setParentPermission] = useState(false);
   const [dialogError, setDialogError] = useState("");
@@ -91,7 +91,7 @@ export default function generalStyle() {
 
     if (saveSuccess) {
       router.push(
-        `/lessonSummary/generalStyle?patientId=${encodeURIComponent(
+        `/lessonSummary/summariesPatientLessons?patientId=${encodeURIComponent(
           patientId
         )}`
       );

@@ -150,7 +150,7 @@ const PersonalMenu = () => {
   };
 
   const handleSetMeeting = () => {
-    router.push("/introductionMeeting");
+    router.push("/introMeeting/introductionMeeting");
   };
 
   const handleNavigateToSpecialProgramSuggestionView = async () => {
@@ -213,13 +213,13 @@ const PersonalMenu = () => {
               />
             </Item>
             <div>
-              <Link href={`/introMeetingView?patientId=${query.patientId}`}>
+              <Link href={`/introMeeting/introMeetingView?patientId=${query.patientId}`}>
                 <MenuItem>
                   <CustomButton>פרטים כללים והיכרות</CustomButton>
                 </MenuItem>
               </Link>
               <Link
-                href={`/lessonSummary/generalStyle?patientId=${query.patientId}`}
+                href={`/lessonSummary/summariesPatientLessons?patientId=${query.patientId}`}
               >
                 <MenuItem>
                   <CustomButton>סיכומי שיעורים</CustomButton>
@@ -261,7 +261,7 @@ const PersonalMenu = () => {
 
               {hasSpecialTreatmentPlans ? (
                 <Link
-                  href={`/specialProgramWatch?patientId=${query.patientId}`}
+                  href={`/specialProgram/specialProgramWatch?patientId=${query.patientId}`}
                 >
                   <MenuItem>
                     <CustomButton>צפייה בתכנית טיפול מיוחדת</CustomButton>
@@ -270,7 +270,7 @@ const PersonalMenu = () => {
               ) : (
                 type == 3 && (
                   <Link
-                    href={`/specialProgram?patientId=${query.patientId}&&patientName=${name}&&suggestionId=${guideSuggestions.id}`}
+                    href={`/specialProgram/specialProgram?patientId=${query.patientId}&&patientName=${name}&&suggestionId=${guideSuggestions.id}`}
                   >
                     <MenuItem>
                       <CustomButton>יצירת תכנית טיפול מיוחדת</CustomButton>
